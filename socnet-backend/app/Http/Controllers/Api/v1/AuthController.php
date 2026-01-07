@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Api\v1;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Http\Requests\StoreUserRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     // вхід користувача
-    public function login(StoreUserRequest $request)
+    public function login(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
@@ -42,7 +41,7 @@ class AuthController extends Controller
     }
 
     // реєстрація користувача
-    public function register(StoreUserRequest $request)
+    public function register(Request $request)
     {
         $validated = $request->validate([
             'username' => 'required|string|min:5|max:32|unique:users|regex:/^[A-Za-z0-9_]+$/',
@@ -61,5 +60,16 @@ class AuthController extends Controller
             'message' => 'User registered successfully',
             'user_id' => $user->id
         ], 201);
+    }
+
+    // Додай цей метод у клас AuthController
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'Logged out successfully'
+        ], 200);
     }
 }

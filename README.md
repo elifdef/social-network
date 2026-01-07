@@ -8,13 +8,13 @@
 - Бекенд: PHP 8.5.1 (Laravel 12)
 - Фронтенд: Javascript (React 19.2.3)
 
-Що зроблено (станом на 31.12.2025):
+Що зроблено (станом на 07.01.2026):
 <p style="color: red">-  Реєстрація Користувача 90%</p>
 <p style="color: red">-  Вхід в Систему 95%</p>
-<p style="color: red">-  Вихід з Системи 0%</p>
+<p style="color: red">-  Вихід з Системи 95%</p>
 <p style="color: red">-  Захист Маршрутів 0%</p>
 <p style="color: red">-  Перегляд Профілю 50%</p>
-<p style="color: red">-  Редагування Профілю 0%</p>
+<p style="color: red">-  Редагування Профілю 50%</p>
 <p style="color: red">-  Створення Посту 0%</p>
 <p style="color: red">-  Перегляд Стрічки Новин 0%</p>
 <p style="color: red">-  Надсилання Запиту на Дружбу 0%</p>
