@@ -1,0 +1,348 @@
+:root {
+    --bg-color: #000000;
+    --text-color: #e7e9ea;
+    --border-color: #2f3336;
+    --primary-color: #1d9bf0;
+    --hover-bg: #181818;
+}
+
+body {
+    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 275px;
+    border-right: 1px solid var(--border-color);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+}
+
+.main-content {
+    width: 600px;
+    border-right: 1px solid var(--border-color);
+}
+
+.auth-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 20px;
+}
+
+.btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.input-field {
+    background: black;
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 15px;
+    border-radius: 4px;
+    width: 300px;
+    font-size: 16px;
+}
+
+.input-field:focus {
+    outline: 2px solid var(--primary-color);
+    border-color: transparent;
+}
+
+.nav-link {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 30px;
+    display: block;
+}
+
+.nav-link:hover {
+    background-color: var(--hover-bg);
+}
+
+.landing-page-wrapper {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.landing-header {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(to bottom, #000000, #111111);
+}
+
+.landing-title {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    padding: 40px;
+    background: linear-gradient(90deg, var(--primary-color), #a855f7);
+    display: inline-block;
+}
+
+.landing-subtitle {
+    font-size: 1.2rem;
+    color: #888;
+}
+
+.info-block {
+    display: flex;
+    align-items: center;
+    padding: 60px 10%;
+    gap: 40px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-block.reverse {
+    flex-direction: row-reverse;
+}
+
+.info-image-container,
+.info-text-container {
+    flex: 1;
+}
+
+.info-text-container h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.info-text-container p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #ccc;
+}
+
+/* Заглушка для картинок */
+.placeholder-image {
+    width: 100%;
+    height: 300px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.placeholder-blue {
+    background: linear-gradient(135deg, #1d9bf055, #0a3c61);
+}
+
+.placeholder-purple {
+    background: linear-gradient(135deg, #a855f755, #4c1d7a);
+}
+
+.cta-block {
+    text-align: center;
+    padding: 80px 20px;
+    background-color: #080808;
+    display: flex;
+    justify-content: center;
+}
+
+.cta-content {
+    max-width: 600px;
+}
+
+.cta-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.btn-primary-large,
+.btn-outline-large {
+    padding: 15px 40px;
+    border-radius: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: transform 0.2s;
+}
+
+.btn-primary-large:hover,
+.btn-outline-large:hover {
+    transform: scale(1.05);
+}
+
+.btn-primary-large {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+.btn-outline-large {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.landing-footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: auto;
+}
+
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.1);
+    border-left: 3px solid var(--primary-color, #00f2ea);
+}
+
+.sidebar-user-block {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.mini-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: white;
+    transition: opacity 0.2s;
+}
+
+.mini-user-info:hover {
+    opacity: 0.8;
+}
+
+.mini-avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #444;
+}
+
+.mini-user-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.mini-name {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.mini-nick {
+    font-size: 11px;
+    color: #888;
+}
+
+.btn-logout {
+    background: transparent;
+    border: 1px solid #444;
+    color: #aaa;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.btn-logout:hover {
+    background: #331111;
+    color: #ff5555;
+    border-color: #ff5555;
+}
+
+.guest-profile-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-gradient);
+}
+
+.guest-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.badge-counter {
+    background-color: #ff3333;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+@media (max-width: 768px) {
+    .landing-title {
+        font-size: 2.2rem;
+    }
+
+    .info-block,
+    .info-block.reverse {
+        flex-direction: column;
+        padding: 40px 20px;
+        text-align: center;
+        gap: 30px;
+    }
+
+    .info-block.reverse .info-image-container {
+        order: -1;
+    }
+
+    .placeholder-image {
+        height: 200px;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+    }
+
+    .btn-primary-large,
+    .btn-outline-large {
+        width: 100%;
+        text-align: center;
+    }
+}

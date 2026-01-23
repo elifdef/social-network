@@ -24,7 +24,8 @@ class User extends Authenticatable
         'password',
         'first_name',
         'last_name',
-        'avatar_url',
+        'avatar',
+        'birth_date',
         'bio',
     ];
 
@@ -47,7 +48,20 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed'
+            'password' => 'hashed',
+            'is_setup_complete' => 'boolean',
         ];
+    }
+
+    // звязок де Я кинув заявку
+    public function friendsOfMine()
+    {
+        return $this->belongsToMany(User::class, 'friendships', 'user_id', 'friend_id');
+    }
+
+    // звязок де МЕНЕ додали
+    public function friendOf()
+    {
+        return $this->belongsToMany(User::class, 'friendships', 'friend_id', 'user_id');
     }
 }

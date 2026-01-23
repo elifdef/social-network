@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -24,11 +25,20 @@ return Application::configure(basePath: dirname(__DIR__))
             return $request->expectsJson();
         });
 
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Unauthenticated. Please provide a valid token.'
+                ], 401);
+            }
+        });
+
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
                     'status' => false,
-                    'message' => $e->getMessage()
+                    'message' => 'Record not found.'
                 ], 404);
             }
         });

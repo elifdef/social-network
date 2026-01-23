@@ -19,9 +19,11 @@ class PublicUserResource extends JsonResource
             'username' => $this->username,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
-            'avatar' => $this->avatar_url,
+            'avatar' => $this->avatar,
             'bio' => $this->bio,
             'created_at' => $this->created_at->format('d.m.Y'), // 05.01.2026
+            'birth_date' => $this->birth_date,
+            'is_setup_complete' => (bool)$this->is_setup_complete,
         ];
     }
 }

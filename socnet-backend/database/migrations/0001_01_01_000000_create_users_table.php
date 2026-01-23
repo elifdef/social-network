@@ -18,8 +18,10 @@ return new class extends Migration
             $table->string('password');
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
-            $table->string('avatar_url')->nullable();
+            $table->string('avatar')->nullable();
+            $table->date('birth_date')->nullable();
             $table->text('bio')->nullable();
+            $table->boolean('is_setup_complete')->default(false);
             //laravel old
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();

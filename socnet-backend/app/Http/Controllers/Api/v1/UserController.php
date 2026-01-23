@@ -5,13 +5,40 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Resources\PublicUserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
     // вивести дані ВСІХ користувачів
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $search = $request->input('search');
+        $query = User::query();
+
+        // Виключаємо себе зі списку
+        if ($request->user())
+        {
+            $query->where('id', '!=', $request->user()->id);
+        }
+
+        // Якщо користувач щось ввів у пошук
+        if ($search)
+        {
+            $query->where(function ($q) use ($search)
+            {
+                $q->where('username', 'like', "%{$search}%")
+                    ->orWhere('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%");
+            });
+        } else
+        {
+            // Якщо пошуку немає - показуємо найновіших
+            $query->latest();
+        }
+
+        // поверне лише 20 записів + метадані про сторінки
+        $users = $query->paginate(20);
+        return PublicUserResource::collection($users);
     }
 
     // хм...
@@ -39,42 +66,64 @@ class UserController extends Controller
             ], 403);
         }
 
-        $validated = $request->validate([
-            'first_name' => 'sometimes|string|max:50',
-            'last_name' => 'sometimes|string|max:50',
-            'bio' => 'sometimes|string|max:1000',
-            'avatar_url' => 'sometimes|url'
-        ]);
+        $rules = [
+            'bio' => 'nullable|string|max:1000',
+            'last_name' => 'nullable|string|max:50',
+            'avatar' => 'nullable|image|max:5120', // 5mb
+        ];
 
-        if (empty($validated))
+        if ($request->has('finish_setup') && $request->input('finish_setup'))
         {
-            return response()->json([
-                'status' => false,
-                'message' => 'No valid fields provided for update'
-            ], 400); // 400 Bad Request
+            $rules['first_name'] = 'required|string|max:50';
+            $rules['birth_date'] = 'required|date';
+        } else
+        {
+            $rules['first_name'] = 'nullable|string|max:50';
+            $rules['birth_date'] = 'nullable|date';
         }
 
-        // заповнюємо модель новими даними, але ЩЕ НЕ зберігаємо в базу.
-        $targetUser->fill($validated);
+        $validated = $request->validate($rules);
 
-        // isDirty() повертає true, якщо хоч одне поле відрізняється від того, що в базі
+        $dataToUpdate = collect($validated)->except(['avatar'])->toArray();
+        $targetUser->fill($dataToUpdate);
+
+        if ($request->hasFile('avatar'))
+        {
+            $file = $request->file('avatar');
+            $usernameFolder = $targetUser->username;
+
+            $randomString = bin2hex(random_bytes(8));
+            $timestamp = time();
+            $extension = $file->getClientOriginalExtension();
+
+            // Формат: avatar-1735689000-a1b2c3d4e5f6g7h8.jpg
+            $filename = "avatar-{$timestamp}-{$randomString}.{$extension}";
+
+            // storage/app/public/{username}/{filename}
+            $path = $file->storeAs($usernameFolder, $filename, 'public');
+
+            $targetUser->avatar = asset('storage/' . $path);
+        }
+
+        if ($request->has('finish_setup') && $request->input('finish_setup') == 1)
+        {
+            $targetUser->is_setup_complete = true;
+        }
+
         if (!$targetUser->isDirty())
         {
-            return response(null, 304);
+            return response()->json([
+                'status' => true,
+                'message' => 'Nothing to update'
+            ], 200);
         }
 
         $targetUser->save();
 
         return response()->json([
             'status' => true,
-            'message' => 'Profile updated successfully'
+            'message' => 'Profile updated successfully',
+            'data' => new PublicUserResource($targetUser)
         ]);
-    }
-
-    // видалення користувача
-    // бажано підтверджувати паролем
-    public function destroy(User $user)
-    {
-        //
     }
 }

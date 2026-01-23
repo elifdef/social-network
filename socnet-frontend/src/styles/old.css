@@ -1,0 +1,128 @@
+@import url('https://fonts.cdnfonts.com/css/tahoma');
+
+:root {
+    --vk-dark-bg: #1e1e1e;          /* Основний фон */
+    --vk-dark-box-bg: #2b2b2b;      /* Фон блоків */
+    --vk-dark-border: #424242;      /* Рамки */
+    --vk-dark-text-main: #e0e0e0;   /* Основний текст */
+    --vk-dark-text-muted: #8c8c8c;  /* Сірий текст (лейбли) */
+    --vk-dark-link: #5b9bd5;        /* Колір посилань/імен */
+    --vk-dark-button-bg: #3a3a3a;   /* Фон кнопок */
+    --vk-dark-button-hover: #4a4a4a;
+}
+
+.vk-card-wrapper {
+    font-family: 'Tahoma', sans-serif, Arial;
+    font-size: 11px;
+    color: var(--vk-dark-text-main);
+    background-color: var(--vk-dark-bg);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--vk-dark-border);
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.vk-container {
+    display: flex;
+    gap: 15px;
+}
+
+.vk-left-col {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.vk-photo-box {
+    background: var(--vk-dark-box-bg);
+    padding: 5px;
+    border: 1px solid var(--vk-dark-border);
+    margin-bottom: 10px;
+}
+
+.vk-avatar {
+    width: 100%;
+    height: auto;
+    display: block;
+    min-height: 200px; 
+    background-color: #333;
+    object-fit: cover;
+}
+
+.vk-btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
+    padding: 6px;
+    background: var(--vk-dark-button-bg);
+    border: 1px solid var(--vk-dark-border);
+    color: var(--vk-dark-text-main);
+    font-size: 11px;
+    cursor: pointer;
+    text-align: center;
+    font-family: 'Tahoma', sans-serif;
+    transition: background 0.2s;
+}
+.vk-btn:hover {
+    background: var(--vk-dark-button-hover);
+}
+
+.vk-right-col {
+    flex-grow: 1;
+}
+
+.vk-name-row {
+    border-bottom: 1px solid var(--vk-dark-border);
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.vk-name {
+    margin: 0;
+    font-size: 14px;
+    color: var(--vk-dark-link);
+    font-weight: bold;
+}
+
+.vk-nick {
+    font-size: 12px;
+    color: var(--vk-dark-text-muted);
+    margin-left: 5px;
+    font-weight: normal;
+}
+
+.vk-status-box {
+    border: 1px solid var(--vk-dark-border);
+    background-color: var(--vk-dark-box-bg);
+    padding: 8px;
+    margin-bottom: 15px;
+    color: var(--vk-dark-text-main);
+    font-style: italic;
+}
+
+.vk-section-title {
+    background: var(--vk-dark-box-bg);
+    color: var(--vk-dark-link);
+    padding: 4px 8px;
+    margin: 0 0 10px 0;
+    font-weight: bold;
+    font-size: 11px;
+    border-top: 1px solid var(--vk-dark-border);
+    border-bottom: 1px solid var(--vk-dark-border);
+}
+
+.vk-info-row {
+    display: flex;
+    margin-bottom: 6px;
+}
+
+.vk-label {
+    width: 130px;
+    color: var(--vk-dark-text-muted);
+}
+
+.vk-value {
+    color: var(--vk-dark-text-main);
+    flex: 1;
+}

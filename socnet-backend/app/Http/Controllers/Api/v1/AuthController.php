@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    // вхід користувача
+    // вхід
     public function login(Request $request)
     {
         $request->validate([
@@ -40,11 +40,11 @@ class AuthController extends Controller
         ], 200);
     }
 
-    // реєстрація користувача
+    // реєстрація
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'username' => 'required|string|min:5|max:32|unique:users|regex:/^[A-Za-z0-9_]+$/',
+            'username' => 'required|string|min:4|max:32|unique:users|regex:/^[A-Za-z0-9_]+$/',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:8|confirmed'
         ]);
@@ -62,8 +62,7 @@ class AuthController extends Controller
         ], 201);
     }
 
-    // Додай цей метод у клас AuthController
-
+    // вихід з аккаунта
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
