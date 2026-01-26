@@ -28,6 +28,7 @@ class PublicUserResource extends JsonResource
                 'created_at' => null,
                 'is_setup_complete' => true,
                 'friendship_status' => $status,
+                'country' => null
             ];
         }
         return [
@@ -40,6 +41,14 @@ class PublicUserResource extends JsonResource
             'bio' => $this->bio,
             'created_at' => $this->created_at->format('d.m.Y'), // 05.01.2026
             'birth_date' => $this->birth_date,
+            'country' => $this->whenLoaded('country', function () {
+                return [
+                    'id' => $this->country->id,
+                    'name' => $this->country->name,
+                    'emoji' => $this->country->emoji,
+                    'code' => $this->country->iso2,
+                ];
+            }),
             'is_setup_complete' => (bool)$this->is_setup_complete,
             'friendship_status' => $this->getFriendshipStatus($request->user('sanctum'))
         ];
@@ -51,7 +60,7 @@ class PublicUserResource extends JsonResource
     {
         // якщо це не залогінений або це ми самі
         if (!$currentUser || $currentUser->id === $this->id)
-            return 'noneS';
+            return 'none';
 
         // перевіряємо обидва напрямки: А -> В або В -> А
         $friendship = Friendship::where(function($q) use ($currentUser) {

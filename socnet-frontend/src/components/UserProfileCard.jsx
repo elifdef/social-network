@@ -16,12 +16,12 @@ export default function UserProfileCard({ currentUser, isPreview = false }) {
         displayAvatar,
         displayBio,
         displayBirth,
-        displayCity,
+        displayCountry,
         handleMainBtnClick,
         handleBlockUser,
         getButtonContent,
         getBtnStyle
-    } = useUserProfileLogic(currentUser);
+    } = useUserProfileLogic(currentUser, isPreview);
 
     return (
         <div className="vk-card-wrapper">
@@ -32,16 +32,15 @@ export default function UserProfileCard({ currentUser, isPreview = false }) {
                             src={displayAvatar}
                             alt={currentUser.username}
                             className="vk-avatar"
-                            style={isBlockedByTarget ? { opacity: 0.6, filter: 'grayscale(100%)' } : {}}
+                            style={!isPreview && isBlockedByTarget ? { opacity: 0.6, filter: 'grayscale(100%)' } : {}}
                         />
                     </div>
 
                     {!isPreview && (
                         <div className="vk-actions">
-                            {/* Якщо це ЧУЖИЙ профіль */}
                             {!sameUser ? (
                                 <>
-                                    {!isBlockedByTarget ? (
+                                    {!isBlockedByTarget && (
                                         <div className="vk-actions-container" ref={menuRef}>
                                             <button
                                                 className="vk-btn"
@@ -51,26 +50,21 @@ export default function UserProfileCard({ currentUser, isPreview = false }) {
                                             >
                                                 {getButtonContent()}
                                             </button>
-
                                             {!isBlockedByMe && (
                                                 <button className="vk-btn-more" onClick={() => setShowMenu(!showMenu)}>...</button>
                                             )}
-
                                             {showMenu && (
                                                 <div className="vk-dropdown-menu">
                                                     <button className="vk-dropdown-item">Надіслати повідомлення</button>
                                                     <div style={{ borderTop: '1px solid #444', margin: '5px 0' }}></div>
-                                                    <button className="vk-dropdown-item danger" onClick={handleBlockUser}>
-                                                        Заблокувати
-                                                    </button>
+                                                    <button className="vk-dropdown-item danger" onClick={handleBlockUser}>Заблокувати</button>
                                                 </div>
                                             )}
                                         </div>
-                                    ) : (null)}
+                                    )}
                                 </>
                             ) : (
-                                /* Якщо це МІЙ профіль */
-                                <Link to="/settings" className="vk-btn" style={{ textDecoration: 'none', lineHeight: '15px' }}>Редагувати сторінку</Link>
+                                <Link to="/settings" className="vk-btn" style={{ textDecoration: 'none', lineHeight: '15px' }}>Редагувати</Link>
                             )}
                         </div>
                     )}
@@ -82,14 +76,16 @@ export default function UserProfileCard({ currentUser, isPreview = false }) {
                             {currentUser.first_name} {currentUser.last_name}
                             <span className="vk-nick"> {currentUser.username}</span>
                         </h2>
-                        {!isBlockedByTarget && <span className="vk-nick" style={{ float: 'right', color: '#8c8c8c' }}>Online</span>}
+                        <span className="vk-nick" style={{ float: 'right', color: '#8c8c8c' }}>
+                            {isPreview ? "Editing..." : (!isBlockedByTarget && "Online")}
+                        </span>
                     </div>
 
-                    <div className="vk-status-box" style={isBlockedByTarget ? { fontStyle: 'italic', color: '#777' } : {}}>
+                    <div className="vk-status-box">
                         {displayBio}
                     </div>
 
-                    {!isBlockedByTarget && (
+                    {(isPreview || !isBlockedByTarget) && (
                         <>
                             <div className="vk-info-block">
                                 <h4 className="vk-section-title">Інформація</h4>
@@ -98,8 +94,8 @@ export default function UserProfileCard({ currentUser, isPreview = false }) {
                                     <div className="vk-value">{displayBirth}</div>
                                 </div>
                                 <div className="vk-info-row">
-                                    <div className="vk-label">Рідне місто:</div>
-                                    <div className="vk-value">{displayCity}</div>
+                                    <div className="vk-label">Країна проживання</div>
+                                    <div className="vk-value">{displayCountry}</div>
                                 </div>
                                 <div className="vk-info-row">
                                     <div className="vk-label">Зареєстровано:</div>
@@ -107,10 +103,10 @@ export default function UserProfileCard({ currentUser, isPreview = false }) {
                                 </div>
                             </div>
                             <div className="vk-info-block" style={{ marginTop: 20 }}>
-                                <h4 className="vk-section-title">Контакти</h4>
+                                <h4 className="vk-section-title">Друзі (under constructor)</h4>
                                 <div className="vk-info-row">
-                                    <div className="vk-label">E-mail:</div>
-                                    <div className="vk-value">{currentUser.email}</div>
+                                    <div className="vk-label">Підписники</div>
+                                    <div className="vk-value">-1</div>
                                 </div>
                             </div>
                         </>

@@ -27,7 +27,7 @@ export default function Layout() {
         if (user) {
             api.get('/friends/count')
                 .then(res => setRequestsCount(res.data.requests_count))
-                .catch(err => console.error("Помилка лічильника", err));
+                .catch(err => toast.error("Помилка лічильника"));
         }
     }, [user, location.pathname]);
 

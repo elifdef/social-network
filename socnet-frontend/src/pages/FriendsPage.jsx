@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
@@ -10,11 +10,17 @@ export default function FriendsPage() {
     const { user: currentUser } = useContext(AuthContext);
     const { addFriend, acceptRequest, removeFriend, blockUser, unblockUser } = useFriendship();
 
-    const [activeTab, setActiveTab] = useState('my');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const activeTab = searchParams.get('tab') || 'my';
+
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const abortControllerRef = useRef(null);
+
+    const handleTabChange = (newTab) => {
+        setSearchParams({ tab: newTab });
+    };
 
     const confirmAction = (message) => {
         return new Promise((resolve) => {
@@ -22,23 +28,13 @@ export default function FriendsPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <span>{message}</span>
                     <button
-                        onClick={() => {
-                            toast.dismiss(t.id); // ben not want talk to you
-                            resolve(true); // hohoho, YES
-                        }}
+                        onClick={() => { toast.dismiss(t.id); resolve(true); }}
                         style={{ padding: '4px 8px', background: '#d33', border: 'none', borderRadius: '4px', color: 'white', cursor: 'pointer' }}
-                    >
-                        Так
-                    </button>
+                    >Так</button>
                     <button
-                        onClick={() => {
-                            toast.dismiss(t.id);
-                            resolve(false); //hohoho, NO
-                        }}
+                        onClick={() => { toast.dismiss(t.id); resolve(false); }}
                         style={{ padding: '4px 8px', background: '#555', border: 'none', borderRadius: '4px', color: 'white', cursor: 'pointer' }}
-                    >
-                        Ні
-                    </button>
+                    >Ні</button>
                 </div>
             ), { duration: 5000, icon: '?' });
         });
@@ -56,7 +52,7 @@ export default function FriendsPage() {
             setUsers(Array.isArray(res.data) ? res.data : (res.data.data || []));
         } catch (err) {
             if (err.name !== "CanceledError" && err.code !== "ERR_CANCELED") {
-                console.error("Помилка завантаження:", err);
+                toast.error("Помилка завантаження");
             }
         } finally {
             if (!signal.aborted) setLoading(false);
@@ -64,6 +60,8 @@ export default function FriendsPage() {
     };
 
     useEffect(() => {
+        setUsers([]);
+
         if (abortControllerRef.current) abortControllerRef.current.abort();
         const newController = new AbortController();
         abortControllerRef.current = newController;
@@ -82,14 +80,13 @@ export default function FriendsPage() {
             const message = action === 'block'
                 ? `Заблокувати @${username}?`
                 : `Видалити @${username}?`;
-
             const isConfirmed = await confirmAction(message);
             if (!isConfirmed) return;
         }
 
         const loadingToast = toast.loading('Обробка...');
-
         let result;
+
         switch (action) {
             case 'add': result = await addFriend(username); break;
             case 'accept': result = await acceptRequest(username); break;
@@ -104,10 +101,11 @@ export default function FriendsPage() {
 
         if (result.success) {
             toast.success(result.message);
-
-            if (action !== 'add') {
+            if (activeTab !== 'all')
                 setUsers(prev => prev.filter(u => u.username !== username));
-            }
+            else
+                fetchUsers(searchQuery, abortControllerRef.current.signal);
+
         } else {
             toast.error(result.message);
         }
@@ -116,25 +114,79 @@ export default function FriendsPage() {
     const filteredUsers = users.filter(u => {
         if (activeTab === 'all') return true;
         if (u.id === currentUser?.id) return false;
+
         const search = searchQuery.toLowerCase();
         return (u.first_name + " " + u.last_name).toLowerCase().includes(search) ||
             u.username.toLowerCase().includes(search);
     });
+
+    const renderActionButtons = (u) => {
+        if (activeTab === 'my') {
+            return (
+                <>
+                    <button className="btn-small btn-remove" onClick={() => handleAction('delete', u.username)}>Видалити</button>
+                    <button className="btn-small btn-remove" onClick={() => handleAction('block', u.username)}>Block</button>
+                </>
+            );
+        }
+        if (activeTab === 'requests') {
+            return (
+                <>
+                    <button className="btn-small btn-add" onClick={() => handleAction('accept', u.username)}>Прийняти</button>
+                    <button className="btn-small btn-remove" onClick={() => handleAction('cancel_request', u.username)}>Відхилити</button>
+                </>
+            );
+        }
+        if (activeTab === 'blocked') {
+            return <button className="btn-small btn-add" onClick={() => handleAction('unblock', u.username)}>Розблокувати</button>;
+        }
+
+        const status = u.friendship_status || 'none'; // 'none', 'friends', 'pending_sent', 'pending_received', 'blocked_by_me', 'blocked_by_target'
+
+        switch (status) {
+            case 'friends':
+                return (
+                    <>
+                        <button className="btn-small btn-remove" onClick={() => handleAction('delete', u.username)}>Видалити</button>
+                        <button className="btn-small btn-remove" onClick={() => handleAction('block', u.username)}>Block</button>
+                    </>
+                );
+            case 'pending_sent':
+                return <button className="btn-small btn-remove" onClick={() => handleAction('cancel_request', u.username)}>Скасувати</button>;
+            case 'pending_received':
+                return (
+                    <>
+                        <button className="btn-small btn-add" onClick={() => handleAction('accept', u.username)}>Прийняти</button>
+                        <button className="btn-small btn-remove" onClick={() => handleAction('cancel_request', u.username)}>Відхилити</button>
+                    </>
+                );
+            case 'blocked_by_me':
+                return <button className="btn-small btn-add" onClick={() => handleAction('unblock', u.username)}>Розблокувати</button>;
+            case 'blocked_by_target':
+                return <span style={{ fontSize: '12px', color: '#777' }}>Заблоковано</span>;
+            case 'none':
+            default:
+                return <button className="btn-small btn-add" onClick={() => handleAction('add', u.username)}>Додати</button>;
+        }
+    };
+
     return (
         <div className="friends-container">
             <h2 style={{ marginBottom: 20 }}>Контакти</h2>
 
             <div className="tabs-header">
-                {['my', 'requests', 'all', 'blocked'].map(tab => (
+                {[
+                    { id: 'my', label: 'Друзі' },
+                    { id: 'requests', label: 'Заявки' },
+                    { id: 'all', label: 'Пошук' },
+                    { id: 'blocked', label: 'Чорний список' }
+                ].map(tab => (
                     <button
-                        key={tab}
-                        className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
-                        onClick={() => setActiveTab(tab)}
+                        key={tab.id}
+                        className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
+                        onClick={() => handleTabChange(tab.id)}
                     >
-                        {tab === 'my' && 'Друзі'}
-                        {tab === 'requests' && 'Заявки'}
-                        {tab === 'all' && 'Пошук'}
-                        {tab === 'blocked' && 'Чорний список'}
+                        {tab.label}
                     </button>
                 ))}
             </div>
@@ -171,27 +223,7 @@ export default function FriendsPage() {
                             </div>
 
                             <div className="user-row-actions">
-                                {activeTab === 'my' && (
-                                    <>
-                                        <button className="btn-small btn-remove" onClick={() => handleAction('delete', u.username)}>Видалити</button>
-                                        <button className="btn-small btn-remove" onClick={() => handleAction('block', u.username)}>Block</button>
-                                    </>
-                                )}
-
-                                {activeTab === 'requests' && (
-                                    <>
-                                        <button className="btn-small btn-add" onClick={() => handleAction('accept', u.username)}>Прийняти</button>
-                                        <button className="btn-small btn-remove" onClick={() => handleAction('cancel_request', u.username)}>Відхилити</button>
-                                    </>
-                                )}
-
-                                {activeTab === 'all' && (
-                                    <button className="btn-small btn-add" onClick={() => handleAction('add', u.username)}>Додати</button>
-                                )}
-
-                                {activeTab === 'blocked' && (
-                                    <button className="btn-small btn-add" onClick={() => handleAction('unblock', u.username)}>Розблокувати</button>
-                                )}
+                                {renderActionButtons(u)}
                             </div>
                         </div>
                     ))}

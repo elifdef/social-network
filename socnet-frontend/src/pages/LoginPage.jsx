@@ -1,9 +1,10 @@
 import { useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import api from "../api/axios";
 import { useNavigate, Link } from "react-router-dom";
+import api from "../api/axios";
+import { AuthContext } from "../context/AuthContext";
 import { APP_NAME } from "../config";
 import Footer from "../components/Footer"
+import FormInput from "../components/FormInput";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -14,16 +15,18 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
             const res = await api.post('/sign-in', { email, password });
-            login(res.data.token, res.data.user);
             const token = res.data.token;
-            const res2 = await api.get('/me', { token });
-            if (!res2.data.user.is_setup_complete) {
-                navigate('/setup-profile');
-            } else {
-                navigate('/');
-            }
+            const res2 = await api.get('/me', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            const user = res2.data;
+            login(token, user);
+            navigate(!user.is_setup_complete ? '/setup-profile' : '');
         } catch (err) {
             setError(err.response?.data?.message || "Помилка входу");
         }
@@ -34,16 +37,21 @@ export default function LoginPage() {
             <div className="auth-container">
                 <h1>Вхід у {APP_NAME}</h1>
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <input
+                    <FormInput
+                        type="email"
+                        name="email"
                         className="input-field"
-                        placeholder="Email"
+                        placeholder="Ел. пошта"
+                        autoComplete="email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                     />
-                    <input
-                        className="input-field"
+                    <FormInput
                         type="password"
+                        name="password"
+                        className="input-field"
                         placeholder="Пароль"
+                        autoComplete="password"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                     />

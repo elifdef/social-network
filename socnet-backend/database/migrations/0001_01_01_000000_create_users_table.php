@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('last_name')->nullable();
             $table->string('avatar')->nullable();
             $table->date('birth_date')->nullable();
+            $table->foreignId('country_id')->nullable()->constrained('countries');
             $table->text('bio')->nullable();
             $table->boolean('is_setup_complete')->default(false);
             //laravel old

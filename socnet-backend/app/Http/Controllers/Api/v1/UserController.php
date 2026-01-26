@@ -50,7 +50,7 @@ class UserController extends Controller
     // вивести дані КОНКРЕТНОГО користувача
     public function show(string $username)
     {
-        $currentUser = User::where('username', $username)->firstOrFail();
+        $currentUser = User::with('country')->where('username', $username)->firstOrFail();
         return new PublicUserResource($currentUser);
     }
 
@@ -68,17 +68,18 @@ class UserController extends Controller
 
         $rules = [
             'bio' => 'nullable|string|max:1000',
-            'last_name' => 'nullable|string|max:50',
+            'last_name' => 'nullable|string|min:3|max:50',
             'avatar' => 'nullable|image|max:5120', // 5mb
+            'country_id' => 'nullable|integer|exists:countries,id',
         ];
 
         if ($request->has('finish_setup') && $request->input('finish_setup'))
         {
-            $rules['first_name'] = 'required|string|max:50';
+            $rules['first_name'] = 'required|string|min:3|max:50';
             $rules['birth_date'] = 'required|date';
         } else
         {
-            $rules['first_name'] = 'nullable|string|max:50';
+            $rules['first_name'] = 'nullable|string|min:3|max:50';
             $rules['birth_date'] = 'nullable|date';
         }
 
@@ -119,11 +120,9 @@ class UserController extends Controller
         }
 
         $targetUser->save();
-
         return response()->json([
             'status' => true,
-            'message' => 'Profile updated successfully',
-            'data' => new PublicUserResource($targetUser)
+            'message' => 'Profile updated successfully'
         ]);
     }
 }

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { APP_NAME } from "../config";
 import api from "../api/axios";
 import Footer from "../components/Footer";
+import FormInput from "../components/FormInput"
 
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
@@ -35,7 +36,7 @@ export default function RegisterPage() {
                 ),
                 color: "green"
             });
-            setFormData({ username: "", email: "", password: "",password_confirmation: "" });
+            setFormData({ username: "", email: "", password: "", password_confirmation: "" });
         } catch (err) {
             const errorText = err.response?.data?.message || "Помилка реєстрації";
             setMsg({ text: errorText, color: "red" });
@@ -47,26 +48,53 @@ export default function RegisterPage() {
             <div className="auth-container">
                 <h1>Приєднуйся до {APP_NAME}</h1>
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <input
-                        className="input-field" name="username" placeholder="Username"
-                        value={formData.username} onChange={handleChange} required
+                    <FormInput
+                        type="text"
+                        name="username"
+                        id="reg-username"
+                        placeholder="Нікнейм"
+                        autoComplete="username"
+                        value={formData.username}
+                        onChange={handleChange}
+                        required
                     />
-                    <input
-                        className="input-field" name="email" type="email" placeholder="Email"
-                        value={formData.email} onChange={handleChange} required
+
+                    <FormInput
+                        type="email"
+                        name="email"
+                        id="reg-email"
+                        placeholder="Ел. пошта"
+                        autoComplete="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
                     />
-                    <input
-                        className="input-field" name="password" type="password" placeholder="Пароль"
-                        value={formData.password} onChange={handleChange} required
+
+                    <FormInput
+                        type="password"
+                        name="password"
+                        id="reg-password"
+                        placeholder="Пароль"
+                        autoComplete="new-password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
                     />
-                    <input
-                        className="input-field" name="password_confirmation" type="password" placeholder="Підтвердіть пароль"
-                        value={formData.password_confirmation} onChange={handleChange} required
+
+                    <FormInput
+                        type="password"
+                        name="password_confirmation"
+                        id="reg-confirm-password"
+                        placeholder="Підтвердження пароля"
+                        autoComplete="new-password"
+                        value={formData.password_confirmation}
+                        onChange={handleChange}
+                        required
                     />
 
                     {msg.text && <p style={{ color: msg.color, maxWidth: '300px', textAlign: 'center' }}>{msg.text}</p>}
 
-                    <button className="btn">Зареєструватися</button>
+                    <button className="btn" type="submit">Зареєструватися</button>
                 </form>
                 <p>Вже є акаунт? <Link to="/login" style={{ color: '#1d9bf0' }}>Увійти</Link></p>
             </div>

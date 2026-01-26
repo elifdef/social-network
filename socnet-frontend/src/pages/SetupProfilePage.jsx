@@ -32,7 +32,7 @@ export default function SetupProfilePage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!firstName || !birthDate) return alert("Введіть ім'я та дату!");
+        if (!firstName || !birthDate) return toast.error("Введіть ім'я та дату!");
 
         setLoading(true);
         const formData = new FormData();
@@ -53,8 +53,7 @@ export default function SetupProfilePage() {
             login(localStorage.getItem('token'), res.data.data);
             window.location.href = `/${authUser.username}`;
         } catch (error) {
-            console.error(error);
-            alert(error.response?.data?.message || "Помилка");
+            toast.error(error.response?.data?.message || "Помилка");
         } finally {
             setLoading(false);
         }

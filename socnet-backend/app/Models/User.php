@@ -27,6 +27,7 @@ class User extends Authenticatable
         'avatar',
         'birth_date',
         'bio',
+        'country_id'
     ];
 
     /**
@@ -63,5 +64,11 @@ class User extends Authenticatable
     public function friendOf()
     {
         return $this->belongsToMany(User::class, 'friendships', 'friend_id', 'user_id');
+    }
+
+    // звязок country_id з users до id в countries
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 }

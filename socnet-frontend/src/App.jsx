@@ -4,6 +4,9 @@ import { AuthContext } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 
 import Layout from "./components/Layout";
+import SettingsLayout from './pages/settings/SettingsLayout';
+import ProfileSettings from './pages/settings/ProfileSettings';
+import SecuritySettings from './pages/settings/SecuritySettings';
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
@@ -42,7 +45,7 @@ function App() {
               primary: '#00f2ea',
               secondary: 'black',
             },
-          },
+          }
         }}
       />
       <Routes>
@@ -97,7 +100,13 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path=":username" element={<ProfilePage />} />
             <Route path="/friends" element={<FriendsPage />} />
-            <Route path="settings" element={<h2>Налаштування</h2>} />
+
+            {/* Головний роут Settings */}
+            <Route path="/settings" element={<SettingsLayout />}>
+              <Route index element={<Navigate to="profile" replace />} />
+              <Route path="profile" element={<ProfileSettings />} />
+              <Route path="security" element={<SecuritySettings />} />
+            </Route>
           </Route>
         )}
 

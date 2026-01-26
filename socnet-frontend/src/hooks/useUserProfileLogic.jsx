@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast";
 import { AuthContext } from "../context/AuthContext";
 import { useFriendship } from "./useFriendship";
 
-export const useUserProfileLogic = (currentUser) => {
+export const useUserProfileLogic = (currentUser, isPreview = false) => {
     const { user } = useContext(AuthContext);
     const { addFriend, removeFriend, acceptRequest, blockUser, unblockUser } = useFriendship();
 
@@ -12,11 +12,47 @@ export const useUserProfileLogic = (currentUser) => {
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef(null);
 
-    const sameUser = user && currentUser && currentUser.username === user.username;
     const defaultAvatar = "/defaultAvatar.jpg"; // bill gates mugshot
-    
-    const isBlockedByMe = status === 'blocked_by_me';
-    const isBlockedByTarget = status === 'blocked_by_target';
+    const sameUser = user && currentUser && currentUser.username === user.username;
+
+    const isBlockedByMe = !isPreview && status === 'blocked_by_me';
+    const isBlockedByTarget = !isPreview && status === 'blocked_by_target';
+
+    const displayAvatar = isBlockedByTarget 
+        ? defaultAvatar 
+        : (currentUser?.avatar || defaultAvatar);
+
+    const displayBio = isBlockedByTarget
+        ? `${currentUser.first_name} обмежив${currentUser.sex === 'female' ? 'ла' : ''} вам доступ до своєї сторінки.`
+        : (currentUser?.bio || (isPreview ? "Ваш статус..." : "Статус не встановлено"));
+
+    const displayBirth = isBlockedByTarget 
+        ? "Приховано" 
+        : (currentUser?.birth_date ? new Date(currentUser.birth_date).toLocaleDateString() : 'Не вказано');
+
+    const displayCountry = isBlockedByTarget
+        ? "Приховано"
+        : (currentUser?.country ? `${currentUser.country.emoji} ${currentUser.country.name}` : 'Не вказано');
+
+    if (isPreview) {
+        return {
+            sameUser: true,
+            isBlockedByTarget: false,
+            isBlockedByMe: false,
+            loading: false,
+            showMenu: false,
+            setShowMenu: () => {},
+            menuRef,
+            displayAvatar,
+            displayBio,
+            displayBirth,
+            displayCountry,
+            handleMainBtnClick: () => {},
+            handleBlockUser: () => {},
+            getButtonContent: () => "",
+            getBtnStyle: () => ({})
+        };
+    }
 
     useEffect(() => {
         setStatus(currentUser?.friendship_status || 'none');
@@ -32,15 +68,6 @@ export const useUserProfileLogic = (currentUser) => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const displayAvatar = isBlockedByTarget ? defaultAvatar : (currentUser?.avatar || defaultAvatar);
-    
-    const displayBio = isBlockedByTarget 
-        ? `${currentUser.first_name} обмежив${currentUser.sex === 'female' ? 'ла' : ''} вам доступ до своєї сторінки.`
-        : (currentUser?.bio || "тут міг бути ваш статус...");
-
-    const displayBirth = isBlockedByTarget ? "Приховано" : currentUser?.birth_date;
-    const displayCity = isBlockedByTarget ? "Приховано" : "Кривий Ріг";
-    
     const confirmAction = (message) => {
         return new Promise((resolve) => {
             toast((t) => (
@@ -90,7 +117,7 @@ export const useUserProfileLogic = (currentUser) => {
                 toast.error(result.message);
             }
         } catch (e) {
-            toast.error("Помилка");
+            toast.error("Сталася помилка");
         } finally {
             setLoading(false);
         }
@@ -142,7 +169,7 @@ export const useUserProfileLogic = (currentUser) => {
         displayAvatar,
         displayBio,
         displayBirth,
-        displayCity,
+        displayCountry,
         handleMainBtnClick,
         handleBlockUser,
         getButtonContent,
