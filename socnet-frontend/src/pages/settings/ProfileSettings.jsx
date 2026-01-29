@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import toast from "react-hot-toast";
+import FormInput from "../../components/FormInput"
 import api from '../../api/axios';
 
 const ProfileSettings = () => {
@@ -80,17 +81,17 @@ const ProfileSettings = () => {
         <form onSubmit={handleSubmit} className="settings-form">
             <div className="form-group">
                 <label className="form-label">Аватар</label>
-                <input type="file" onChange={handleFileChange} className="form-input" accept="image/*" />
+                <FormInput type="file" onChange={handleFileChange} className="form-input" accept="image/*" />
             </div>
 
             <div className="form-row">
                 <div className="form-group">
                     <label className="form-label">Ім'я</label>
-                    <input name="first_name" value={formData.first_name} onChange={handleChange} className="form-input" />
+                    <FormInput name="first_name" value={formData.first_name} onChange={handleChange} className="form-input" />
                 </div>
                 <div className="form-group">
                     <label className="form-label">Прізвище</label>
-                    <input name="last_name" value={formData.last_name} onChange={handleChange} className="form-input" />
+                    <FormInput name="last_name" value={formData.last_name} onChange={handleChange} className="form-input" />
                 </div>
             </div>
 

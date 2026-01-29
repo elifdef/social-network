@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import { useFriendship } from "../hooks/useFriendship";
+import FormInput from "../components/FormInput"
 import "../styles/Friends.css";
 
 export default function FriendsPage() {
@@ -192,7 +193,7 @@ export default function FriendsPage() {
             </div>
 
             <div style={{ marginBottom: 15 }}>
-                <input
+                <FormInput
                     type="text"
                     placeholder="Швидкий пошук..."
                     className="input-field"

@@ -4,6 +4,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -40,6 +41,15 @@ return Application::configure(basePath: dirname(__DIR__))
                     'status' => false,
                     'message' => 'Record not found.'
                 ], 404);
+            }
+        });
+
+        $exceptions->render(function (ThrottleRequestsException $e, Request $request) {
+            if ($request->is('api/*') || $request->wantsJson()) {
+                return response()->json([
+                    'message' => 'To many attempts. Try later',
+                    'seconds_remaining' => $e->getHeaders()['Retry-After'] ?? null
+                ], 429);
             }
         });
     })->create();

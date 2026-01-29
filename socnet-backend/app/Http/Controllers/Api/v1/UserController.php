@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Resources\PublicUserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -123,6 +125,47 @@ class UserController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Profile updated successfully'
+        ]);
+    }
+
+    public function updateEmail(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email', Rule::unique('users')->ignore($request->user()->id)],
+            'password' => ['required'], // пароль для підтвердження
+        ]);
+
+        $user = $request->user();
+
+        if (!Hash::check($request->password, $user->password))
+        {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid password'
+            ], 422);
+        }
+
+        // оновлення пошти
+        $user->email = $request->email;
+        $user->email_verified_at = null; // обнуляєм верифікацію для старої пошти
+        $user->save();
+
+        $user->sendEmailVerificationNotification();
+
+        return response()->json(['message' => 'Email changed. Please confirm your new address.']);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', Password::min(8)->letters()->numbers()], // confirmed шукає поле password_confirmation
+        ]);
+
+        $request->user()->update(['password' => Hash::make($validated['password'])]);
+        return response()->json([
+            'status' => true,
+            'message' => 'Password has been changed.'
         ]);
     }
 }

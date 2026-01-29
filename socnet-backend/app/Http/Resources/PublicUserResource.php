@@ -35,6 +35,7 @@ class PublicUserResource extends JsonResource
             // $this посилається на об'єкт User
             'id' => $this->id,
             'username' => $this->username,
+            'email' => $this->email,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'avatar' => $this->avatar,
@@ -50,6 +51,7 @@ class PublicUserResource extends JsonResource
                 ];
             }),
             'is_setup_complete' => (bool)$this->is_setup_complete,
+            'email_verified_at' => $this->email_verified_at,
             'friendship_status' => $this->getFriendshipStatus($request->user('sanctum'))
         ];
     }

@@ -15,6 +15,7 @@ import ProfilePage from "./pages/ProfilePage";
 import FriendsPage from "./pages/FriendsPage";
 import SetupProfilePage from "./pages/SetupProfilePage";
 import Footer from "./components/Footer";
+import EmailVerifyPage from "./components/EmailVerifyPage"
 
 const GuestProfileWrapper = ({ children }) => (
   <div className="guest-profile-container">
@@ -100,6 +101,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path=":username" element={<ProfilePage />} />
             <Route path="/friends" element={<FriendsPage />} />
+            <Route path="/email-verify/:id/:hash" element={<EmailVerifyPage />} />
 
             {/* Головний роут Settings */}
             <Route path="/settings" element={<SettingsLayout />}>

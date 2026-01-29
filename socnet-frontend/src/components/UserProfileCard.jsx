@@ -74,7 +74,7 @@ export default function UserProfileCard({ currentUser, isPreview = false }) {
                     <div className="vk-name-row">
                         <h2 className="vk-name">
                             {currentUser.first_name} {currentUser.last_name}
-                            <span className="vk-nick"> {currentUser.username}</span>
+                            <span className="vk-nick"> @{currentUser.username}</span>
                         </h2>
                         <span className="vk-nick" style={{ float: 'right', color: '#8c8c8c' }}>
                             {isPreview ? "Editing..." : (!isBlockedByTarget && "Online")}

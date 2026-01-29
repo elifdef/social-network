@@ -30,7 +30,7 @@ export default function RegisterPage() {
             setMsg({
                 text: (
                     <span>
-                        Ви успішно зареєструвались!{" "}
+                        Ви зареєструвались{" "}
                         <Link to="/login" style={{ color: '#1d9bf0', textDecoration: 'underline' }}>Увійдіть тут</Link>
                     </span>
                 ),

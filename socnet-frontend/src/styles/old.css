@@ -24,9 +24,8 @@
     color: var(--vk-dark-text-main);
     background-color: var(--vk-dark-bg);
     padding: 20px;
-    border-radius: 8px;
     border: 1px solid var(--vk-dark-border);
-    max-width: 800px;
+    /* max-width: 700px; */
     width: 100%;
     margin: 0 auto;
 }

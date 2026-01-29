@@ -15,6 +15,7 @@ body {
 
 .app-container {
     display: flex;
+    /* justify-content: center; */
     min-height: 100vh;
 }
 
@@ -29,7 +30,9 @@ body {
 }
 
 .main-content {
-    width: 600px;
+    display: flex;
+    flex-direction:row;
+    width:max-content;
     border-right: 1px solid var(--border-color);
 }
 
@@ -244,10 +247,9 @@ body {
     opacity: 0.8;
 }
 
-.mini-avatar-circle {
+.mini-avatar {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
     object-fit: cover;
     border: 1px solid #444;
 }
@@ -298,11 +300,6 @@ body {
     align-items: flex-start;
     padding-top: 40px;
     padding-bottom: 40px;
-}
-
-.main-content {
-    display: flex;
-    flex-direction: column;
 }
 
 .badge-counter {

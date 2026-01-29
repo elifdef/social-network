@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import UserProfileCard from "../components/UserProfileCard";
+import FormInput from "../components/FormInput"
 
 export default function SetupProfilePage() {
     const { user: authUser, login } = useContext(AuthContext);
@@ -70,17 +71,17 @@ export default function SetupProfilePage() {
                     <div>
                         <label className="btn" style={{ display: 'inline-block', cursor: 'pointer', background: '#3a3a3a', border: '1px solid #424242' }}>
                             Завантажити фото
-                            <input type="file" hidden onChange={handleFileChange} accept="image/*" />
+                            <FormInput type="file" hidden onChange={handleFileChange} accept="image/*" />
                         </label>
                         {preview && <span style={{ marginLeft: 10, color: '#8c8c8c' }}>Файл обрано</span>}
                     </div>
 
-                    <input className="input-field" placeholder="Ім'я *" value={firstName} onChange={e => setFirstName(e.target.value)} required />
-                    <input className="input-field" placeholder="Прізвище" value={lastName} onChange={e => setLastName(e.target.value)} />
+                    <FormInput className="input-field" placeholder="Ім'я *" value={firstName} onChange={e => setFirstName(e.target.value)} required />
+                    <FormInput className="input-field" placeholder="Прізвище" value={lastName} onChange={e => setLastName(e.target.value)} />
 
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <label style={{ color: '#8c8c8c', fontSize: '12px' }}>Дата народження *</label>
-                        <input type="date" className="input-field" value={birthDate} onChange={e => setBirthDate(e.target.value)} required />
+                        <FormInput type="date" className="input-field" value={birthDate} onChange={e => setBirthDate(e.target.value)} required />
                     </div>
 
                     <textarea className="input-field" rows="3" placeholder="Статус (про себе)" value={bio} onChange={e => setBio(e.target.value)} />
