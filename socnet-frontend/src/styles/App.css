@@ -15,25 +15,50 @@ body {
 
 .app-container {
     display: flex;
-    /* justify-content: center; */
+    justify-content: center;
+    width: 100%;
     min-height: 100vh;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .sidebar {
-    width: 275px;
+    width: 25%;
+    min-width: 220px;
     border-right: 1px solid var(--border-color);
     padding: 20px;
     display: flex;
     flex-direction: column;
     position: sticky;
     top: 0;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .main-content {
-    display: flex;
-    flex-direction:row;
-    width:max-content;
+    width: 50%;
     border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.right-sidebar {
+    width: 25%;
+    padding: 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .auth-container {
@@ -232,6 +257,9 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
 }
 
 .mini-user-info {
@@ -312,6 +340,31 @@ body {
     margin-right: 10px;
 }
 
+.email-verify-block {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 10px 20px;
+    text-align: center;
+    border-bottom: 1px solid #ffeeba;
+    font-size: 14px;
+}
+
+.email-verify-block button {
+    margin-left: 15px;
+    padding: 5px 10px;
+    background-color: #856404;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 1;
+}
+
+.verify-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
 @media (max-width: 768px) {
     .landing-title {
         font-size: 2.2rem;
@@ -341,5 +394,18 @@ body {
     .btn-outline-large {
         width: 100%;
         text-align: center;
+    }
+
+    .right-sidebar {
+        display: none;
+    }
+
+    .sidebar {
+        width: 100px;
+    }
+
+    .main-content {
+        width: calc(100% - 100px);
+        border-right: none;
     }
 }

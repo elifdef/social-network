@@ -1,35 +1,37 @@
-import { useState, useEffect, useCallback } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
-import toast from "react-hot-toast";
-import api from '../../api/axios';
-import '../../styles/Settings.css';
-import '../../styles/old.css';
+import { useState, useEffect, useContext } from 'react';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import UserProfileCard from '../../components/UserProfileCard';
+import '../../styles/Settings.css';
 
 const SettingsLayout = () => {
-    const [user, setUser] = useState(null);
-    const [previewUser, setPreviewUser] = useState(null);
-
-    const fetchUser = useCallback(() => {
-        api.get('/me')
-            .then(res => {
-                setUser(res.data);
-                setPreviewUser(res.data);
-            })
-            .catch(err => toast.error("Помилка завантаження"));
-    }, []);
+    const { user, setUser } = useContext(AuthContext);
+    const [previewUser, setPreviewUser] = useState(user);
+    const location = useLocation();
 
     useEffect(() => {
-        fetchUser();
-    }, [fetchUser]);
+        if (user) {
+            setPreviewUser(user);
+        }
+    }, [user]);
+
+    const getPageTitle = () => {
+        const path = location.pathname;
+        if (path.includes('/security')) return 'Безпека';
+        return 'Налаштування профілю';
+    };
+
+    usePageTitle(getPageTitle());
 
     if (!user) return <div className="settings-container">Завантаження...</div>;
 
     return (
         <div className="settings-container">
-            <div style={{ marginBottom: '30px' }}>
+            <div>
                 <UserProfileCard currentUser={previewUser} isPreview={true} />
             </div>
+
             <div className="settings-tabs">
                 <NavLink to="profile" className={({ isActive }) => `tab-link ${isActive ? 'active' : ''}`}>
                     Профіль
@@ -38,7 +40,7 @@ const SettingsLayout = () => {
                     Безпека
                 </NavLink>
             </div>
-            <Outlet context={{ user, previewUser, setPreviewUser, fetchUser }} />
+            <Outlet context={{ user, setUser, previewUser, setPreviewUser }} />
         </div>
     );
 };

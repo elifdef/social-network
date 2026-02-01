@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import toast from "react-hot-toast";
 import FormInput from "../../components/FormInput"
+import { AuthContext } from "../../context/AuthContext"
 import api from '../../api/axios';
+import { notifySuccess, notifyWarn, notifyError, notifyLoading, dismissToast } from '../../components/Notify';
 
 const ProfileSettings = () => {
-    const { user, setPreviewUser, fetchUser } = useOutletContext();
+    const { user, setUser } = useContext(AuthContext);
+    const { previewUser, setPreviewUser } = useOutletContext();
     const [countries, setCountries] = useState([]);
 
     const [formData, setFormData] = useState({
@@ -18,6 +20,11 @@ const ProfileSettings = () => {
     useEffect(() => {
         api.get('/countries').then(res => setCountries(res.data));
     }, []);
+
+    useEffect(() => {
+        if (user)
+            setPreviewUser(user);
+    }, [user]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -38,14 +45,13 @@ const ProfileSettings = () => {
         const file = e.target.files[0];
 
         if (file) {
-            // 5 МБ = 5 * 1024 * 1024 байт
             if (file.size > 5 * 1024 * 1024) {
-                toast.error('Файл занадто великий. Максимальний розмір: 5 МБ.');
+                notifyWarn('Файл занадто великий. Максимальний розмір: 5 МБ.');
                 return;
             }
 
             if (!file.type.startsWith('image/')) {
-                toast.error('Будь ласка, завантажте зображення.');
+                notifyError('Будь ласка, завантажте зображення.');
                 return;
             }
 
@@ -56,7 +62,7 @@ const ProfileSettings = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        const toastId = notifyLoading("Збереження...");
         const data = new FormData();
         data.append('_method', 'PATCH');
         data.append('first_name', formData.first_name);
@@ -70,10 +76,18 @@ const ProfileSettings = () => {
             await api.post(`/users/${user.username}`, data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            fetchUser();
-            toast.success('Зміни успішно збережено!');
+            setUser(prevUser => ({
+                ...prevUser,      // старі дані
+                ...previewUser    // нові дані
+            }));
+            notifySuccess('Зміни успішно збережено!');
         } catch (error) {
-            toast.error('Помилка при збереженні');
+            notifyError(error.response?.data?.message || "Помилка збереження");
+            console.log(error);
+            setPreviewUser(user);
+            notifyError('Помилка при збереженні');
+        } finally {
+            dismissToast(toastId);
         }
     };
 
@@ -81,23 +95,48 @@ const ProfileSettings = () => {
         <form onSubmit={handleSubmit} className="settings-form">
             <div className="form-group">
                 <label className="form-label">Аватар</label>
-                <FormInput type="file" onChange={handleFileChange} className="form-input" accept="image/*" />
+                <FormInput
+                    type="file"
+                    onChange={handleFileChange}
+                    className="form-input"
+                    accept="image/*"
+                />
             </div>
 
             <div className="form-row">
                 <div className="form-group">
                     <label className="form-label">Ім'я</label>
-                    <FormInput name="first_name" value={formData.first_name} onChange={handleChange} className="form-input" />
+                    <FormInput
+                        name="first_name"
+                        value={formData.first_name}
+                        onChange={handleChange}
+                        className="form-input"
+                        maxLength={50}
+                        required
+                    />
                 </div>
                 <div className="form-group">
                     <label className="form-label">Прізвище</label>
-                    <FormInput name="last_name" value={formData.last_name} onChange={handleChange} className="form-input" />
+                    <FormInput
+                        name="last_name"
+                        value={formData.last_name}
+                        onChange={handleChange}
+                        className="form-input"
+                        maxLength={50}
+                    />
                 </div>
             </div>
 
             <div className="form-group">
                 <label className="form-label">Про себе (Bio)</label>
-                <textarea name="bio" rows="3" value={formData.bio} onChange={handleChange} className="form-textarea"></textarea>
+                <textarea
+                    name="bio"
+                    rows="3"
+                    value={formData.bio}
+                    onChange={handleChange}
+                    className="form-textarea"
+                    maxLength={1000}
+                ></textarea>
             </div>
 
             <div className="form-group">

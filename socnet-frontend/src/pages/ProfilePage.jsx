@@ -1,26 +1,36 @@
 import { useEffect, useState, useContext } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import api from "../api/axios";
-import UserProfileCard from "../components/UserProfileCard";
 import { AuthContext } from "../context/AuthContext";
+import NotFoundPage from "./NotFoundPage";
+import UserProfileCard from "../components/UserProfileCard";
+import UserWall from "../components/UserWall"
+import { usePageTitle } from "../hooks/usePageTitle";
 
 export default function ProfilePage() {
     const { username } = useParams();
+    usePageTitle(username);
     const { user: authUser } = useContext(AuthContext);
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
+        setError(false);
         setLoading(true);
         api.get(`/users/${username}`)
             .then(res => setProfile(res.data.data))
-            .catch(() => setProfile(null))
+            .catch(err => {
+                if (err.response && err.response.status === 404)
+                    setError(true);
+            })
             .finally(() => setLoading(false));
     }, [username]);
 
-    if (loading) return <div style={{ color: 'white', padding: 20 }}>Завантаження...</div>;
+    if (error)
+        return <NotFoundPage />;
 
-    if (!profile) return <div style={{ color: 'red', padding: 20 }}>Користувача не знайдено</div>;
+    if (loading) return <div style={{ color: 'white', padding: 20 }}>Завантаження...</div>;
 
     const isOwnProfile = authUser && authUser.username === profile.username;
 
@@ -40,6 +50,7 @@ export default function ProfilePage() {
     return (
         <div style={{ padding: '20px' }}>
             <UserProfileCard currentUser={profile} />
+            <UserWall profileUser={profile} isOwnProfile={isOwnProfile} />
         </div>
     );
 }

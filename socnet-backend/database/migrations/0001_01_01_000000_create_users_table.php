@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreignId('country_id')->nullable()->constrained('countries');
             $table->text('bio')->nullable();
             $table->boolean('is_setup_complete')->default(false);
+            $table->timestamp('last_seen_at')->nullable();
             //laravel old
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();

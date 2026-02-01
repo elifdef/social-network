@@ -1,4 +1,7 @@
+import { usePageTitle } from "../hooks/usePageTitle";
+
 export default function HomePage() {
+    usePageTitle("Головна");
     return (
         <div style={{ padding: '20px' }}>
             <h2>Пости</h2>

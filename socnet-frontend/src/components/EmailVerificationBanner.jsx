@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import api from '../api/axios';
-import toast from 'react-hot-toast';
+import { notifyError, notifyInfo } from "../components/Notify";
 
 const EmailVerificationBanner = ({ user }) => {
     const [loading, setLoading] = useState(false);
@@ -10,39 +10,20 @@ const EmailVerificationBanner = ({ user }) => {
         setLoading(true);
         try {
             await api.post('/email/verification-notification');
-            toast('Підтвердження надіслано на вашу пошту');
+            notifyInfo('Підтвердження надіслано на вашу пошту');
         } catch (error) {
-            toast.error('Помилка відправки.');
+            notifyError('Помилка відправки.');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div style={{
-            backgroundColor: '#fff3cd',
-            color: '#856404',
-            padding: '10px 20px',
-            textAlign: 'center',
-            borderBottom: '1px solid #ffeeba',
-            fontSize: '14px'
-        }}>
+        <div className="email-verify-block">
             Ваша пошта не підтверджена. Деякі функції можуть бути недоступні.
-            
-            <button 
-                onClick={handleResend} 
-                disabled={loading}
-                style={{
-                    marginLeft: '15px',
-                    padding: '5px 10px',
-                    backgroundColor: '#856404',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    opacity: loading ? 0.7 : 1
-                }}
-            >
+            <button
+                onClick={handleResend}
+                disabled={loading}>
                 {loading ? 'Відправка...' : 'Надіслати лист'}
             </button>
         </div>

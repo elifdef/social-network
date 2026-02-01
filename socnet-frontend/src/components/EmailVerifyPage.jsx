@@ -7,16 +7,16 @@ const EmailVerifyPage = () => {
     const { id, hash } = useParams();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { user } = useContext(AuthContext);
+
+    const { user, setUser } = useContext(AuthContext);
+
     const [status, setStatus] = useState('loading');
     const [message, setMessage] = useState('Перевіряємо вашу пошту...');
 
     useEffect(() => {
         const verifyEmail = async () => {
             if (user?.email_verified_at) {
-                setStatus('success');
-                setMessage('Пошта вже підтверджена!');
-                setTimeout(() => navigate(`/${user.username}`), 1000);
+                navigate(`/${user.username}`);
                 return;
             }
 
@@ -24,11 +24,27 @@ const EmailVerifyPage = () => {
                 const query = searchParams.toString();
                 const url = `/email/verify/${id}/${hash}?${query}`;
                 const response = await api.get(url);
+
                 setStatus('success');
                 setMessage(response.data.message);
+
+                const verifiedDate = new Date().toISOString();
+                if (setUser) {
+                    setUser(prev => ({ ...prev, email_verified_at: verifiedDate }));
+                }
+
+                // посилаємо сигнал іншій вкладці
+                const channel = new BroadcastChannel('auth_channel');
+                channel.postMessage({
+                    type: 'EMAIL_VERIFIED',
+                    date: verifiedDate
+                });
+
+                // закриваєм канал після відправки
                 setTimeout(() => {
-                    navigate(user && user.username ? `/${user.username}` : '/login');
-                }, 2000);
+                    channel.close();
+                    navigate(`/${user?.username}`)
+                }, 20);
 
             } catch (error) {
                 setStatus('error');
@@ -36,19 +52,19 @@ const EmailVerifyPage = () => {
             }
         };
         verifyEmail();
-    }, [id, hash, searchParams, navigate]);
+    }, []);
 
     return (
-        <div className="verify-container" style={{ textAlign: 'center', marginTop: '50px' }}>
-            {status === 'loading' && <h2>⏳ {message}</h2>}
+        <div className="verify-container">
+            {status === 'loading' && <h2>{message}</h2>}
 
             {status === 'success' && (
-                <h2 style={{ color: 'green' }}>✅ {message}</h2>
+                <h2 style={{ color: 'green' }}>Пошту успішно підтверджено!</h2>
             )}
 
             {status === 'error' && (
                 <div>
-                    <h2 style={{ color: 'red' }}>❌ Помилка</h2>
+                    <h2 style={{ color: 'red' }}>Помилка підтвердження.</h2>
                     <p>{message}</p>
                 </div>
             )}

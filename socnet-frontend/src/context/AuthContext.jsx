@@ -23,6 +23,35 @@ export const AuthProvider = ({ children }) => {
         }
     }, [token]);
 
+    useEffect(() => {
+        if (!user) return;
+
+        const sendOnline = () => {
+            api.post('/user/ping').catch(() => { });
+        };
+
+        // кожні 60 секунд
+        const interval = setInterval(sendOnline, 60000);
+
+        return () => clearInterval(interval);
+    }, [user]);
+
+    useEffect(() => {
+        const channel = new BroadcastChannel('auth_channel');
+
+        channel.onmessage = (event) => {
+            if (event.data.type === 'EMAIL_VERIFIED' && user) {
+                setUser((prevUser) => ({
+                    ...prevUser,
+                    email_verified_at: event.data.date
+                }));
+            }
+        };
+        return () => {
+            channel.close();
+        };
+    }, [user]);
+
     const login = (newToken, newUser) => {
         localStorage.setItem('token', newToken);
         localStorage.setItem('lang', navigator.language);

@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "axios": "^1.13.2",
+    "linkify-plugin-mention": "^4.3.2",
+    "linkify-react": "^4.3.2",
+    "linkifyjs": "^4.3.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hot-toast": "^2.6.0",

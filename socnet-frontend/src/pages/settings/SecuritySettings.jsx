@@ -1,6 +1,6 @@
-import toast from "react-hot-toast";
 import { useSecuritySettings } from '../../hooks/useSecuritySettings';
 import FormInput from '../../components/FormInput';
+import { notifyWarn } from "../../components/Notify";
 
 const SecuritySettings = () => {
     const {
@@ -17,31 +17,17 @@ const SecuritySettings = () => {
     return (
         <>
             <div className="info-box">
-                <strong style={{ fontSize: '16px', display: 'block', marginBottom: '20px' }}>
-                    Зміна електронної пошти
-                </strong>
-                <div style={{
-                    border: '1px solid #e9ecef',
-                    borderRadius: '8px',
-                    padding: '12px 16px',
-                    marginBottom: '20px',
-                    fontSize: '14px'
-                }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <strong>Зміна електронної пошти</strong>
+                <div className="info-box-block">
+                    <div className="info-box-block-email">
                         <span>Поточна електронна адреса:</span>
                         <span>{user?.email}</span>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className="info-box-block-email-verif">
                         <span>Статус верифікації:</span>
-                        <span style={{
-                            fontWeight: '600',
-                            color: user?.email_verified_at ? '#10b981' : '#f59e0b',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '5px'
-                        }}>
-                            {user?.email_verified_at ? (<>✅ Підтверджено</>) : (<>⚠️ Не підтверджено</>)}
+                        <span style={{ color: user?.email_verified_at ? '#10b981' : '#f59e0b' }}>
+                            {user?.email_verified_at ? "Підтверджено" : "Непідтверджено"}
                         </span>
                     </div>
                 </div>
@@ -70,26 +56,20 @@ const SecuritySettings = () => {
                             placeholder="********"
                         />
                     </div>
-
-                    <div style={{ textAlign: 'right' }}>
-                        <button
-                            className="btn-save"
-                            type="submit"
-                            disabled={loadingEmail}
-                        >
-                            {loadingEmail ? 'Зберігаємо...' : 'Змінити'}
-                        </button>
-                    </div>
+                    <button
+                        className="btn-save"
+                        type="submit"
+                        disabled={loadingEmail}
+                    >
+                        {loadingEmail ? 'Зберігаємо...' : 'Змінити'}
+                    </button>
                 </form>
             </div>
 
             <div className="info-box">
-                <strong style={{ fontSize: '16px', display: 'block', marginBottom: '15px' }}>
-                    Зміна паролю
-                </strong>
-
+                <strong>Зміна паролю</strong>
                 <form onSubmit={handleUpdatePassword}>
-                    <div>
+                    <div className="form-group">
                         <label className="form-label">Поточний пароль</label>
                         <FormInput
                             type="password"
@@ -101,7 +81,7 @@ const SecuritySettings = () => {
                         />
                     </div>
 
-                    <div>
+                    <div className="form-group">
                         <label className="form-label">Новий пароль (не менше 8 символів)</label>
                         <FormInput
                             type="password"
@@ -113,7 +93,7 @@ const SecuritySettings = () => {
                         />
                     </div>
 
-                    <div>
+                    <div className="form-group">
                         <label className="form-label">Підтвердіть новий пароль</label>
                         <FormInput
                             type="password"
@@ -124,32 +104,29 @@ const SecuritySettings = () => {
                             onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                     </div>
-
-                    <div style={{ textAlign: 'right' }}>
-                        <button
-                            type="submit"
-                            className="btn-save"
-                            disabled={loadingPass}
-                        >
-                            {loadingPass ? 'Зберігаємо...' : 'Змінити пароль'}
-                        </button>
-                    </div>
+                    <button
+                        type="submit"
+                        className="btn-save"
+                        disabled={loadingPass}
+                    >
+                        {loadingPass ? 'Зберігаємо...' : 'Змінити пароль'}
+                    </button>
                 </form>
             </div>
 
-            <div className="danger-zone" style={{ marginTop: '30px' }}>
+            <div className="danger-zone">
                 <div className="danger-header">Небезпечна зона</div>
                 <div className="danger-body">
                     <div>
-                        <h4 style={{ margin: '0 0 5px' }}>Видалити акаунт</h4>
-                        <div style={{ color: '#666', fontSize: '14px', fontStyle: 'italic', lineHeight: '1.5' }}>
-                            - Ти це зробиш?<br />
-                            - Так.<br />
-                            - І якою ціною?<br />
-                            - Ціною всього.
-                        </div>
+                    <h4>Видалити акаунт</h4>
+                    <div className="danger-body-quote">
+                        - Ти це зробиш?<br />
+                        - Так.<br />
+                        - І якою ціною?<br />
+                        - Ціною всього.
                     </div>
-                    <button className="btn-delete" onClick={() => toast('Не сьогодні')}>
+                    </div>
+                    <button className="btn-delete" onClick={() => notifyWarn('Не сьогодні')}>
                         Видалити акаунт
                     </button>
                 </div>

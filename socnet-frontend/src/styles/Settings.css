@@ -25,8 +25,8 @@
 }
 
 .tab-link.active {
-    color: #2563eb;
-    border-bottom-color: #2563eb;
+    color: #5b9bd5;
+    border-bottom-color: #5b9bd5;
 }
 
 .settings-form {
@@ -107,6 +107,7 @@
     border-radius: 8px;
     overflow: hidden;
     margin-top: 20px;
+    margin-top: 30px;
 }
 
 .danger-header {
@@ -121,6 +122,17 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.danger-body h4 {
+    margin: 0 0 5px
+}
+
+.danger-body-quote {
+    color: #666;
+    font-size: 14px;
+    font-style: italic;
+    line-height: 1.5;
 }
 
 .btn-delete {
@@ -139,4 +151,30 @@
     border-radius: 8px;
     color: #fcd34d;
     margin-bottom: 20px;
+}
+
+.info-box strong {
+    font-size: 16px;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.info-box-block {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.info-box-block-email {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.info-box-block-email-verif {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

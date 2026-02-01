@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Cache;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -52,6 +53,18 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    /*
+     * friendsOfMine (Мої друзі / Я ініціатор)
+        user_id = Я
+        friend_id = Інший
+        Використання: Коли я кидаю заявку (я чийсь підписник).
+
+     * friendOf (Друг когось / Мене додали)
+        user_id = Інший
+        friend_id = Я
+        Використання: Коли мені кидають заявку (підписники).
+    */
+
     // звязок де Я кинув заявку
     public function friendsOfMine()
     {
@@ -68,5 +81,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function country()
     {
         return $this->belongsTo(Country::class);
+    }
+
+    public function getIsOnlineAttribute()
+    {
+        return Cache::has('user-online-' . $this->id);
+    }
+
+    public function posts()
+    {
+        // Один юзер має багато постів
+        return $this->hasMany(Post::class);
     }
 }

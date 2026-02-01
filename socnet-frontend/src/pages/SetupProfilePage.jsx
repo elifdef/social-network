@@ -3,6 +3,7 @@ import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import UserProfileCard from "../components/UserProfileCard";
 import FormInput from "../components/FormInput"
+import { notifyError, notifyWarn } from "../components/Notify"
 
 export default function SetupProfilePage() {
     const { user: authUser, login } = useContext(AuthContext);
@@ -26,14 +27,23 @@ export default function SetupProfilePage() {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setAvatarFile(file);
-            setPreview(URL.createObjectURL(file));
+            if (file.size > 5 * 1024 * 1024) {
+                notifyWarn('Файл занадто великий. Максимальний розмір: 5 МБ.');
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                notifyError('Будь ласка, завантажте зображення.');
+                return;
+            }
         }
+        setAvatarFile(file);
+        setPreview(URL.createObjectURL(file));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!firstName || !birthDate) return toast.error("Введіть ім'я та дату!");
+        if (!firstName || !birthDate) return notifyError("Введіть ім'я та дату!");
 
         setLoading(true);
         const formData = new FormData();
@@ -54,7 +64,7 @@ export default function SetupProfilePage() {
             login(localStorage.getItem('token'), res.data.data);
             window.location.href = `/${authUser.username}`;
         } catch (error) {
-            toast.error(error.response?.data?.message || "Помилка");
+            notifyError(error.response?.data?.message || "Помилка");
         } finally {
             setLoading(false);
         }

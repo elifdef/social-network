@@ -16,7 +16,8 @@ class PublicUserResource extends JsonResource
     public function toArray(Request $request): array
     {
         $status = $this->getFriendshipStatus($request->user('sanctum'));
-        if ($status === 'blocked_by_target') {
+        if ($status === 'blocked_by_target')
+        {
             return [
                 'id' => $this->id,
                 'username' => $this->username,
@@ -42,7 +43,10 @@ class PublicUserResource extends JsonResource
             'bio' => $this->bio,
             'created_at' => $this->created_at->format('d.m.Y'), // 05.01.2026
             'birth_date' => $this->birth_date,
-            'country' => $this->whenLoaded('country', function () {
+            'is_online' => $this->is_online,
+            'last_seen' => $this->last_seen_at,
+            'country' => $this->whenLoaded('country', function ()
+            {
                 return [
                     'id' => $this->country->id,
                     'name' => $this->country->name,
@@ -52,9 +56,15 @@ class PublicUserResource extends JsonResource
             }),
             'is_setup_complete' => (bool)$this->is_setup_complete,
             'email_verified_at' => $this->email_verified_at,
-            'friendship_status' => $this->getFriendshipStatus($request->user('sanctum'))
+            'friendship_status' => $this->getFriendshipStatus($request->user('sanctum')),
+            'friends_count' =>
+                $this->friendOf()->wherePivot('status', Friendship::STATUS_ACCEPTED)->count() +
+                $this->friendsOfMine()->wherePivot('status', Friendship::STATUS_ACCEPTED)->count(),
+            'followers_count' =>
+                $this->friendOf()->wherePivot('status', Friendship::STATUS_PENDING)->count(),
         ];
     }
+
     /**
      * Визначає статус відносин відносно поточного авторизованого користувача.
      */
@@ -65,9 +75,11 @@ class PublicUserResource extends JsonResource
             return 'none';
 
         // перевіряємо обидва напрямки: А -> В або В -> А
-        $friendship = Friendship::where(function($q) use ($currentUser) {
+        $friendship = Friendship::where(function ($q) use ($currentUser)
+        {
             $q->where('user_id', $currentUser->id)->where('friend_id', $this->id);
-        })->orWhere(function($q) use ($currentUser) {
+        })->orWhere(function ($q) use ($currentUser)
+        {
             $q->where('user_id', $this->id)->where('friend_id', $currentUser->id);
         })->first();
 
@@ -77,13 +89,15 @@ class PublicUserResource extends JsonResource
         if ($friendship->status === Friendship::STATUS_ACCEPTED)
             return 'friends';
 
-        if ($friendship->status === Friendship::STATUS_PENDING) {
+        if ($friendship->status === Friendship::STATUS_PENDING)
+        {
             if ($friendship->user_id === $currentUser->id)
                 return 'pending_sent'; // якщо А "відправив"
             return 'pending_received'; // якщо А "отримав"
         }
 
-        if ($friendship->status == Friendship::STATUS_BLOCKED) {
+        if ($friendship->status == Friendship::STATUS_BLOCKED)
+        {
             // я заблокував його
             if ($friendship->user_id === $currentUser->id)
                 return 'blocked_by_me';

@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
-import toast from 'react-hot-toast';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
+import { notifyError, notifySuccess } from "../components/Notify";
 
 export const useSecuritySettings = () => {
     const { user, setUser } = useContext(AuthContext);
@@ -19,7 +19,7 @@ export const useSecuritySettings = () => {
         e.preventDefault();
 
         if (!passwordForEmail) {
-            toast.error('Введіть пароль для підтвердження');
+            notifyError('Введіть пароль для підтвердження');
             return;
         }
 
@@ -38,17 +38,17 @@ export const useSecuritySettings = () => {
             }));
 
             setPasswordForEmail('');
-            toast.success(response.data.message);
+            notifySuccess(response.data.message);
 
         } catch (error) {
             console.error(error);
             if (error.response?.status === 422) {
                 const msg = error.response.data.message || 'Помилка валідації';
-                toast.error(msg);
+                notifyError(msg);
             } else if (error.response?.status === 403) {
-                toast.error('Невірний пароль');
+                notifyError('Невірний пароль');
             } else {
-                toast.error('Не вдалося змінити пошту');
+                notifyError('Не вдалося змінити пошту');
             }
         } finally {
             setLoadingEmail(false);
@@ -59,7 +59,7 @@ export const useSecuritySettings = () => {
         e.preventDefault();
 
         if (newPassword !== confirmPassword) {
-            return toast.error('Нові паролі не співпадають!');
+            return notifyError('Нові паролі не співпадають!');
         }
 
         setLoadingPass(true);
@@ -71,7 +71,7 @@ export const useSecuritySettings = () => {
                 password_confirmation: confirmPassword
             });
 
-            toast.success(response.data.message);
+            notifySuccess(response.data.message);
 
             setCurrentPassword('');
             setNewPassword('');
@@ -80,11 +80,11 @@ export const useSecuritySettings = () => {
         } catch (error) {
             if (error.response?.status === 422) {
                 const errors = error.response.data.errors;
-                if (errors.current_password) toast.error(errors.current_password[0]);
-                else if (errors.password) toast.error(errors.password[0]);
-                else toast.error('Перевірте введені дані');
+                if (errors.current_password) notifyError(errors.current_password[0]);
+                else if (errors.password) notifyError(errors.password[0]);
+                else notifyError('Перевірте введені дані');
             } else {
-                toast.error('Щось пішло не так');
+                notifyError('Щось пішло не так');
             }
         } finally {
             setLoadingPass(false);

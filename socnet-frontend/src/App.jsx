@@ -4,6 +4,7 @@ import { AuthContext } from "./context/AuthContext";
 import { Toaster } from "react-hot-toast";
 
 import Layout from "./components/Layout";
+import NotFoundPage from "./pages/NotFoundPage";
 import SettingsLayout from './pages/settings/SettingsLayout';
 import ProfileSettings from './pages/settings/ProfileSettings';
 import SecuritySettings from './pages/settings/SecuritySettings';
@@ -33,22 +34,7 @@ function App() {
 
   return (
     <>
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          style: {
-            background: '#333',
-            color: '#fff',
-            border: '1px solid #444'
-          },
-          success: {
-            iconTheme: {
-              primary: '#00f2ea',
-              secondary: 'black',
-            },
-          }
-        }}
-      />
+      <Toaster />
       <Routes>
         <Route
           path="/login"
@@ -112,7 +98,7 @@ function App() {
           </Route>
         )}
 
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
   );

@@ -10,8 +10,16 @@ class Friendship extends Model
     use HasFactory;
 
     protected $fillable = ['user_id', 'friend_id', 'status'];
-    const STATUS_BLOCKED = -1;
-    const STATUS_NOBODY = 0;
-    const STATUS_PENDING = 1;
-    const STATUS_ACCEPTED = 2;
+
+    const STATUS_PENDING = 'pending';
+    const STATUS_ACCEPTED = 'accepted';
+    const STATUS_BLOCKED = 'blocked';
+
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function friend() {
+        return $this->belongsTo(User::class, 'friend_id');
+    }
 }
