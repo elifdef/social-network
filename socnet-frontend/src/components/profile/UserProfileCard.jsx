@@ -12,7 +12,7 @@ export default function UserProfileCard({ currentUser, isPreview = false }) {
     const {
         status, loading, sameUser,
         isBlockedByMe, isBlockedByTarget,
-        displayAvatar, displayBio, displayBirth, displayCountry,
+        displayAvatar, displayBio, displayBirth, displayCountry, displayGender,
         handleFriendshipAction, handleBlockAction
     } = useUserProfileLogic(currentUser, isPreview);
 
@@ -49,6 +49,7 @@ export default function UserProfileCard({ currentUser, isPreview = false }) {
                             user={currentUser}
                             displayBirth={displayBirth}
                             displayCountry={displayCountry}
+                            displayGender={displayGender}
                             showFriendsBlock={!isPreview}
                         />
                     )}

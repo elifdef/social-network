@@ -4,6 +4,7 @@ import SuccessIcon from '../assets/success.svg?react';
 import ErrorIcon from '../assets/error.svg?react';
 import WarningIcon from '../assets/warning.svg?react';
 import LoadingIcon from '../assets/loader.svg?react';
+import i18n from "../i18n";
 
 const toastStyles = {
     fontFamily: 'Tahoma, sans-serif',
@@ -24,7 +25,7 @@ const renderToast = (message, IconComponent) => {
         </div>
     ), {
         style: toastStyles,
-        duration: 3000,
+        duration: 5000,
         position: 'bottom-right'
     });
 };
@@ -45,7 +46,7 @@ export const notifyWarn = (message) => {
     return renderToast(message, <WarningIcon width={20} height={20} fill="#f5c400" />);
 };
 
-export const notifyConfirmAction = (message, btnYes = "Так", btnNo = "Ні") => {
+export const notifyConfirmAction = (message, btnYes = i18n.t('common.yes'), btnNo = i18n.t('common.no')) => {
     return new Promise((resolve) => {
         toast((t) => (
             <div style={{

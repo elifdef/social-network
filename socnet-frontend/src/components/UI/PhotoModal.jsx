@@ -54,7 +54,7 @@ export default function PhotoModal({ isOpen, image, post, onClose, onUpdate }) {
         }
     };
 
-    if (!isOpen || !modalPost) 
+    if (!isOpen || !modalPost)
         return null;
 
     return (
@@ -65,7 +65,7 @@ export default function PhotoModal({ isOpen, image, post, onClose, onUpdate }) {
 
             <div className="vk-modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="vk-modal-image-wrapper">
-                    <img src={image} alt="Full size" className="vk-modal-image" />
+                    <img src={image} className="vk-modal-image" />
                 </div>
 
                 <div className="vk-modal-info">
@@ -79,6 +79,7 @@ export default function PhotoModal({ isOpen, image, post, onClose, onUpdate }) {
                     />
 
                     <PostFooter
+                        style={{marginTop: '20px'}}
                         postId={modalPost.id}
                         isLiked={modalPost.is_liked}
                         likesCount={modalPost.likes_count}

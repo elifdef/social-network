@@ -2,14 +2,16 @@ import { useEffect, useState, useContext } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const EmailVerifyPage = () => {
+    const { t } = useTranslation();
     const { id, hash } = useParams();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const { user, setUser } = useContext(AuthContext);
     const [status, setStatus] = useState('loading');
-    const [message, setMessage] = useState('Перевіряємо вашу пошту...');
+    const [message, setMessage] = useState(t('info.verification_email'));
 
     useEffect(() => {
         // якщо пошта вже підтверджена редірект на профіль
@@ -24,7 +26,7 @@ const EmailVerifyPage = () => {
                 const response = await api.get(`/email/verify/${id}/${hash}?${query}`);
 
                 setStatus('success');
-                setMessage(response.data.message || 'Пошту успішно підтверджено!');
+                setMessage(response.data.message || t('success.email_confirm'));
 
                 const verifiedDate = new Date().toISOString();
                 if (setUser) {
@@ -46,7 +48,7 @@ const EmailVerifyPage = () => {
 
             } catch (error) {
                 setStatus('error');
-                setMessage(error.response?.data?.message || 'Посилання недійсне або застаріло.');
+                setMessage(error.response?.data?.message || t('email_invalid_link'));
             }
         };
         verifyEmail();
@@ -57,12 +59,12 @@ const EmailVerifyPage = () => {
             {status === 'loading' && <h2>{message}</h2>}
 
             {status === 'success' && (
-                <h2 style={{ color: 'green' }}>Пошту успішно підтверджено!</h2>
+                <h2 style={{ color: 'green' }}>{t('success.email_confirm')}</h2>
             )}
 
             {status === 'error' && (
                 <div>
-                    <h2 style={{ color: 'red' }}>Помилка підтвердження.</h2>
+                    <h2 style={{ color: 'red' }}>{t('error.validation')}</h2>
                     <p>{message}</p>
                 </div>
             )}

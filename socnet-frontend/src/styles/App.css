@@ -181,14 +181,6 @@ body {
     color: rgba(255, 255, 255, 0.7);
 }
 
-.placeholder-blue {
-    background: linear-gradient(135deg, #1d9bf055, #0a3c61);
-}
-
-.placeholder-purple {
-    background: linear-gradient(135deg, #a855f755, #4c1d7a);
-}
-
 .cta-block {
     text-align: center;
     padding: 80px 20px;
@@ -215,7 +207,6 @@ body {
 
 .btn-primary-large,
 .btn-outline-large {
-    padding: 15px 40px;
     border-radius: 30px;
     font-weight: bold;
     text-decoration: none;
@@ -244,8 +235,54 @@ body {
     text-align: center;
     padding: 20px;
     font-size: 0.9rem;
-    color: #666;
     margin-top: auto;
+}
+
+.landing-footer {
+    width: 100%;
+    padding: 20px 0;
+    margin-top: auto;
+    text-align: center;
+    font-size: 13px;
+    background-color: transparent;
+}
+
+.footer-row {
+    margin-bottom: 8px;
+}
+
+.lang-link {
+    cursor: pointer;
+    margin: 0 5px;
+    transition: opacity 0.2s;
+}
+
+.lang-link:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.lang-link.active {
+    font-weight: 600;
+    cursor: default;
+    text-decoration: none;
+}
+
+.lang-link.active:hover {
+    text-decoration: none;
+    opacity: 1;
+}
+
+.lang-separator {
+    color: #ccc;
+}
+
+.all-langs {
+    font-style: italic;
+}
+
+.copyright {
+    color: #939393;
 }
 
 .nav-link.active {

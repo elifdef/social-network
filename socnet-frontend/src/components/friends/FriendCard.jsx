@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 export default function FriendCard({ user, viewMode, onAction }) {
+    const { t } = useTranslation();
+
     const renderButtons = () => {
         const btnClass = "vk-friends-btn";
 
@@ -11,13 +14,13 @@ export default function FriendCard({ user, viewMode, onAction }) {
                         className={`${btnClass} vk-friends-btn-danger`}
                         onClick={() => onAction('delete', user.username)}
                     >
-                        Видалити
+                        {t('common.delete')}
                     </button>
                     <button
                         className={`${btnClass} vk-friends-btn-secondary`}
                         onClick={() => onAction('block', user.username)}
                     >
-                        Блок
+                        {t('common.to_block')}
                     </button>
                 </>
             );
@@ -30,13 +33,13 @@ export default function FriendCard({ user, viewMode, onAction }) {
                         className={`${btnClass} vk-friends-btn-primary`}
                         onClick={() => onAction('accept', user.username)}
                     >
-                        Прийняти
+                        {t('common.accept')}
                     </button>
                     <button
                         className={`${btnClass} vk-friends-btn-secondary`}
                         onClick={() => onAction('cancel_request', user.username)}
                     >
-                        Відхилити
+                        {t('common.dismiss')}
                     </button>
                 </>
             );
@@ -48,7 +51,7 @@ export default function FriendCard({ user, viewMode, onAction }) {
                     className={`${btnClass} vk-friends-btn-secondary`}
                     onClick={() => onAction('cancel_request', user.username)}
                 >
-                    Скасувати
+                    {t('common.cancel')}
                 </button>
             );
         }
@@ -59,7 +62,7 @@ export default function FriendCard({ user, viewMode, onAction }) {
                     className={`${btnClass} vk-friends-btn-primary`}
                     onClick={() => onAction('unblock', user.username)}
                 >
-                    Розблокувати
+                    {t('common.to_unblock')}
                 </button>
             );
         }
@@ -67,7 +70,7 @@ export default function FriendCard({ user, viewMode, onAction }) {
         switch (user.friendship_status) {
             case 'friends':
                 return (
-                    <span className="vk-friends-status">Ваш друг</span>
+                    <span className="vk-friends-status">{t('common.your_friends')}</span>
                 );
 
             case 'pending_sent':
@@ -76,7 +79,7 @@ export default function FriendCard({ user, viewMode, onAction }) {
                         className={`${btnClass} vk-friends-btn-secondary`}
                         onClick={() => onAction('cancel_request', user.username)}
                     >
-                        Скасувати
+                        {t('common.cancel')}
                     </button>
                 );
 
@@ -86,7 +89,7 @@ export default function FriendCard({ user, viewMode, onAction }) {
                         className={`${btnClass} vk-friends-btn-primary`}
                         onClick={() => onAction('accept', user.username)}
                     >
-                        Прийняти
+                        {t('common.accept')}
                     </button>
                 );
 
@@ -96,17 +99,13 @@ export default function FriendCard({ user, viewMode, onAction }) {
                         className={`${btnClass} vk-friends-btn-primary`}
                         onClick={() => onAction('unblock', user.username)}
                     >
-                        Розблокувати
+                        {t('common.to_unblock')}
                     </button>
                 );
 
             case 'blocked_by_target':
                 return (
-                    <span
-                        className="vk-friends-status"
-                    >
-                        Заблоковано
-                    </span>
+                    <span className="vk-friends-status">{t('common.blocked')}</span>
                 );
 
             default:
@@ -115,7 +114,7 @@ export default function FriendCard({ user, viewMode, onAction }) {
                         className={`${btnClass} vk-friends-btn-primary`}
                         onClick={() => onAction('add', user.username)}
                     >
-                        Додати
+                        {t('common.add')}
                     </button>
                 );
         }
@@ -124,7 +123,7 @@ export default function FriendCard({ user, viewMode, onAction }) {
     return (
         <div className="friend-card">
             <Link to={`/${user.username}`} className="vk-friends-avatar-link">
-                <img src={user.avatar || "/defaultAvatar.jpg"} alt={user.username} className="vk-friends-avatar" />
+                <img src={user.avatar} alt={user.username} className="vk-friends-avatar" />
             </Link>
 
             <div className="vk-friends-info">

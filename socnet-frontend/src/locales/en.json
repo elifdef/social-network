@@ -1,0 +1,277 @@
+{
+  "info": {
+    "email_send_letter": "A confirmation email has been sent.",
+    "verification_email": "Verifying your email..."
+  },
+
+  "warn": {
+    "large_file": "The file is too large. Maximum size: {{size}} MB"
+  },
+
+  "error": {
+    "email_send": "Error sending email.",
+    "loading": "Error loading {{resource}}",
+    "connection": "Network error",
+    "loading_post": "An error occurred while loading posts.",
+    "save_changes": "An error occurred while saving changes.",
+    "change_email": "An error occurred while changing email.",
+    "registration": "An error occurred during registration.",
+    "signin": "An error occurred while signing in.",
+    "add_comment": "An error occurred while adding a comment.",
+    "change_password": "An error occurred while changing password.",
+    "enter_confirm_password": "Please enter your password to confirm.",
+    "validation": "Validation error",
+    "invalid_password": "Invalid password",
+    "not_match_password": "New passwords do not match",
+    "check_entered_data": "Check the entered data",
+    "not_image": "This file is not an image.",
+    "server_down": "The server is down",
+    "server_down_desc": "This is Joe our server. He tripped, fell, and dozed off. Please wait while we try to wake him up. ",
+    "server_down_desc_old": "A critical error has occurred on the server side. Please try again later.",
+    "deleting": "Error deleting",
+    "email_invalid_link": "The link is invalid or outdated.",
+    "page_not_found": "Page not found"
+  },
+
+  "success": {
+    "changes_saved": "Changes saved.",
+    "password_changed": "Password has been changed",
+    "email_confirm": "Email has been verified."
+  },
+
+  "common": {
+    "welcome": "Welcome",
+    "loading": "Loading...",
+    "reload_page": "Reload page",
+    "error": "Error",
+    "save": "Save",
+    "warn": "Warning",
+    "saving": "Saving...",
+    "change": "Change",
+    "cancel": "Cancel",
+    "post": "Post",
+    "posts": "Posts",
+    "photo": "Photo",
+    "friends": "Friends",
+    "delete": "Delete",
+    "blocked": "Blocked",
+    "to_block": "Block",
+    "to_unblock": "Unblock",
+    "accept": "Accept",
+    "dismiss": "Dismiss",
+    "your_friends": "Your friends",
+    "add": "Add",
+    "find": "Find",
+    "are_u_sure": "Are you sure?",
+    "security": "Security",
+    "profile": "Profile",
+    "confirmed": "Confirmed",
+    "unconfirmed": "Unconfirmed",
+    "avatar": "Avatar",
+    "first_name": "First name",
+    "last_name": "Last name",
+    "country": "Country",
+    "yes": "Yes",
+    "no": "No",
+    "gender": "Gender",
+    "gender_male": "Male",
+    "gender_female": "Female",
+    "birthday": "Birthday",
+    "preview": "Preview",
+    "back": "← Back"
+  },
+
+  "auth": {
+    "signin": "Sign in",
+    "signup": "Sign up",
+    "signout": "Sign out",
+    "login_title": "Login",
+    "register_title": "Registration",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "password_confirmation": "Confirm Password",
+    "not_have_account": "Don't have an account?",
+    "already_have_account": "Already have an account?",
+    "you_have_registered": "You have registered"
+  },
+
+  "sidebar": {
+    "left": {
+      "home": "Home",
+      "messages": "Messages",
+      "settings": "Settings"
+    },
+
+    "right": {
+      "title": "First time here?",
+      "description": "Create an account to add friends, write posts, like & comment!",
+      "btn_text": "Let's go"
+    },
+
+    "guest": {
+      "view_like_guest": "You are viewing the site as a guest.",
+      "get_full_access": "Log in to get full access."
+    }
+  },
+
+  "banner": {
+    "email": {
+      "text": "Your email has not been confirmed. Some features may not be available.",
+      "send": "Send email",
+      "sending": "Sending..."
+    }
+  },
+
+  "footer": {
+    "text": "All rights reserved."
+  },
+
+  "main": {
+    "title": "Welcome to {{name}}",
+    "subtitle": "A nice place for your thoughts.",
+    "blocks": [
+      {
+        "title": "Share your moments",
+        "description": "Share your thoughts, photos, and ideas. Find like-minded people and create your own news feed.",
+        "img_alt": "Post image"
+      },
+      {
+        "title": "Stay connected",
+        "description": "Communicate with friends, comment on posts, and talk in real time.",
+        "img_alt": "Talking image"
+      }
+    ],
+
+    "join": {
+      "header": "Ready to join?",
+      "description": "Create an account now and become part of our community.",
+      "signup_btn": "Create account",
+      "signin_btn": "Sign in"
+    }
+  },
+
+  "first_setup": {
+    "title": "First profile setup",
+    "no_data": "Please enter your first name and birthday",
+    "fill_details": "Fill in your details so other users can find you",
+    "upload_avatar": "Upload an avatar",
+    "save_and_finish": "Save and finish"
+  },
+
+  "page_404": {
+    "invalid_page": "You may have followed an invalid link\nor user has been deleted.",
+    "return_home": "Return to home page"
+  },
+
+  "post": {
+    "like": "Like",
+    "comment": "Comment",
+    "delete_post": "Delete this post?",
+    "empty_post": "The post can't be empty.",
+    "not_found": "Post not found."
+  },
+
+  "comment": {
+    "no_comments": "There are no comments yet.",
+    "create_comment": "Write a comment...",
+    "remove_comment": "Remove comment?"
+  },
+
+  "profile": {
+    "online": "Online",
+    "offline": "Offline",
+    "information": "Information",
+    "joined": "Joined",
+    "subscribers": "Subscribers",
+    "edit": "Edit",
+    "not_specified": "Not specified",
+    "hidden": "Hidden",
+    "status_not_set": "Status not set",
+    "your_status": "Your status...",
+    "not_setup": "Profile not yet setup",
+    "not_setup_desc": "@{{name}} has not filled in their profile details yet.",
+    "restricted_profile_m": "{{name}} has restricted your access to their profile.",
+    "restricted_profile_f": "{{name}} has restricted your access to their profile.",
+    "menu": {
+      "you_have_blocked": "You have blocked",
+      "in_your_friends": "In your friends",
+      "request_received": "Request received",
+      "not_your_friends": "Not in your friends",
+      "cancel_request": "Cancel request",
+      "add_friends": "Add to friends"
+    },
+
+    "status": {
+      "last_seen_m": "last seen {{time}}",
+      "last_seen_f": "last seen {{time}}",
+      "last_seen_n": "last seen {{time}}",
+      "today_at": "today at {{time}}",
+      "yesterday_at": "yesterday at {{time}}",
+      "at": "at"
+    }
+  },
+
+  "date": {
+    "today_at": "Today at {{time}}",
+    "yesterday_at": "Yesterday at {{time}}",
+    "at": "at"
+  },
+
+  "wall": {
+    "title": "Wall",
+    "write_post": "Write a post...",
+    "send_btn": "Share",
+    "empty_wall": "There are no posts on the wall yet.",
+    "attach_photo": "Attach a photo",
+    "posts_count_one": "{{count}} post",
+    "posts_count_other": "{{count}} posts"
+  },
+
+  "friends": {
+    "your_contacts": "Your contacts",
+    "requests": "Requests",
+    "subscribers": "Subscribers",
+    "subscriptions": "Subscriptions",
+    "blacklist": "Blacklist",
+    "global_search": "Global search",
+    "enter_search_query": "Enter your search query",
+    "list_empty": "List is empty",
+    "search_people": "Search for people...",
+    "list_filter": "List filter...",
+    "removed_from_friends": "User removed from friends",
+    "request_sent": "Request sent",
+    "accept_request": "Accept request",
+    "user_blocked": "User blocked",
+    "user_unblocked": "User unblocked",
+    "remove_friends": "Remove from friends"
+  },
+
+  "feed": {
+    "my_feed": "My feed",
+    "global_feed": "Global feed",
+    "my_feed_empty": "Your feed is empty.\n Find friends or view global feed.",
+    "global_feed_empty": "There are no posts on this social network yet.\n Be the first to do it and make history!",
+    "find_friends": "Find friends",
+    "view_global_feed": "View global feed"
+  },
+
+  "settings": {
+    "profile_settings": "Profile settings",
+    "about_me": "About me",
+    "not_selected": "Not selected",
+    "change_email": "Change email address",
+    "current_email": "Current email address",
+    "verification_status": "Verification status",
+    "new_email": "New email address",
+    "account_password": "Account password",
+    "change_password": "Change password",
+    "current_password": "Current password",
+    "new_password": "New password",
+    "danger_zone": "Danger Zone",
+    "delete_account": "Delete account",
+    "quote": "— Will you do it?\n— Yes.\n— And at what cost?\n— Everything.",
+    "delete_warning": "This action cannot be undone. You will permanently lose your profile, photos, posts, and messages.",
+    "same_info": "Well, Well, Well... mommy’s little hacker wants to play programmer. Look at this genius who watched 5 minutes of BroCode videos and now thinks he’s a developer. Go clean your room or take out the trash — do something useful for once."
+  }
+}

@@ -1,18 +1,22 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../../api/axios';
 import { notifyError, notifyInfo } from "../Notify";
 
 const EmailVerificationBanner = ({ user }) => {
+    if (!user || user.email_verified_at) 
+        return null;
+
     const [loading, setLoading] = useState(false);
-    if (!user || user.email_verified_at) return null;
+    const { t } = useTranslation();
 
     const handleResend = async () => {
         setLoading(true);
         try {
             await api.post('/email/verification-notification');
-            notifyInfo('Підтвердження надіслано на вашу пошту');
+            notifyInfo(t('info.email_send_letter'));
         } catch (error) {
-            notifyError('Помилка відправки.');
+            notifyError(t('error.email_send'));
         } finally {
             setLoading(false);
         }
@@ -20,11 +24,10 @@ const EmailVerificationBanner = ({ user }) => {
 
     return (
         <div className="email-verify-block">
-            Ваша пошта не підтверджена. Деякі функції можуть бути недоступні.
             <button
                 onClick={handleResend}
                 disabled={loading}>
-                {loading ? 'Відправка...' : 'Надіслати лист'}
+                {loading ? t('banner.email.sending') : t('banner.email.send')}
             </button>
         </div>
     );

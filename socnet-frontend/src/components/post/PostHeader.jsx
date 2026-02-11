@@ -1,13 +1,16 @@
 import { Link } from "react-router-dom";
+import { useDateFormatter } from '../../hooks/useDateFormatter';
 
 export default function PostHeader({ post, isOwner, onEdit, onDelete }) {
+    const formatDate = useDateFormatter();
+    
     return (
         <div className="vk-post-header">
             <Link to={`/${post.user.username}`}>
                 <img
                     src={post.user.avatar}
                     className="vk-post-avatar"
-                    alt="Avatar"
+                    alt={post.user.username}
                 />
             </Link>
 
@@ -16,7 +19,7 @@ export default function PostHeader({ post, isOwner, onEdit, onDelete }) {
                     {post.user.first_name} {post.user.last_name}
                 </Link>
                 <Link to={`/post/${post.id}`} className="vk-post-date">
-                    {new Date(post.created_at).toLocaleString()}
+                    {formatDate(post.created_at)}
                 </Link>
             </div>
 

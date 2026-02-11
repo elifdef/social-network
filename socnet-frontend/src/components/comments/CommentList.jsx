@@ -1,11 +1,12 @@
 import CommentItem from "./CommentItem";
 
-export default function CommentList({ loading, comments, currentUser, onDelete }) {
+export default function CommentList({ loading, comments, currentUser, onDelete, loadingText, noCommentsText }) {
+
     if (loading)
-        return <div className="loading-text">Завантаження...</div>;
+        return <div className="loading-text">{loadingText}</div>;
 
     if (comments.length === 0)
-        return <div className="no-comments">Тут поки немає коментарів.</div>;
+        return <div className="no-comments">{noCommentsText}</div>;
 
     return (
         <div className="vk-comments-list">

@@ -6,22 +6,24 @@ import { useFriendship } from "../hooks/useFriendship";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { notifySuccess, notifyError, notifyConfirmAction } from '../components/Notify';
 import { mapUser } from "../services/mappers";
+import { useTranslation } from 'react-i18next';
 
 export const useFriendsLogic = () => {
+    const { t } = useTranslation();
     const { user: currentUser } = useContext(AuthContext);
     const { addFriend, acceptRequest, removeFriend, blockUser, unblockUser } = useFriendship();
     const [searchParams, setSearchParams] = useSearchParams();
 
     const tabs = [
-        { id: 'my', label: 'Друзі' },
-        { id: 'requests', label: 'Заявки' },
-        { id: 'subscriptions', label: 'Підписки' },
-        { id: 'blocked', label: 'Чорний список' },
-        { id: 'all', label: 'Глобальний пошук' },
+        { id: 'my', label: t('common.friends') },
+        { id: 'requests', label: t('friends.requests') },
+        { id: 'subscriptions', label: t('friends.subscriptions') },
+        { id: 'blocked', label: t('friends.blacklist') },
+        { id: 'all', label: t('friends.global_search') },
     ];
 
     const activeTab = searchParams.get('tab') || 'my';
-    usePageTitle(tabs.find(t => t.id === activeTab)?.label || 'Друзі');
+    usePageTitle(tabs.find(t => t.id === activeTab)?.label || t('common.friends'));
 
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -56,51 +58,42 @@ export const useFriendsLogic = () => {
 
         } catch (err) {
             if (err.name !== "CanceledError") {
-                if (err.response?.status === 404) setUsers([]);
-                else notifyError("Помилка завантаження");
+                if (err.response?.status === 404) 
+                    setUsers([]);
+                else 
+                    notifyError(t('error.loading', { resource: "list" }));
             }
         } finally {
             if (!controller.signal.aborted) setLoading(false);
         }
-    }, []);
+    }, [t]);
 
     useEffect(() => {
         setSearchQuery("");
         setUsers([]);
-
-        activeTab === 'all'
-            ? setLoading(false)
-            : fetchUsers(activeTab, "");
+        fetchUsers(activeTab, "");
 
     }, [activeTab, fetchUsers]);
 
     const handleTabChange = (id) => setSearchParams({ tab: id });
 
     const handleSearchSubmit = () => {
-        if (activeTab === 'all' && searchQuery.trim())
-            fetchUsers('all', searchQuery.toLowerCase());
+        if (activeTab === 'all')
+            fetchUsers('all', searchQuery.trim().toLowerCase());
     };
 
     const handleAction = async (action, username) => {
         if (action === 'delete' || action === 'block') {
-            if (!(await notifyConfirmAction(`Ви впевнені?`))) return;
+            if (!(await notifyConfirmAction(t('common.are_u_sure')))) return;
         }
 
         try {
             let res;
-            if (action === 'add')
-                res = await addFriend(username);
-
-            else if (action === 'accept')
-                res = await acceptRequest(username);
-
-            else if (action === 'delete' || action === 'cancel_request')
-                res = await removeFriend(username);
-
-            else if (action === 'block')
-                res = await blockUser(username);
-            else if (action === 'unblock')
-                res = await unblockUser(username);
+            if (action === 'add') res = await addFriend(username);
+            else if (action === 'accept') res = await acceptRequest(username);
+            else if (action === 'delete' || action === 'cancel_request') res = await removeFriend(username);
+            else if (action === 'block') res = await blockUser(username);
+            else if (action === 'unblock') res = await unblockUser(username);
 
             if (res?.success) {
                 notifySuccess(res.message);
@@ -109,7 +102,7 @@ export const useFriendsLogic = () => {
                     : fetchUsers('all', searchQuery.toLowerCase());
             }
         } catch (e) {
-            notifyError("Помилка");
+            notifyError(t('common.error'));
         }
     };
 
@@ -117,6 +110,6 @@ export const useFriendsLogic = () => {
         tabs, activeTab, handleTabChange,
         searchQuery, setSearchQuery, handleSearchSubmit,
         users, loading,
-        handleAction, currentUser
+        handleAction, currentUser, t
     };
 };

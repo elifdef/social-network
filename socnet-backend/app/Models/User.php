@@ -27,7 +27,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'avatar',
         'birth_date',
         'bio',
-        'country_id'
+        'country_id',
+        'gender'
     ];
 
     /**
@@ -39,6 +40,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
+
+    const GENDER_MALE = 1;
+    const GENDER_FEMALE = 2;
 
     /**
      * Get the attributes that should be cast.

@@ -1,13 +1,13 @@
 import SendIcon from "../../assets/sendComment.svg?react";
 
-export default function CommentForm({ user, text, setText, onSubmit }) {
+export default function CommentForm({ user, text, setText, onSubmit, placeholder }) {
     return (
         <form className="vk-comment-form" onSubmit={onSubmit}>
             {user && (
                 <>
                     <img
-                        src={user.avatar || "/defaultAvatar.jpg"}
-                        alt="Me"
+                        src={user.avatar}
+                        alt={user.username}
                         className="vk-comment-avatar"
                     />
 
@@ -15,7 +15,7 @@ export default function CommentForm({ user, text, setText, onSubmit }) {
                         <input
                             type="text"
                             className="vk-comment-input"
-                            placeholder="Написати коментар..."
+                            placeholder={placeholder}
                             value={text}
                             onChange={(e) => setText(e.target.value)}
                         />

@@ -5,8 +5,10 @@ import { AuthContext } from "../../context/AuthContext"
 import api from '../../api/axios';
 import { notifySuccess, notifyError, notifyLoading, dismissToast, notifyInfo } from '../../components/Notify';
 import { validateImageFile } from "../../services/upload";
+import { useTranslation } from 'react-i18next';
 
 const ProfileSettings = () => {
+    const { t } = useTranslation();
     const { user, setUser } = useContext(AuthContext);
     const { previewUser, setPreviewUser } = useOutletContext();
     const [countries, setCountries] = useState([]);
@@ -16,7 +18,8 @@ const ProfileSettings = () => {
         last_name: user.last_name || '',
         bio: user.bio || '',
         country_id: user.country ? user.country.id : '',
-        avatarFile: null
+        avatarFile: null,
+        gender: Number(user.gender) || 0,
     });
 
     useEffect(() => {
@@ -49,6 +52,12 @@ const ProfileSettings = () => {
         if (formData.avatarFile)
             return true;
 
+        const userGender = user.gender || 0;
+        const formGender = formData.gender;
+
+        if (Number(formGender) !== Number(userGender))
+            return true;
+
         return false;
     }, [formData, user]);
 
@@ -59,6 +68,7 @@ const ProfileSettings = () => {
 
         setPreviewUser(prev => {
             let updates = { [name]: value };
+            updates.gender = Number(updates.gender);
 
             if (name === 'country_id') {
                 const selected = countries.find(c => c.id == value);
@@ -86,7 +96,7 @@ const ProfileSettings = () => {
 
         // якщо користувач зніме disabled через DevTools
         if (!isChanged) {
-            notifyInfo("Яйяйяйяйяй мамкін хакер хоче погратись у програміста))0). Найшовся тут розумник який подивився 5 мінут відео від Хауді Хо і возомнив себе програмістом. Йди мамі допоможи почистити картоплю або прибери кімнату.");
+            notifyInfo(t('settings.same_info'));
 
             setPreviewUser(prev => ({ ...prev, avatar: "https://substackcdn.com/image/fetch/$s_!N8t_!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F25d56fff-096b-4f24-a996-149cc73e9cf6_1055x1212.jpeg" }));
 
@@ -96,7 +106,7 @@ const ProfileSettings = () => {
             return;
         }
 
-        const toastId = notifyLoading("Збереження...");
+        const toastId = notifyLoading(t('common.saving'));
         const data = new FormData();
         data.append('_method', 'PATCH');
         data.append('first_name', formData.first_name);
@@ -106,6 +116,7 @@ const ProfileSettings = () => {
 
         if (formData.country_id) data.append('country_id', formData.country_id);
         if (formData.avatarFile) data.append('avatar', formData.avatarFile);
+        if (Number(formData.gender) > 0) data.append('gender', formData.gender);
 
         try {
             await api.post(`/users/${user.username}`, data, {
@@ -113,13 +124,11 @@ const ProfileSettings = () => {
             });
 
             setUser(prev => ({ ...prev, ...previewUser }));
-            notifySuccess('Зміни успішно збережено!');
+            notifySuccess(t('success.changes_saved'));
             setFormData(prev => ({ ...prev, avatarFile: null }));
 
         } catch (error) {
-            error.response?.status === 418
-                ? notifyInfo("Дані схожі. Нема що оновлювати")
-                : notifyError(error.response?.data?.message || "Помилка при збереженні");
+            notifyError(error.response?.data?.message || t('error.save_changes'));
             setPreviewUser(user);
         } finally {
             dismissToast(toastId);
@@ -129,7 +138,7 @@ const ProfileSettings = () => {
     return (
         <form onSubmit={handleSubmit} className="vk-settings-form">
             <div className="vk-form-group">
-                <label className="vk-form-label">Аватар</label>
+                <label className="vk-form-label">{t('common.avatar')}</label>
                 <FormInput
                     type="file"
                     onChange={handleFileChange}
@@ -140,7 +149,7 @@ const ProfileSettings = () => {
 
             <div className="vk-form-row">
                 <div className="vk-form-group">
-                    <label className="vk-form-label">Ім'я</label>
+                    <label className="vk-form-label">{t('common.first_name')}</label>
                     <FormInput
                         name="first_name"
                         value={formData.first_name}
@@ -151,7 +160,7 @@ const ProfileSettings = () => {
                     />
                 </div>
                 <div className="vk-form-group">
-                    <label className="vk-form-label">Прізвище</label>
+                    <label className="vk-form-label">{t('common.last_name')}</label>
                     <FormInput
                         name="last_name"
                         value={formData.last_name}
@@ -163,7 +172,34 @@ const ProfileSettings = () => {
             </div>
 
             <div className="vk-form-group">
-                <label className="vk-form-label">Про себе (Bio)</label>
+                <label className="vk-form-label">{t('common.gender')}</label>
+                <div className="vk-settings-group">
+                    <label className="vk-radio-label">
+                        <input
+                            type="radio"
+                            name="gender"
+                            value={1}
+                            checked={Number(formData.gender) === 1}
+                            onChange={handleChange}
+                        />
+                        {t('common.gender_male')}
+                    </label>
+
+                    <label className="vk-radio-label">
+                        <input
+                            type="radio"
+                            name="gender"
+                            value={2}
+                            checked={Number(formData.gender) === 2}
+                            onChange={handleChange}
+                        />
+                        {t('common.gender_female')}
+                    </label>
+                </div>
+            </div>
+
+            <div className="vk-form-group">
+                <label className="vk-form-label">{t('settings.about_me')}</label>
                 <textarea
                     name="bio"
                     rows="3"
@@ -175,9 +211,9 @@ const ProfileSettings = () => {
             </div>
 
             <div className="vk-form-group">
-                <label className="vk-form-label">Країна</label>
+                <label className="vk-form-label">{t('common.country')}</label>
                 <select name="country_id" value={formData.country_id} onChange={handleChange} className="vk-form-select">
-                    <option value="">Не обрано</option>
+                    <option value="">{t('settings.not_selected')}</option>
                     {countries.map(c => (
                         <option key={c.id} value={c.id}>
                             {c.emoji} {c.name}
@@ -191,7 +227,7 @@ const ProfileSettings = () => {
                 className="vk-btn-save"
                 disabled={!isChanged}
             >
-                Зберегти зміни
+                {t('common.save')}
             </button>
         </form>
     );

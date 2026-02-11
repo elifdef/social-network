@@ -6,7 +6,7 @@ export default function FriendsPage() {
     const {
         tabs, activeTab, handleTabChange,
         searchQuery, setSearchQuery, handleSearchSubmit,
-        users, loading, handleAction
+        users, loading, handleAction, t
     } = useFriendsLogic();
 
     const displayUsers = activeTab === 'all'
@@ -18,7 +18,7 @@ export default function FriendsPage() {
 
     return (
         <div className="vk-friends-page">
-            <h1 className="vk-friends-title">Ваші контакти</h1>
+            <h1 className="vk-friends-title">{t('friends.your_contacts')}</h1>
             <div className="vk-friends-tabs">
                 {tabs.map(tab => (
                     <button
@@ -33,7 +33,7 @@ export default function FriendsPage() {
 
             <div className="vk-friends-search-wrapper">
                 <FormInput
-                    placeholder={activeTab === 'all' ? "Пошук людей..." : "Фільтр списку..."}
+                    placeholder={activeTab === 'all' ? t('friends.search_people') : t('friends.list_filter')}
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && activeTab === 'all' && handleSearchSubmit()}
@@ -41,28 +41,32 @@ export default function FriendsPage() {
                 />
                 {activeTab === 'all' && (
                     <button className="vk-friends-search-btn" onClick={handleSearchSubmit}>
-                        Знайти
+                        {t('common.find')}
                     </button>
                 )}
             </div>
 
             <div className="vk-friends-list">
-                {loading && <div className="vk-friends-loading">Завантаження...</div>}
+                {loading ? (
+                    <div className="vk-friends-loading">{t('common.loading')}</div>
+                ) : (
+                    <>
+                        {displayUsers.length === 0 && (
+                            <div className="vk-friends-empty">
+                                {t('friends.list_empty')}
+                            </div>
+                        )}
 
-                {!loading && displayUsers.length === 0 && (
-                    <div className="vk-friends-empty">
-                        {activeTab === 'all' ? "Введіть запит для пошуку" : "Список порожній"}
-                    </div>
+                        {displayUsers.map(user => (
+                            <FriendCard
+                                key={user.id}
+                                user={user}
+                                viewMode={activeTab}
+                                onAction={handleAction}
+                            />
+                        ))}
+                    </>
                 )}
-
-                {displayUsers.map(user => (
-                    <FriendCard
-                        key={user.id}
-                        user={user}
-                        viewMode={activeTab}
-                        onAction={handleAction}
-                    />
-                ))}
             </div>
         </div>
     );

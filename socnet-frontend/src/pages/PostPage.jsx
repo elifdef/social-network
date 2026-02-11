@@ -6,8 +6,10 @@ import { usePageTitle } from "../hooks/usePageTitle";
 import { AuthContext } from "../context/AuthContext";
 import { mapPost } from "../services/mappers";
 import CommentsSection from "../components/comments/CommentsSection";
+import { useTranslation } from 'react-i18next';
 
 export default function PostPage() {
+    const { t } = useTranslation();
     const { user } = useContext(AuthContext);
     const { id } = useParams();
     const navigate = useNavigate();
@@ -15,13 +17,13 @@ export default function PostPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    usePageTitle("Перегляд запису");
+    usePageTitle(t('common.post'));
 
     useEffect(() => {
         api.get(`/posts/${id}`)
             .then(res => setPost(mapPost(res.data.data)))
             .catch(err => {
-                setError(err.response?.status === 404 ? "Запис не знайдено" : "Помилка");
+                setError(err.response?.status === 404 ? t('post.not_found') : t('error.connection'));
             })
             .finally(() => setLoading(false));
     }, [id]);
@@ -39,19 +41,19 @@ export default function PostPage() {
     };
 
     if (loading)
-        return (<div style={{ padding: 20 }}>Завантаження...</div>);
+        return (<div style={{ padding: 20 }}>{t('common.loading')}</div>);
 
     if (error)
         return (
             <div className="vk-feed-empty">
-                <h3>Помилка з'єднання</h3>
-                <p>Сталася помилка при завантаженні поста.</p>
+                <h3>{error}</h3>
+                <p>{t('error.loading_post')}</p>
                 <div className="vk-feed-actions">
                     <button
                         className="vk-btn-small"
                         onClick={() => window.location.reload()}
                     >
-                        Оновити сторінку
+                        {t('common.reload_page')}
                     </button>
                 </div>
             </div>
@@ -63,9 +65,7 @@ export default function PostPage() {
                 <button
                     onClick={() => navigate(-1)}
                     style={{ border: 'none', background: 'none', color: '#2a5885', cursor: 'pointer', marginBottom: 10 }}
-                >
-                    ← Назад
-                </button>
+                >{t('common.back')}</button>
             )}
 
             <PostItem post={post} />

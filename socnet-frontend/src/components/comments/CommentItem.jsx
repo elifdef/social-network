@@ -1,26 +1,17 @@
 import { Link } from "react-router-dom";
+import { useDateFormatter } from '../../hooks/useDateFormatter';
 
 export default function CommentItem({ comment, currentUser, onDelete }) {
     const isOwner = currentUser && currentUser.id === comment.user.id;
-
-    const formatDate = (dateString) => {
-        const options = { 
-            year: 'numeric', 
-            month: 'numeric', 
-            day: 'numeric', 
-            hour: '2-digit', 
-            minute: '2-digit' 
-        };
-        return new Date(dateString).toLocaleDateString('uk-UA', options);
-    };
+    const formatDate = useDateFormatter();
 
     return (
         <div className="vk-comment-item">
             <Link to={`/${comment.user.username}`} className="vk-comment-img-link">
-                <img 
-                    src={comment.user.avatar} 
-                    alt={comment.user.username} 
-                    className="vk-comment-avatar" 
+                <img
+                    src={comment.user.avatar}
+                    alt={comment.user.username}
+                    className="vk-comment-avatar"
                 />
             </Link>
 
@@ -29,7 +20,7 @@ export default function CommentItem({ comment, currentUser, onDelete }) {
                     <Link to={`/${comment.user.username}`} className="vk-comment-author">
                         {comment.user.first_name} {comment.user.last_name}
                     </Link>
-                    
+
                     <span className="vk-comment-date">
                         {formatDate(comment.created_at)}
                     </span>
@@ -44,7 +35,6 @@ export default function CommentItem({ comment, currentUser, onDelete }) {
                 <button
                     className="vk-comment-delete"
                     onClick={() => onDelete(comment.id)}
-                    title="Видалити"
                 >
                     ✕
                 </button>

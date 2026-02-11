@@ -1,27 +1,39 @@
 import { createContext, useState, useEffect } from "react";
 import api from "../api/axios";
 import { mapUser } from "../services/mappers";
-import { notifyError } from "../components/Notify";
+import ErrorState from "../components/common/ErrorState";
+import i18n, { getSystemLanguage } from '../i18n'
+
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [loading, setLoading] = useState(true);
+    const [initError, setInitError] = useState(false);
 
-    // перед загрузкою перевіряєм чи правильний токен
+    // перед загрузкою перевіряєм чи правильний токен і чи не лежить бекенд
     useEffect(() => {
         if (token) {
+            setLoading(true);
+            setInitError(false);
+
             api.get('/me')
-                .then(res => setUser(mapUser(res.data)))
+                .then(res => {
+                    setUser(mapUser(res.data));
+                    setLoading(false);
+                })
                 .catch((err) => {
                     if (err.response && err.response.status === 401) {
                         localStorage.removeItem('token');
                         setToken(null);
+                        setUser(null);
+                        setLoading(false);
+                    } else {
+                        setInitError(true);
+                        setLoading(false);
                     }
-                    notifyError("Помилка сервера.");
-                })
-                .finally(() => setLoading(false));
+                });
         } else {
             setLoading(false);
         }
@@ -31,6 +43,7 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         if (!user)
             return;
+
         const sendOnline = () => {
             api.post('/user/ping').catch(() => { });
         };
@@ -41,6 +54,9 @@ export const AuthProvider = ({ children }) => {
 
     // для моментальної зміни статусу підтвердження пошти
     useEffect(() => {
+        if (!user)
+            return;
+
         const channel = new BroadcastChannel('auth_channel');
         channel.onmessage = (event) => {
             if (event.data.type === 'EMAIL_VERIFIED' && user)
@@ -56,10 +72,13 @@ export const AuthProvider = ({ children }) => {
 
     const login = (newToken, newUser) => {
         localStorage.setItem('token', newToken);
-        localStorage.setItem('lang', navigator.language);
+        if (!localStorage.getItem('lang')) {
+            localStorage.setItem('lang', getSystemLanguage());
+        }
         localStorage.setItem('dark_theme', true); // <-- заглушка для зміни білої/темної теми 
         setToken(newToken);
         setUser(newUser);
+        setInitError(false);
     };
 
     const logout = () => {
@@ -70,9 +89,25 @@ export const AuthProvider = ({ children }) => {
         });
     };
 
+    // якщо бек лежить
+    if (initError) {
+        return (
+            <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <ErrorState
+                    title={i18n.t('error.server_down')}
+                    description={i18n.t('error.server_down_desc')}
+                    onRetry={() => window.location.reload()}
+                />
+            </div>
+        );
+    }
+
+    if (loading)
+        return <div style={{ height: '100vh', background: '#fff' }}></div>;
+
     return (
         <AuthContext.Provider value={{ user, setUser, login, logout, loading, isAuthenticated: !!user }}>
-            {!loading && children}
+            {children}
         </AuthContext.Provider>
     );
 };

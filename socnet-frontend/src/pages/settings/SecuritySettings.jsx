@@ -11,42 +11,44 @@ const SecuritySettings = () => {
         currentPassword, setCurrentPassword,
         newPassword, setNewPassword,
         confirmPassword, setConfirmPassword,
-        loadingPass, handleUpdatePassword
+        loadingPass, handleUpdatePassword, t
     } = useSecuritySettings();
 
     return (
         <>
             <div className="vk-settings-box">
-                <strong>Зміна електронної пошти</strong>
+                <strong>{t('settings.change_email')}</strong>
                 <div className="vk-settings-info-row">
                     <div className="vk-settings-info-item">
-                        <span>Поточна електронна адреса:</span>
+                        <span>{t('settings.current_email')}:</span>
                         <span>{user?.email}</span>
                     </div>
 
                     <div className="vk-settings-info-item">
-                        <span>Статус верифікації:</span>
+                        <span>{t('settings.verification_status')}:</span>
                         <span style={{ color: user?.email_verified_at ? '#10b981' : '#f59e0b' }}>
-                            {user?.email_verified_at ? "Підтверджено" : "Непідтверджено"}
+                            {t('common.' + (
+                                (user?.email_verified_at) ? 'confirmed' : 'unconfirmed')
+                            )}
                         </span>
                     </div>
                 </div>
 
                 <form onSubmit={handleUpdateEmail} className="vk-settings-form">
                     <div className="vk-form-group">
-                        <label className="vk-form-label">Нова електронна адреса</label>
+                        <label className="vk-form-label">{t('settings.new_email')}</label>
                         <FormInput
                             type="email"
                             className="vk-form-input"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="new-email@example.com"
+                            placeholder="NewEmail@example.com"
                         />
                     </div>
 
                     <div className="vk-form-group">
-                        <label className="vk-form-label">Пароль акаунту</label>
+                        <label className="vk-form-label">{t('settings.account_password')}</label>
                         <FormInput
                             type="password"
                             className="vk-form-input"
@@ -61,16 +63,16 @@ const SecuritySettings = () => {
                         type="submit"
                         disabled={loadingEmail}
                     >
-                        {loadingEmail ? 'Зберігаємо...' : 'Змінити'}
+                        {loadingEmail ? t('common.saving') : t('common.change')}
                     </button>
                 </form>
             </div>
 
             <div className="vk-settings-box">
-                <strong>Зміна паролю</strong>
+                <strong>{t('settings.change_password')}</strong>
                 <form onSubmit={handleUpdatePassword}>
                     <div className="vk-form-group">
-                        <label className="vk-form-label">Поточний пароль</label>
+                        <label className="vk-form-label">{t('settings.current_password')}</label>
                         <FormInput
                             type="password"
                             className="vk-form-input"
@@ -82,7 +84,7 @@ const SecuritySettings = () => {
                     </div>
 
                     <div className="vk-form-group">
-                        <label className="vk-form-label">Новий пароль (не менше 8 символів)</label>
+                        <label className="vk-form-label">{t('settings.new_password')}</label>
                         <FormInput
                             type="password"
                             className="vk-form-input"
@@ -94,7 +96,7 @@ const SecuritySettings = () => {
                     </div>
 
                     <div className="vk-form-group">
-                        <label className="vk-form-label">Підтвердіть новий пароль</label>
+                        <label className="vk-form-label">{t('auth.password_confirmation')}</label>
                         <FormInput
                             type="password"
                             className="vk-form-input"
@@ -109,25 +111,21 @@ const SecuritySettings = () => {
                         className="vk-btn-save"
                         disabled={loadingPass}
                     >
-                        {loadingPass ? 'Зберігаємо...' : 'Змінити пароль'}
+                        {loadingPass ? t('common.saving') : t('common.save')}
                     </button>
                 </form>
             </div>
 
             <div className="vk-settings-danger">
-                <div className="vk-settings-danger-header">Небезпечна зона</div>
+                <div className="vk-settings-danger-header">{t('settings.danger_zone')}</div>
                 <div className="vk-settings-danger-body">
                     <div>
-                        <h4>Видалити акаунт</h4>
-                        <div className="vk-settings-quote">
-                            - Ти це зробиш?<br />
-                            - Так.<br />
-                            - І якою ціною?<br />
-                            - Ціною всього.
-                        </div>
+                        <h4>{t('settings.delete_account')}</h4>
+                        <div className="vk-settings-quote">{t('settings.quote')}</div>
+                        <p className="vk-settings-desc">{t('settings.delete_warning')}</p>
                     </div>
-                    <button className="vk-btn-delete" onClick={() => notifyWarn('Не сьогодні')}>
-                        Видалити акаунт
+                    <button className="vk-btn-delete" onClick={() => notifyWarn('Ben say NO')}>
+                        {t('settings.delete_account')}
                     </button>
                 </div>
             </div>

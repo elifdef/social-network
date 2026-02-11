@@ -13,7 +13,6 @@ export default function UserWall({ profileUser, isOwnProfile }) {
         <div className="vk-wall">
             <WallHeader
                 postsCount={wallData.posts.length}
-                getDeclension={wallData.getDeclension}
             />
 
             {isOwnProfile && (

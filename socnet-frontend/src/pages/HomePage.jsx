@@ -5,10 +5,11 @@ import { usePageTitle } from "../hooks/usePageTitle";
 import PostItem from "../components/post/PostItem";
 import { mapPost } from "../services/mappers";
 import { notifyError } from "../components/Notify";
+import { useTranslation } from 'react-i18next';
 
 export default function HomePage() {
-    usePageTitle("Новини");
-
+    const { t } = useTranslation();
+    usePageTitle(t('common.posts'));
     const [searchParams, setSearchParams] = useSearchParams();
     const activeTab = searchParams.get('tab') || 'feed';
     const [error, setError] = useState(false);
@@ -41,7 +42,7 @@ export default function HomePage() {
             } catch (err) {
                 if (err.name !== "CanceledError" && err.code !== "ERR_CANCELED") {
                     setError(true);
-                    notifyError("Помилка завантаження стрічки");
+                    notifyError(t('error.loading', { resource: "feed" }));
                 }
             } finally {
                 if (!newController.signal.aborted) setLoading(false);
@@ -54,45 +55,38 @@ export default function HomePage() {
 
     const EmptyState = () => (
         <div className="vk-feed-empty">
-            <h3>Ласкаво просимо</h3>
+            <h3>{t('common.welcome')}!</h3>
 
             {activeTab === 'feed' ? (
                 <>
-                    <p>
-                        Ваша стрічка новин поки порожня. <br />
-                        Знайдіть друзів або перегляньте глобальну стрічку.
-                    </p>
+                    <p>{t('feed.my_feed_empty')}</p>
                     <div className="vk-feed-actions">
                         <Link to="/friends?tab=all" className="vk-btn-small" style={{ textDecoration: 'none', color: '#fff' }}>
-                            Знайти друзів
+                            {t('feed.find_friends')}
                         </Link>
                         <button
                             className="vk-btn-small"
                             onClick={() => handleTabChange('global')}
                         >
-                            Всі публікації
+                            {t('feed.watch_global_feed')}
                         </button>
                     </div>
                 </>
             ) : (
-                <p>
-                    У цій соцмережі поки немає жодного поста.<br />
-                    Станьте першим, хто це зробить, і увійдіть в історію!
-                </p>
+                <p>{t('feed.global_feed_empty')}</p>
             )}
         </div>
     );
 
     const ErrorState = () => (
         <div className="vk-feed-empty">
-            <h3>Помилка з'єднання</h3>
-            <p>Сталася помилка при завантаженні постів.</p>
+            <h3>{t('error.connection')}</h3>
+            <p>{t('error.loading_post')}</p>
             <div className="vk-feed-actions">
                 <button
                     className="vk-btn-small"
                     onClick={() => window.location.reload()}
-                >
-                    Оновити сторінку
+                >{t('common.reload_page')}
                 </button>
             </div>
         </div>
@@ -104,18 +98,18 @@ export default function HomePage() {
                 <button
                     className={`vk-feed-tab ${activeTab === 'feed' ? 'active' : ''}`}
                     onClick={() => handleTabChange('feed')}>
-                    Мої новини
+                    {t('feed.my_feed')}
                 </button>
                 <button
                     className={`vk-feed-tab ${activeTab === 'global' ? 'active' : ''}`}
                     onClick={() => handleTabChange('global')}>
-                    Глобальний пошук
+                    {t('feed.global_feed')}
                 </button>
             </div>
 
             {loading ? (
                 <div className="vk-feed-loading">
-                    Завантаження...
+                    {t('common.loading')}
                 </div>
             ) : (
                 <div className="vk-feed-list">

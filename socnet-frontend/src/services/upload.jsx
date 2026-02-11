@@ -1,11 +1,11 @@
 import { notifyError, notifyWarn } from "../components/Notify";
 import { SERVER_STORAGE_URL, MAX_FILE_SIZE_KB } from "../config";
+import i18n from "../i18n";
 
 export const checkFileSize = (file) => {
     const maxBytes = MAX_FILE_SIZE_KB * 1024;
-
     if (file.size > maxBytes) {
-        notifyWarn(`Файл занадто великий. Максимальний розмір: ${MAX_FILE_SIZE_KB / 1024} МБ.`);
+        notifyWarn(i18n.t('warn.large_file', { size: MAX_FILE_SIZE_KB / 1024 }));
         return false;
     }
     return true;
@@ -13,7 +13,7 @@ export const checkFileSize = (file) => {
 
 export const checkFileImage = (file) => {
     if (!file.type.startsWith('image/')) {
-        notifyError('Будь ласка, завантажте зображення.');
+        notifyError(i18n.t('error.not_image'));
         return false;
     }
     return true;

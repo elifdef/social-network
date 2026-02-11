@@ -2,8 +2,10 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
+import { useTranslation } from 'react-i18next';
 
 export const useAuthForms = () => {
+    const { t } = useTranslation();
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -24,7 +26,7 @@ export const useAuthForms = () => {
             navigate(!user.is_setup_complete ? '/setup-profile' : '/');
 
         } catch (err) {
-            setError(err.response?.data?.message || "Помилка входу");
+            setError(err.response?.data?.message || t('error.signin'));
         } finally {
             setLoading(false);
         }
@@ -37,7 +39,7 @@ export const useAuthForms = () => {
             await api.post('/sign-up', formData);
             return true;
         } catch (err) {
-            setError(err.response?.data?.message || "Помилка реєстрації");
+            setError(err.response?.data?.message || t('error.registration'));
             return false;
         } finally {
             setLoading(false);

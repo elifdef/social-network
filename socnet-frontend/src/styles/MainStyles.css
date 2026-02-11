@@ -7,11 +7,12 @@
     --theme-text-main: #e0e0e0;
     --theme-text-muted: #8c8c8c;
     --theme-link: #5b9bd5;
-    --theme-btn-bg: #3a3a3a;
-    --theme-btn-hover: #4a4a4a;
+    --theme-btn-bg: #6383a8;
+    --theme-btn-hover: #41576b;
     --theme-header-bg: #2b2b2b;
     --theme-input-bg: #222;
     --theme-input-border: #555;
+
 }
 
 /* для світлої теми яку мб я не буду використовувати але хай буде */
@@ -62,6 +63,14 @@ body {
 .vk-form-select:focus {
     border-color: var(--theme-link);
     outline: none;
+}
+
+.vk-radio-label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    accent-color: var(--theme-btn-bg);
 }
 
 .vk-form-textarea {
@@ -1048,6 +1057,7 @@ body {
     border: 1px dashed var(--theme-border);
     margin-top: 10px;
     background: var(--theme-bg-box);
+    white-space: pre-line;
 }
 
 .vk-feed-empty h3 {
@@ -1192,8 +1202,20 @@ body {
 .vk-settings-quote {
     font-style: italic;
     color: var(--theme-text-muted);
-    font-size: 10px;
+    font-size: 13px;
     margin-bottom: 10px;
+    white-space: pre-line;
+}
+
+.vk-settings-desc {
+    font-size: 13px;
+    color: #777;
+    margin-top: 10px;
+}
+
+.vk-settings-group {
+    display: flex;
+    gap: 20px;
 }
 
 .vk-btn-save {
@@ -1272,6 +1294,7 @@ body {
     color: #656565;
     line-height: 1.5;
     margin-bottom: 25px;
+    white-space: pre-line;
 }
 
 .not-found-btn {

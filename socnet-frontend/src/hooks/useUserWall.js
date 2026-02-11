@@ -3,8 +3,10 @@ import api from '../api/axios';
 import { notifySuccess, notifyConfirmAction, notifyError } from "../components/Notify"
 import { validateImageFile } from "../services/upload";
 import { mapPost } from '../services/mappers';
+import { useTranslation } from 'react-i18next';
 
 export const useUserWall = (profileUser) => {
+    const { t } = useTranslation();
     const [posts, setPosts] = useState([]);
 
     // для створення
@@ -31,7 +33,7 @@ export const useUserWall = (profileUser) => {
             } catch (err) {
                 (err.response && err.response.status === 403)
                     ? setPosts([])
-                    : notifyError("Error fetching posts");
+                    : notifyError(t('error.loading_post'));
             }
         };
 
@@ -84,7 +86,7 @@ export const useUserWall = (profileUser) => {
 
     const handleSubmit = async () => {
         if (!content.trim() && !image) {
-            notifyError("Пост не може бути порожнім.");
+            notifyError(t('post.empty_post'));
             return;
         }
         const formData = new FormData();
@@ -97,10 +99,9 @@ export const useUserWall = (profileUser) => {
             });
             setPosts([mapPost(res.data), ...posts]);
             setContent('');
-            setImage(null);
-            setPreview(null);
+            setImage(null);            
         } catch (error) {
-            notifyError("Помилка публікації");
+            notifyError(t('common.error'));
         }
     };
 
@@ -137,7 +138,7 @@ export const useUserWall = (profileUser) => {
 
     const saveEdit = async (postId) => {
         if (!editContent.trim() && !editImage && !editPreview) {
-            notifyError("Пост не може бути порожнім.");
+            notifyError(t('post.empty_post'));
             return;
         }
         const formData = new FormData();
@@ -158,28 +159,22 @@ export const useUserWall = (profileUser) => {
             });
 
             setPosts(posts.map(p => p.id === postId ? res.data : p));
-            notifySuccess("Збережено!");
+            notifySuccess(t('success.changes_saved'));
             cancelEditing();
         } catch (error) {
-            notifyError("Помилка збереження");
+            notifyError(t('error.save_changes'));
         }
     };
 
     const handleDelete = async (postId) => {
-        const isConfirmed = await notifyConfirmAction("Видалити цей запис?");
+        const isConfirmed = await notifyConfirmAction(t('post.delete_post'));
         if (!isConfirmed) return;
         try {
             await api.delete(`/posts/${postId}`);
             setPosts(posts.filter(p => p.id !== postId));
         } catch (error) {
-            notifyError("Помилка");
+            notifyError(t('error.deleting'));
         }
-    };
-
-    const getDeclension = (number) => {
-        const words = ['запис', 'записа', 'записів'];
-        const cases = [2, 0, 1, 1, 1, 2];
-        return words[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[Math.min(number % 10, 5)]];
     };
 
     return {
@@ -191,6 +186,6 @@ export const useUserWall = (profileUser) => {
         editPreview,
         setEditImage, handleEditFileSelect, setEditPreview,
         startEditing, cancelEditing, saveEdit,
-        handleDelete, getDeclension
+        handleDelete
     };
 };

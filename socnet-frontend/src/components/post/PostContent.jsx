@@ -14,7 +14,7 @@ const linkifyOptions = {
 
 export default function PostContent({ content, image, post, onUpdate, style }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    {/* <div >{content}</div> */ }
+
     return (
         <>
             <div className="vk-post-content" style={style}>
@@ -27,7 +27,6 @@ export default function PostContent({ content, image, post, onUpdate, style }) {
                     <div className="vk-post-image">
                         <img
                             src={image}
-                            alt="Post content"
                             className="vk-post-image"
                             onClick={() => setIsModalOpen(true)}
                             style={{ cursor: 'pointer' }}

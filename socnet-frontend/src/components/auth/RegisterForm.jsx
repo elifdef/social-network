@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../../api/axios";
 import FormInput from "../UI/FormInput";
+import { useTranslation } from 'react-i18next';
 
 export default function RegisterForm() {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         username: "",
         email: "",
@@ -28,15 +30,15 @@ export default function RegisterForm() {
             setMsg({
                 text: (
                     <span>
-                        Ви зареєструвались{" "}
-                        <Link to="/login" style={{ color: '#1d9bf0', textDecoration: 'underline' }}>Увійдіть тут</Link>
+                        {t('auth.you_have_registered')}{" "}
+                        <Link to="/login" style={{ color: '#1d9bf0', textDecoration: 'underline' }}>{t('auth.signin')}</Link>
                     </span>
                 ),
                 color: "green"
             });
             setFormData({ username: "", email: "", password: "", password_confirmation: "" });
         } catch (err) {
-            const errorText = err.response?.data?.message || "Помилка реєстрації";
+            const errorText = err.response?.data?.message || t('error.registration');
             setMsg({ text: errorText, color: "red" });
         } finally {
             setLoading(false);
@@ -50,8 +52,8 @@ export default function RegisterForm() {
                     type="text"
                     name="username"
                     id="reg-username"
-                    label="Нікнейм"
-                    placeholder="Нікнейм"
+                    label={t('auth.username')}
+                    placeholder={t('auth.username')}
                     autoComplete="username"
                     value={formData.username}
                     onChange={handleChange}
@@ -62,8 +64,8 @@ export default function RegisterForm() {
                     type="email"
                     name="email"
                     id="reg-email"
-                    label="Електронна пошта"
-                    placeholder="example@mail.com"
+                    label={t('auth.email')}
+                    placeholder="Example@mail.com"
                     autoComplete="email"
                     value={formData.email}
                     onChange={handleChange}
@@ -74,8 +76,8 @@ export default function RegisterForm() {
                     type="password"
                     name="password"
                     id="reg-password"
-                    label="Пароль"
-                    placeholder="Пароль"
+                    label={t('auth.password')}
+                    placeholder={t('auth.password')}
                     autoComplete="new-password"
                     value={formData.password}
                     onChange={handleChange}
@@ -86,8 +88,8 @@ export default function RegisterForm() {
                     type="password"
                     name="password_confirmation"
                     id="reg-confirm-password"
-                    label="Повторіть пароль"
-                    placeholder="Підтвердження пароля"
+                    label={t('auth.password_confirmation')}
+                    placeholder={t('auth.password_confirmation')}
                     autoComplete="new-password"
                     value={formData.password_confirmation}
                     onChange={handleChange}
@@ -101,12 +103,12 @@ export default function RegisterForm() {
                 )}
 
                 <button className="btn" type="submit" disabled={loading}>
-                    {loading ? "Реєстрація..." : "Зареєструватися"}
+                    {loading ? t('auth.register_title') : t('auth.signup')}
                 </button>
             </form>
 
-            <p style={{ marginTop: '15px', textAlign: 'center' }}>
-                Вже є акаунт? <Link to="/login" style={{ color: '#1d9bf0' }}>Увійти</Link>
+            <p>
+                {t('auth.already_have_account')} <Link to="/login" style={{ color: '#1d9bf0' }}>{t('auth.signin')}</Link>
             </p>
         </>
     );

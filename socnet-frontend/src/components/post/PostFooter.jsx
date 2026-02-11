@@ -1,30 +1,37 @@
 import { Link } from "react-router-dom";
 import CommentIcon from "../../assets/comment.svg?react";
 import NoCommentIcon from "../../assets/nocomment.svg?react";
-import Like from "../../assets/like.svg?react";
-import NoLike from "../../assets/nolike.svg?react";
+import LikeIcon from "../../assets/like.svg?react";
+import NoLikeIcon from "../../assets/nolike.svg?react";
 
-export default function PostFooter({ postId, isLiked, likesCount, commentsCount, onLike }) {
-    return (
-        <div className="vk-post-footer">
+export default function PostFooter({ postId, isLiked, likesCount, commentsCount, onLike, style }) {
+
+    const Comment = () => {
+        const IconComponent = commentsCount > 0 ? CommentIcon : NoCommentIcon;
+        return (
+            <Link to={`/post/${postId}`} className="vk-comment-btn">
+                <IconComponent width={16} height={16} />
+                {commentsCount}
+            </Link>
+        );
+    }
+
+    const Like = () => {
+        const IconComponent = isLiked > 0 ? LikeIcon : NoLikeIcon;
+        return (
             <button
                 className={`vk-like-btn ${isLiked ? 'liked' : ''}`}
                 onClick={onLike}>
-
-                {isLiked ? (
-                    <Like width={16} height={16} />
-                ) : (
-                    <NoLike width={16} height={16} />
-                )}
-
-                <span>{likesCount > 0 ? likesCount : 'Подобається'}</span>
+                <IconComponent width={16} height={16} />
+                {likesCount}
             </button>
+        );
+    }
 
-            <Link to={`/post/${postId}`} className="vk-comment-btn">
-                {commentsCount > 0
-                    ? <><CommentIcon width={16} height={16} />{commentsCount}</>
-                    : <><NoCommentIcon width={16} height={16} />Коментувати</>}
-            </Link>
+    return (
+        <div className="vk-post-footer" style={style}>
+            <Like />
+            <Comment />
         </div>
     );
 }

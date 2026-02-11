@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import api from "../api/axios";
 import { notifyConfirmAction, notifyError } from "../components/Notify";
 import { mapComment } from "../services/mappers";
+import { useTranslation } from 'react-i18next';
 
 export const useComments = (postId) => {
+    const { t } = useTranslation();
     const [comments, setComments] = useState([]);
     const [text, setText] = useState("");
     const [loading, setLoading] = useState(true);
@@ -38,13 +40,13 @@ export const useComments = (postId) => {
             setText("");
             return true;
         } catch (err) {
-            notifyError("Не вдалося додати коментар");
+            notifyError(t('error.add_comment'));
             return false;
         }
     };
 
     const removeComment = async (commentId) => {
-        const isConfirmed = await notifyConfirmAction("Видалити коментар?");
+        const isConfirmed = await notifyConfirmAction(t('comment.remove_comment'));
         if (!isConfirmed)
             return false;
 
@@ -53,7 +55,7 @@ export const useComments = (postId) => {
             setComments(prev => prev.filter(c => c.id !== commentId));
             return true;
         } catch (err) {
-            notifyError("Помилка видалення");
+            notifyError(t('error.deleting'));
             return false;
         }
     };

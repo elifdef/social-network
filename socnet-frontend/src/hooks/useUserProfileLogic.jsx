@@ -1,9 +1,11 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useFriendship } from "./useFriendship";
 import { notifyConfirmAction, notifyError, notifyInfo, notifySuccess } from "../components/Notify";
+import { useTranslation } from 'react-i18next';
 
 export const useUserProfileLogic = (currentUser, isPreview = false) => {
+    const { t } = useTranslation();
     const { user } = useContext(AuthContext);
     const { addFriend, removeFriend, acceptRequest, blockUser, unblockUser } = useFriendship();
 
@@ -14,17 +16,38 @@ export const useUserProfileLogic = (currentUser, isPreview = false) => {
     const isBlockedByMe = !isPreview && status === 'blocked_by_me';
     const isBlockedByTarget = !isPreview && status === 'blocked_by_target';
     const isFriend = status === 'friends';
+    const displayAvatar = currentUser?.avatar;
 
-    const defaultAvatar = "/defaultAvatar.jpg"; // bill gates mugshot
+    const getDisplayBio = () => {
+        if (isBlockedByTarget) {
+            return t('profile.restricted_profile_' + (currentUser?.gender === 2 ? "f" : "m"), { name: currentUser.first_name })
+        }
 
-    const displayAvatar = isBlockedByTarget ? defaultAvatar : (currentUser?.avatar || defaultAvatar);
+        if (currentUser?.bio) return currentUser.bio;
 
-    const displayBio = isBlockedByTarget
-        ? `${currentUser.first_name} обмежив${currentUser.sex === 'female' ? 'ла' : ''} вам доступ до своєї сторінки.`
-        : (currentUser?.bio || (isPreview ? "Ваш статус..." : "Статус не встановлено"));
+        return isPreview
+            ? t('profile.your_status')
+            : <span style={{ color: '#999' }}>{t('profile.status_not_set')}</span>;
+    };
 
-    const displayBirth = isBlockedByTarget ? "Приховано" : (currentUser?.birth_date ? new Date(currentUser.birth_date).toLocaleDateString() : 'Не вказано');
-    const displayCountry = isBlockedByTarget ? "Приховано" : (currentUser?.country ? `${currentUser.country.emoji} ${currentUser.country.name}` : 'Не вказано');
+    const getField = (value, formatter = null) => {
+        if (isBlockedByTarget)
+            return t('profile.hidden');
+
+        if (!value)
+            return t('profile.not_specified');
+
+        return formatter ? formatter(value) : value;
+    };
+
+    const displayBirth = getField(currentUser?.birth_date);
+    const displayCountry = getField(currentUser?.country, (c) => `${c.emoji} ${c.name}`);
+    const displayBio = getDisplayBio();
+    const displayGender = getField(currentUser?.gender, (g) => {
+        if (g === 1) return t('common.gender_male');
+        if (g === 2) return t('common.gender_female');
+        return t('settings.not_selected');
+    });
 
     useEffect(() => {
         setStatus(currentUser?.friendship_status || 'none');
@@ -50,7 +73,7 @@ export const useUserProfileLogic = (currentUser, isPreview = false) => {
                     if (result.success) setStatus('friends');
                     break;
                 case 'friends':
-                    if (await notifyConfirmAction("Видалити з друзів?")) {
+                    if (await notifyConfirmAction(t('friends.remove_friends') + "?")) {
                         result = await removeFriend(currentUser.username);
                         if (result.success) setStatus('none');
                     } else {
@@ -68,7 +91,7 @@ export const useUserProfileLogic = (currentUser, isPreview = false) => {
                 notifyError(result.message);
             }
         } catch (e) {
-            notifyError("Помилка");
+            notifyError(t('common.error'));
         } finally {
             setLoading(false);
         }
@@ -83,7 +106,7 @@ export const useUserProfileLogic = (currentUser, isPreview = false) => {
             const result = await unblockUser(currentUser.username);
             if (result.success) {
                 setStatus('none');
-                notifyInfo("Користувача розблоковано");
+                notifyInfo(t('friends.user_unblocked'));
             } else {
                 notifyError(result.message);
             }
@@ -92,12 +115,12 @@ export const useUserProfileLogic = (currentUser, isPreview = false) => {
         }
 
         // якщо ні - блокуємо
-        if (await notifyConfirmAction(`Заблокувати @${currentUser.username}?`)) {
+        if (await notifyConfirmAction(`${t('common.to_block')} @${currentUser.username}?`)) {
             setLoading(true);
             const result = await blockUser(currentUser.username);
             if (result.success) {
                 setStatus('blocked_by_me');
-                notifyInfo("Користувача заблоковано");
+                notifyInfo(t('friends.user_blocked'));
             } else {
                 notifyError(result.message);
             }
@@ -118,6 +141,7 @@ export const useUserProfileLogic = (currentUser, isPreview = false) => {
         displayBio,
         displayBirth,
         displayCountry,
+        displayGender,
         // функції дій
         handleFriendshipAction,
         handleBlockAction

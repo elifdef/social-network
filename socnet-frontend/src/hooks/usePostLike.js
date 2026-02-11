@@ -2,16 +2,17 @@ import { useState, useContext } from "react";
 import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import { notifyError } from "../components/Notify";
+import { useTranslation } from 'react-i18next';
 
 export const usePostLike = (post) => {
     const { user } = useContext(AuthContext);
-
+    const { t } = useTranslation();
     const [isLiked, setIsLiked] = useState(post.is_liked);
     const [likesCount, setLikesCount] = useState(post.likes_count);
     const [isLiking, setIsLiking] = useState(false);
 
     const handleLike = async () => {
-        if (!post || isLiking) 
+        if (!post || isLiking)
             return null;
 
         setIsLiking(true);
@@ -34,7 +35,7 @@ export const usePostLike = (post) => {
         } catch (error) {
             setIsLiked(previousLiked);
             setLikesCount(previousCount);
-            notifyError("Помилка зв'язку з сервером.");
+            notifyError(t('error.connection'));
             return null;
         } finally {
             setIsLiking(false);

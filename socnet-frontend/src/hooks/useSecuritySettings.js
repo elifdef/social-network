@@ -2,8 +2,10 @@ import { useState, useContext } from 'react';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import { notifyError, notifySuccess } from "../components/Notify";
+import { useTranslation } from 'react-i18next';
 
 export const useSecuritySettings = () => {
+    const { t } = useTranslation();
     const { user, setUser } = useContext(AuthContext);
 
     const [email, setEmail] = useState(user?.email || '');
@@ -19,7 +21,7 @@ export const useSecuritySettings = () => {
         e.preventDefault();
 
         if (!passwordForEmail) {
-            notifyError('Введіть пароль для підтвердження');
+            notifyError(t('error.enter_confirm_password'));
             return;
         }
 
@@ -41,14 +43,12 @@ export const useSecuritySettings = () => {
             notifySuccess(response.data.message);
 
         } catch (error) {
-            if (error.response?.status === 422) {
-                const msg = error.response.data.message || 'Помилка валідації';
-                notifyError(msg);
-            } else if (error.response?.status === 403) {
-                notifyError('Невірний пароль');
-            } else {
-                notifyError('Не вдалося змінити пошту');
-            }
+            if (error.response?.status === 422)
+                notifyError(error.response.data.message || t('error.validation'));
+            else if (error.response?.status === 403)
+                notifyError(t('error.invalid_password'));
+            else
+                notifyError(t('error.change_email'));
         } finally {
             setLoadingEmail(false);
         }
@@ -57,9 +57,8 @@ export const useSecuritySettings = () => {
     const handleUpdatePassword = async (e) => {
         e.preventDefault();
 
-        if (newPassword !== confirmPassword) {
-            return notifyError('Нові паролі не співпадають!');
-        }
+        if (newPassword !== confirmPassword)
+            return notifyError(t('error.not_match_password'));
 
         setLoadingPass(true);
 
@@ -70,7 +69,8 @@ export const useSecuritySettings = () => {
                 password_confirmation: confirmPassword
             });
 
-            notifySuccess(response.data.message);
+            if(response.status === 200)
+                notifySuccess(t('success.password_changed'));
 
             setCurrentPassword('');
             setNewPassword('');
@@ -79,18 +79,22 @@ export const useSecuritySettings = () => {
         } catch (error) {
             if (error.response?.status === 422) {
                 const errors = error.response.data.errors;
-                if (errors.current_password) notifyError(errors.current_password[0]);
-                else if (errors.password) notifyError(errors.password[0]);
-                else notifyError('Перевірте введені дані');
+
+                if (errors.current_password) 
+                    notifyError(errors.current_password[0]);
+                else if (errors.password) 
+                    notifyError(errors.password[0]);
+                else 
+                    notifyError(t('error.check_entered_data'));
             } else {
-                notifyError('Щось пішло не так');
+                notifyError(t('error.change_password'));
             }
         } finally {
             setLoadingPass(false);
         }
     };
 
-return {
+    return {
         user,
         email, setEmail,
         passwordForEmail, setPasswordForEmail,
@@ -98,6 +102,6 @@ return {
         currentPassword, setCurrentPassword,
         newPassword, setNewPassword,
         confirmPassword, setConfirmPassword,
-        loadingPass, handleUpdatePassword
+        loadingPass, handleUpdatePassword, t
     };
 };

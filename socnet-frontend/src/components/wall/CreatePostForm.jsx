@@ -1,4 +1,5 @@
 import ImageAttach from '../../assets/ImageAttach.svg?react';
+import { useTranslation } from 'react-i18next';
 
 export default function CreatePostForm({
     content, setContent,
@@ -6,6 +7,8 @@ export default function CreatePostForm({
     isDragging, handleDragOver, handleDragLeave, handleDrop,
     handleFileSelect, handlePaste, handleSubmit
 }) {
+    const { t } = useTranslation();
+
     return (
         <div
             className={`vk-wall-input ${isDragging ? 'drag-active' : ''}`}
@@ -14,7 +17,7 @@ export default function CreatePostForm({
             onDrop={handleDrop}
         >
             <textarea
-                placeholder={isDragging ? "Відпустіть картинку сюди..." : "Написати пост..."}
+                placeholder={isDragging ? t('wall.drop_image') : t('wall.write_post')}
                 value={content}
                 onChange={e => setContent(e.target.value)}
                 onPaste={(e) => handlePaste(e, 'create')}
@@ -29,11 +32,13 @@ export default function CreatePostForm({
             )}
 
             <div className="vk-wall-actions">
-                <label className="vk-attach-btn" title="Додати фото">
+                <label className="vk-attach-btn" title={t('wall.attach_photo')}>
                     <input type="file" hidden onChange={handleFileSelect} accept="image/*" />
                     <ImageAttach width={20} height={20} />
                 </label>
-                <button className="vk-btn-small" onClick={handleSubmit}>Надіслати</button>
+                <button className="vk-btn-small" onClick={handleSubmit}>
+                    {t('wall.send_btn')}
+                </button>
             </div>
         </div>
     );

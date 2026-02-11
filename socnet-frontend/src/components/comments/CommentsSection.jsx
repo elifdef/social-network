@@ -3,8 +3,10 @@ import { AuthContext } from "../../context/AuthContext";
 import { useComments } from "../../hooks/useComments";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
+import { useTranslation } from 'react-i18next';
 
 export default function CommentsSection({ postId, onCountChange }) {
+    const { t } = useTranslation();
     const { user } = useContext(AuthContext);
     const { comments, text, setText, loading, addComment, removeComment } = useComments(postId);
 
@@ -27,6 +29,7 @@ export default function CommentsSection({ postId, onCountChange }) {
                 text={text}
                 setText={setText}
                 onSubmit={handleAddComment}
+                placeholder={t('comment.create_comment')}
             />
 
             <CommentList
@@ -34,6 +37,8 @@ export default function CommentsSection({ postId, onCountChange }) {
                 comments={comments}
                 currentUser={user}
                 onDelete={handleRemoveComment}
+                loadingText={t('common.loading')}
+                noCommentsText={t('comment.no_comments')}
             />
         </div>
     );

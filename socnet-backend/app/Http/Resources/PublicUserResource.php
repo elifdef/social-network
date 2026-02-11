@@ -26,6 +26,7 @@ class PublicUserResource extends JsonResource
                 'last_name' => $this->last_name,
                 'avatar' => null,
                 'bio' => null,
+                'gender'=> null,
                 'birth_date' => null,
                 'created_at' => null,
                 'is_setup_complete' => true,
@@ -42,7 +43,8 @@ class PublicUserResource extends JsonResource
             'last_name' => $this->last_name,
             'avatar' => $this->avatar,
             'bio' => $this->bio,
-            'created_at' => $this->created_at->format('d.m.Y'), // 05.01.2026
+            'gender' => $this->gender,
+            'created_at' => $this->created_at,
             'birth_date' => $this->birth_date,
             'is_online' => $this->is_online,
             'last_seen' => $this->last_seen_at,

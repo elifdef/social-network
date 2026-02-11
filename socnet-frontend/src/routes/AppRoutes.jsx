@@ -48,7 +48,7 @@ export default function AppRoutes() {
                 <Route element={<AuthGuard />}>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/friends" element={<FriendsPage />} />
-                    <Route path="/messages" element={<div>Повідомлення</div>} />
+                    <Route path="/messages" element={<div>messageTemplate</div>} />
                     <Route path="/email-verify/:id/:hash" element={<EmailVerifyPage />} />
 
                     <Route path="/settings" element={<SettingsLayout />}>

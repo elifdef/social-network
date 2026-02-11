@@ -81,6 +81,7 @@ class UserController extends Controller
             'last_name' => 'nullable|string|min:3|max:50',
             'avatar' => 'nullable|image|max:' . config('uploads.max_size'),
             'country_id' => 'nullable|integer|exists:countries,id',
+            'gender' => 'nullable|integer|in:1,2'
         ];
 
         if ($request->has('finish_setup') && $request->input('finish_setup'))

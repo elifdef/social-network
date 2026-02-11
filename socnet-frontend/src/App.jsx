@@ -2,9 +2,11 @@ import { useContext } from "react";
 import { Toaster } from "react-hot-toast";
 import { AuthContext } from "./context/AuthContext";
 import AppRoutes from "./routes/AppRoutes";
+import { useTranslation } from 'react-i18next';
 
 function App() {
   const { loading } = useContext(AuthContext);
+  const { t } = useTranslation();
 
   if (loading) {
     return (
@@ -16,7 +18,7 @@ function App() {
         background: '#19191a',
         color: '#e1e3e6'
       }}>
-        Завантаження...
+        {t('common.loading')}
       </div>
     );
   }

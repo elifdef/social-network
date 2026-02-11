@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 export default function ProfileActions({
     sameUser, loading, status, isBlockedByMe, isBlockedByTarget,
     onFriendAction, onBlockAction
 }) {
+    const { t } = useTranslation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef(null);
 
@@ -21,7 +23,7 @@ export default function ProfileActions({
     if (sameUser)
         return (
             <div className="vk-actions">
-                <Link to="/settings" className="vk-btn">Редагувати</Link>
+                <Link to="/settings" className="vk-btn">{t('profile.edit')}</Link>
             </div>
         );
 
@@ -29,22 +31,26 @@ export default function ProfileActions({
         return null;
 
     const getStatusLabel = () => {
-        if (loading) return "...";
-        if (isBlockedByMe) return "Ви заблокували";
+        if (loading)
+            return "...";
+
+        if (isBlockedByMe)
+            return t('profile.menu.you_have_blocked');
+
         switch (status) {
-            case 'friends': return "У вас в друзях ✓";
-            case 'pending_sent': return "Заявка надіслана";
-            case 'pending_received': return "Заявка отримана";
-            default: return "Не у вас у друзях";
+            case 'friends': return `${t('common.your_friends')} ✓`;
+            case 'pending_sent': return t('friends.request_sent');
+            case 'pending_received': return t('profile.menu.request_received');
+            default: return t('profile.menu.not_your_friends');
         }
     };
 
     const getFriendActionLabel = () => {
         switch (status) {
-            case 'friends': return "Видалити з друзів";
-            case 'pending_sent': return "Скасувати заявку";
-            case 'pending_received': return "Прийняти заявку";
-            default: return "Додати у друзі";
+            case 'friends': return t('friends.remove_friends');
+            case 'pending_sent': return t('profile.menu.cancel_request');
+            case 'pending_received': return t('friends.accept_request');
+            default: return t('profile.menu.add_friends');
         }
     };
 
@@ -70,7 +76,10 @@ export default function ProfileActions({
                             className={`vk-menu-item ${!isBlockedByMe ? 'danger' : ''}`}
                             onClick={() => { onBlockAction(); setIsMenuOpen(false); }}
                         >
-                            {isBlockedByMe ? "Розблокувати" : "Заблокувати"}
+                            {isBlockedByMe
+                                ? t('common.to_unblock')
+                                : t('common.to_block')
+                            }
                         </button>
                     </div>
                 )}
