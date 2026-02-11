@@ -1,16 +1,16 @@
 import { useState, useEffect, useContext, useMemo } from 'react';
-import { useOutletContext } from 'react-router-dom';
 import FormInput from "../../components/UI/FormInput"
 import { AuthContext } from "../../context/AuthContext"
 import api from '../../api/axios';
 import { notifySuccess, notifyError, notifyLoading, dismissToast, notifyInfo } from '../../components/Notify';
 import { validateImageFile } from "../../services/upload";
 import { useTranslation } from 'react-i18next';
+import UserProfileCard from '../../components/profile/UserProfileCard';
 
 const ProfileSettings = () => {
     const { t } = useTranslation();
     const { user, setUser } = useContext(AuthContext);
-    const { previewUser, setPreviewUser } = useOutletContext();
+    const [previewUser, setPreviewUser] = useState(user);
     const [countries, setCountries] = useState([]);
 
     const [formData, setFormData] = useState({
@@ -19,16 +19,12 @@ const ProfileSettings = () => {
         bio: user.bio || '',
         country_id: user.country ? user.country.id : '',
         avatarFile: null,
-        gender: Number(user.gender) || 0,
+        gender: user.gender,
     });
 
     useEffect(() => {
         api.get('/countries').then(res => setCountries(res.data));
     }, []);
-
-    useEffect(() => {
-        if (user) setPreviewUser(user);
-    }, [user]);
 
     const isChanged = useMemo(() => {
         if (formData.first_name !== (user.first_name || ''))
@@ -52,7 +48,7 @@ const ProfileSettings = () => {
         if (formData.avatarFile)
             return true;
 
-        const userGender = user.gender || 0;
+        const userGender = user.gender;
         const formGender = formData.gender;
 
         if (Number(formGender) !== Number(userGender))
@@ -64,14 +60,15 @@ const ProfileSettings = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        const numberFields = ['gender', 'country_id']; // поля де тільки числа
+        let finalValue = numberFields.includes(name) ? Number(value) : value;
+        setFormData(prev => ({ ...prev, [name]: finalValue }));
 
         setPreviewUser(prev => {
-            let updates = { [name]: value };
-            updates.gender = Number(updates.gender);
+            let updates = { [name]: finalValue };
 
             if (name === 'country_id') {
-                const selected = countries.find(c => c.id == value);
+                const selected = countries.find(c => c.id === finalValue);
                 updates.country = selected ? { ...selected } : null;
             }
             return { ...prev, ...updates };
@@ -135,7 +132,9 @@ const ProfileSettings = () => {
         }
     };
 
-    return (
+    return (<>
+        <UserProfileCard currentUser={previewUser} isPreview={true} />
+
         <form onSubmit={handleSubmit} className="vk-settings-form">
             <div className="vk-form-group">
                 <label className="vk-form-label">{t('common.avatar')}</label>
@@ -178,7 +177,7 @@ const ProfileSettings = () => {
                         <input
                             type="radio"
                             name="gender"
-                            value={1}
+                            value="1"
                             checked={Number(formData.gender) === 1}
                             onChange={handleChange}
                         />
@@ -189,7 +188,7 @@ const ProfileSettings = () => {
                         <input
                             type="radio"
                             name="gender"
-                            value={2}
+                            value="2"
                             checked={Number(formData.gender) === 2}
                             onChange={handleChange}
                         />
@@ -230,6 +229,7 @@ const ProfileSettings = () => {
                 {t('common.save')}
             </button>
         </form>
+    </>
     );
 };
 
