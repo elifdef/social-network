@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('post_id')->references('id')->on('posts')->cascadeOnDelete();
             $table->text('content');
             $table->timestamps();
+            $table->index('post_id'); // для обчислення кількості коментів і їх селекту
         });
     }
 

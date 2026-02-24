@@ -21,6 +21,7 @@ return new class extends Migration
 
             // один користувач = один лайк
             $table->unique(['user_id', 'post_id']);
+            $table->index('post_id'); // для обчислення лайків під конкретним постом
         });
     }
 

@@ -20,7 +20,7 @@ class PostService {
         const formData = new FormData();
 
         formData.append('_method', 'PUT');
-        if (data.content) formData.append('content', data.content);
+        if (data.content !== undefined && data.content !== null) formData.append('content', data.content);
         if (data.image) formData.append('image', data.image);
         if (data.deleteImage) formData.append('delete_image', '1');
 

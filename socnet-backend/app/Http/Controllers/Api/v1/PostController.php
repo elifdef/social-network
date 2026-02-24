@@ -42,8 +42,8 @@ class PostController extends Controller
 
         if ($currentUser && $currentUser->isBlockedByTarget($currentUser->id, $targetUser->id))
             return response()->json([
-                'message' => 'Access denied.',
-                'data' => []
+                'status' => false,
+                'message' => 'The user has restricted your access to their posts.'
             ], 403);
 
         $posts = $targetUser->posts()
@@ -62,19 +62,22 @@ class PostController extends Controller
      *
      * @param Request $request
      * @param Post $post
-     * @return JsonResponse|array
+     * @return JsonResponse
      */
-    public function show(Request $request, Post $post): JsonResponse|array
+    public function show(Request $request, Post $post): JsonResponse
     {
         $currentUser = $request->user('sanctum');
 
         if ($currentUser && $currentUser->isBlockedByTarget($currentUser->id, $post->user_id))
-            return response()->json(['message' => 'Forbidden'], 403);
+            return response()->json([
+                'status' => false,
+                'message' => 'The user has restricted your access to the post.'
+            ], 403);
 
         $post->load('user');
         $post->loadCount(['likes', 'comments']);
 
-        return (new PostResource($post))->resolve();
+        return response()->json((new PostResource($post))->resolve());
     }
 
     /**
@@ -82,9 +85,9 @@ class PostController extends Controller
      * Повертає новий пост.
      *
      * @param Request $request
-     * @return array|JsonResponse
+     * @return JsonResponse
      */
-    public function store(Request $request): array|JsonResponse
+    public function store(Request $request): JsonResponse
     {
         $request->validate([
             'content' => 'nullable|string|max:2048',
@@ -92,7 +95,10 @@ class PostController extends Controller
         ]);
 
         if (!$request->input('content') && !$request->hasFile('image'))
-            return response()->json(['message' => 'Post cannot be empty'], 422);
+            return response()->json([
+                'status' => false,
+                'message' => 'Post cannot be empty.'
+            ], 422);
 
         $path = null;
         if ($request->hasFile('image'))
@@ -108,7 +114,7 @@ class PostController extends Controller
             'content' => $request->input('content'),
             'image' => $path
         ]);
-        return (new PostResource($post))->resolve();
+        return response()->json((new PostResource($post))->resolve(), 201);
     }
 
     /**
@@ -122,13 +128,19 @@ class PostController extends Controller
     {
         // видаляти може тільки власник
         if ($request->user()->id !== $post->user_id)
-            return response()->json(['message' => 'Forbidden'], 403);
+            return response()->json([
+                'status' => false,
+                'message' => "You do not have right to delete someone else's post."
+            ], 403);
 
         if ($post->image)
             Storage::disk('public')->delete($post->image);
 
         $post->delete();
-        return response()->json(['message' => 'Post deleted']);
+        return response()->json([
+            'status' => true,
+            'message' => 'Post deleted.'
+        ], 202);
     }
 
     /**
@@ -137,50 +149,71 @@ class PostController extends Controller
      *
      * @param Request $request
      * @param Post $post
-     * @return JsonResponse|array
+     * @return JsonResponse
      */
-    public function update(Request $request, Post $post): JsonResponse|array
+    public function update(Request $request, Post $post): JsonResponse
     {
         // редагувати може тільки власник
         if ($request->user()->id !== $post->user_id)
-            return response()->json(['message' => 'Forbidden'], 403);
+            return response()->json([
+                'status' => false,
+                'message' => "You do not have permission to edit someone else's post."
+            ], 403);
 
         $request->validate([
             'content' => 'nullable|string|max:2048',
-            'image' => 'nullable|image|max:' . config('uploads.max_size')
+            'image' => 'nullable|image|max:' . config('uploads.max_size'),
+            'delete_image' => 'boolean'
         ]);
+
+        $futureContent = $request->has('content') ? $request->input('content') : $post->content;
+
+        $hasNewImage = $request->hasFile('image');
+        $willDeleteOldImage = $request->boolean('delete_image');
+
+        $futureImageExists = $post->image; // припускаємо що залишається стара
+
+        if ($willDeleteOldImage && !$hasNewImage)
+            $futureImageExists = null; // стару видалили, нової не дали
+        elseif ($hasNewImage)
+            $futureImageExists = true; // буде нова картинка
+
+        // перевірна на те, чи не буде фінальний варіант порожнім
+        if (empty($futureContent) && empty($futureImageExists))
+            return response()->json([
+                'status' => false,
+                'message' => "Post can't be a empty."
+            ], 422);
 
         $data = [];
 
         // оновлення тексту
         if ($request->has('content'))
-            $data['content'] = $request->input('content');
+            $data['content'] = $futureContent;
 
-        // якщо потрібно видалити картинку
-        if ($request->boolean('delete_image') && !$request->hasFile('image'))
+        // якщо видаляємо стару картинку
+        if ($willDeleteOldImage && !$hasNewImage)
         {
             if ($post->image)
                 Storage::disk('public')->delete($post->image);
             $data['image'] = null;
         }
 
-        // якщо потрібно змінити картинку: стара видаляється -> нова завантажується
-        if ($request->hasFile('image'))
+        // якщо завантажуємо нову картинку
+        if ($hasNewImage)
         {
             if ($post->image)
                 Storage::disk('public')->delete($post->image);
 
-            $path = $this->fileService->upload(
+            $data['image'] = $this->fileService->upload(
                 file: $request->file('image'),
                 folder: $request->user()->username,
                 prefix: 'post'
             );
-
-            $data['image'] = $path;
         }
 
         $post->update($data);
-        return (new PostResource($post))->resolve();
+        return response()->json((new PostResource($post))->resolve());
     }
 
     /**

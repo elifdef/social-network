@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('friend_id')->constrained('users')->cascadeOnDelete(); // той хто отримує
             $table->string('status', 20)->index();
             $table->unique(['user_id', 'friend_id']);
+            $table->index('friend_id'); // для підрахування кількості друзів
             $table->timestamps();
         });
     }

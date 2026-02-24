@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('content', 2048)->nullable();
+            $table->text('content')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
+            $table->index('user_id'); // щоб швидко знаходити пости конкретного юзера
+            $table->index('created_at'); // для сортування по даті створення
         });
     }
 
