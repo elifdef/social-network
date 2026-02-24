@@ -1,0 +1,36 @@
+name: Laravel Backend Tests
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./socnet-backend
+
+    steps:
+      - name: Завантаження коду
+        uses: actions/checkout@v4
+
+      - name: Налаштування PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite3, pdo_sqlite, bcmath, gd
+
+      - name: Встановка залежностей
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Створюємо .env файл
+        run: cp .env.example .env
+
+      - name: Генерація ключа
+        run: php artisan key:generate
+
+      - name: Запуск тестів
+        run: php artisan test
