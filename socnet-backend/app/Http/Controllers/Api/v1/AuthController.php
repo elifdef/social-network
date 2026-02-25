@@ -20,13 +20,11 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password))
-        {
             return response()->json([
                 'status' => false,
                 'message' => 'Invalid email or password'
             ], 401);
-        }
-        $user->tokens()->where('name', 'auth_token')->delete();
+
         $tokenResult = $user->createToken('auth_token');
 
         $tokenModel = $tokenResult->accessToken;
@@ -38,7 +36,7 @@ class AuthController extends Controller
             'status' => true,
             'message' => 'Login successful',
             'token' => $tokenResult->plainTextToken
-        ], 200);
+        ]);
     }
 
     // реєстрація
@@ -78,6 +76,6 @@ class AuthController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Logged out successfully'
-        ], 200);
+        ]);
     }
 }
