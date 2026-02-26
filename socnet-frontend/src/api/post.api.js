@@ -1,34 +1,40 @@
 import api from "./axios";
 
-class PostAPI {
-    async post(data) {
+const postAPI =
+{
+    // створити пост
+    post: async (data) => {
         const res = await api.post("/posts", data, {
             headers: { "Content-Type": "multipart/form-data" }
         });
         return res;
-    }
+    },
 
-    async get(id) {
+    // отримати один пост по його ID(String)
+    get: async (id) => {
         const res = await api.get(`/posts/${id}`);
         return res;
-    }
+    },
 
-    async put(id, data) {
+    // оновити пост
+    put: async (id, data) => {
         const res = await api.post(`/posts/${id}`, data, {
             headers: { "Content-Type": "multipart/form-data" }
         });
         return res;
-    }
+    },
 
-    async delete(id) {
+    // видалити пост
+    delete: async (id) => {
         const res = await api.delete(`/posts/${id}`);
         return res;
-    }
+    },
 
-    async userPosts(username, pageNumber) {
+    // отримати всі пости конкретного користувача (pageNumber - пагінація сторінок)
+    userPosts: async (username, pageNumber) => {
         const res = await api.get(`/users/${username}/posts?page=${pageNumber}`)
         return res;
     }
-}
+};
 
-export default new PostAPI();
+export default postAPI;

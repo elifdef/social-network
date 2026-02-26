@@ -70,11 +70,11 @@ export default function ProfilePage() {
             </div>
         );
 
-    return (
-        <div style={{ padding: '20px' }}>
-            <UserProfileCard currentUser={profile} />
-            {(profile.friendship_status !== "blocked_by_target"
-                && <UserWall profileUser={profile} isOwnProfile={isOwnProfile} />)}
-        </div>
+    return (<>
+        <UserProfileCard currentUser={profile} />
+        {(profile.friendship_status !== "blocked_by_target" && !profile.is_banned) && (
+            <UserWall profileUser={profile} isOwnProfile={isOwnProfile} />
+        )}
+    </>
     );
 }

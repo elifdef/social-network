@@ -1,4 +1,4 @@
-import PostAPI from "../api/post.api";
+import postAPI from "../api/post.api";
 
 class PostService {
     async create(data) {
@@ -7,12 +7,12 @@ class PostService {
         if (data.content) formData.append('content', data.content);
         if (data.image) formData.append('image', data.image);
 
-        const res = await PostAPI.post(formData);
+        const res = await postAPI.post(formData);
         return res.data;
     }
 
     async get(id) {
-        const res = await PostAPI.get(id);
+        const res = await postAPI.get(id);
         return res.data;
     }
 
@@ -24,17 +24,17 @@ class PostService {
         if (data.image) formData.append('image', data.image);
         if (data.deleteImage) formData.append('delete_image', '1');
 
-        const res = await PostAPI.put(id, formData);
+        const res = await postAPI.put(id, formData);
         return res.data;
     }
 
     async delete(id) {
-        const res = await PostAPI.delete(id);
+        const res = await postAPI.delete(id);
         return res;
     }
 
     async getUserPosts(username, pageNumber = 1) {
-        const res = await PostAPI.userPosts(username, pageNumber);
+        const res = await postAPI.userPosts(username, pageNumber);
         return res.data;
     }
 };

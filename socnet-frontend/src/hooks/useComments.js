@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
-import { notifyConfirmAction, notifyError } from "../components/Notify";
+import { notifyError } from "../components/common/Notify";
 import { useTranslation } from 'react-i18next';
+import { useModal } from "../context/ModalContext";
 
 export const useComments = (postId) => {
     const { t } = useTranslation();
+    const { openConfirm } = useModal();
     const [comments, setComments] = useState([]);
     const [text, setText] = useState("");
     const [loading, setLoading] = useState(true);
@@ -45,7 +47,7 @@ export const useComments = (postId) => {
     };
 
     const removeComment = async (commentId) => {
-        const isConfirmed = await notifyConfirmAction(t('comment.remove_comment'));
+        const isConfirmed = await openConfirm(t('comment.remove_comment'));
         if (!isConfirmed)
             return false;
 

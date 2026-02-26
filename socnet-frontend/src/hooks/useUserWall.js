@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { notifySuccess, notifyConfirmAction, notifyError } from "../components/Notify"
+import { notifySuccess, notifyError } from "../components/common/Notify";
+import { useModal } from "../context/ModalContext";
 import { validateImageFile } from "../services/upload";
 import PostService from '../services/post.service';
 
 export const useUserWall = (profileUser) => {
     const { t } = useTranslation();
+    const { openConfirm } = useModal();
     const [posts, setPosts] = useState([]);
     const [countPosts, setCountPosts] = useState(0);
     const [isPageLoading, setIsPageLoading] = useState(true);
@@ -145,7 +147,7 @@ export const useUserWall = (profileUser) => {
             setImage(null);
             setPreview(null);
         } catch (error) {
-            notifyError(t('common.error'));
+            notifyError(error.response?.data?.message || t('common.error'));
         }
     };
 
@@ -200,7 +202,7 @@ export const useUserWall = (profileUser) => {
     };
 
     const handleDelete = async (postId) => {
-        const isConfirmed = await notifyConfirmAction(t('post.delete_post'));
+        const isConfirmed = await openConfirm(t('post.delete_post'));
         if (!isConfirmed) return;
         try {
             await PostService.delete(postId);

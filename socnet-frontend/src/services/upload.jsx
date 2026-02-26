@@ -1,4 +1,4 @@
-import { notifyError, notifyWarn } from "../components/Notify";
+import { notifyError, notifyWarn } from "../components/common/Notify";
 import { MAX_FILE_SIZE_KB } from "../config";
 import i18n from "../i18n";
 

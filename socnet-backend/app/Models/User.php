@@ -9,6 +9,8 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\Role;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -29,7 +31,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'birth_date',
         'bio',
         'country',
-        'gender'
+        'gender',
+        'is_muted',
+        'is_banned'
     ];
 
     /**
@@ -43,6 +47,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     const defaultAvatar = "/defaultAvatar.jpg"; // bill gates mugshot
+    const bannedAvatar = "/blockedAvatar.jpg"; // hacker
     const GENDER_MALE = 1;
     const GENDER_FEMALE = 2;
 
@@ -57,7 +62,22 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_setup_complete' => 'boolean',
+            'role' => Role::class,
         ];
+    }
+
+    protected function avatarUrl(): Attribute
+    {
+        return Attribute::make(
+            get: function ()
+            {
+                // якщо забанений
+                if ($this->is_banned)
+                    return self::bannedAvatar;
+
+                return $this->avatar ? asset('storage/' . $this->avatar) : self::defaultAvatar;
+            }
+        );
     }
 
     /**
@@ -126,9 +146,29 @@ class User extends Authenticatable implements MustVerifyEmail
         return Cache::has('user-online-' . $this->id);
     }
 
+    // для статистики
     public function posts()
     {
-        // Один юзер має багато постів
         return $this->hasMany(Post::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function loginHistories()
+    {
+        return $this->hasMany(LoginHistory::class)->latest('created_at');
+    }
+
+    public function moderationLogs()
+    {
+        return $this->hasMany(ModerationLog::class)->latest();
     }
 }

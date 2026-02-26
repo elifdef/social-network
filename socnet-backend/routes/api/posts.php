@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\v1\CommentController;
 use Illuminate\Support\Facades\Route;
 
 // публічне отримання постів/коментарів/лайків (120 запитів/мін)
-Route::middleware('throttle:120,1')->controller(PostController::class)->group(function ()
+Route::middleware(['throttle:120,1', 'not_banned'])->controller(PostController::class)->group(function ()
 {
     // пости
     Route::get('/users/{username}/posts', 'index');     // всі пости користувача
@@ -17,13 +17,13 @@ Route::middleware('throttle:120,1')->controller(PostController::class)->group(fu
 });
 
 // дії залогіненого користувача  (180 запитів / мін)
-Route::middleware(['auth:sanctum', 'throttle:180,1'])->group(function ()
+Route::middleware(['auth:sanctum', 'throttle:180,1', 'not_banned'])->group(function ()
 {
     Route::get('/feed', [PostController::class, 'feed']);
     Route::get('/feed/global', [PostController::class, 'globalFeed']);
 
     // щоб писати пости/коментарі/ставити лайки потрібно підтвердити пошту
-    Route::middleware('verified')->group(function () {
+    Route::middleware(['verified', 'not_muted'])->group(function () {
         // пости
         Route::post('/posts', [PostController::class, 'store']);
         Route::put('/posts/{post}', [PostController::class, 'update']);

@@ -1,4 +1,4 @@
-import { notifyWarn } from "../Notify";
+import { notifyWarn } from "../common/Notify";
 
 const DangerZone = ({ t }) => {
     return (

@@ -14,6 +14,7 @@ class CommentController extends Controller
     {
         $comments = $post->comments()
             ->with('user')
+            ->whereHas('user', function ($query) {$query->where('is_banned', false);})
             ->latest() // нові зверху
             ->paginate(20);
 

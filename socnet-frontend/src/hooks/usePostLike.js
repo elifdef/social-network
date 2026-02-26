@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
-import { notifyError } from "../components/Notify";
+import { notifyError } from "../components/common/Notify";
 import { useTranslation } from 'react-i18next';
 
 export const usePostLike = (post) => {

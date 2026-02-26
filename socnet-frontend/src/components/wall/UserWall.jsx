@@ -1,27 +1,20 @@
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AuthContext } from '../../context/AuthContext';
 import { useUserWall } from '../../hooks/useUserWall';
-import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import WallHeader from './WallHeader';
 import CreatePostForm from './CreatePostForm';
 import WallPostList from './WallPostList';
-import WallLoader from './WallLoader';
+import InfiniteScrollList from '../common/InfiniteScrollList';
 
 export default function UserWall({ profileUser, isOwnProfile }) {
     const { user: authUser } = useContext(AuthContext);
     const wallData = useUserWall(profileUser);
-
-    const loaderRef = useIntersectionObserver(
-        wallData.loadMore,
-        wallData.hasMore,
-        wallData.isLoadingMore
-    );
+    const { t } = useTranslation();
 
     return (
         <div className="socnet-wall">
-            <WallHeader
-                postsCount={wallData.countPosts}
-            />
+            <WallHeader postsCount={wallData.countPosts} />
 
             {isOwnProfile && (
                 <CreatePostForm
@@ -39,30 +32,35 @@ export default function UserWall({ profileUser, isOwnProfile }) {
                 />
             )}
 
-            <WallPostList
-                posts={wallData.posts}
-                authUser={authUser}
-                editingPostId={wallData.editingPostId}
-                editContent={wallData.editContent}
-                setEditContent={wallData.setEditContent}
-                editPreview={wallData.editPreview}
-                removeEditImage={wallData.removeEditImage}
-                handleEditFileSelect={wallData.handleEditFileSelect}
-                handlePaste={wallData.handlePaste}
-                saveEdit={wallData.saveEdit}
-                cancelEditing={wallData.cancelEditing}
-                startEditing={wallData.startEditing}
-                handleDelete={wallData.handleDelete}
-            />
-
-
-            <WallLoader
-                isPageLoading={wallData.isPageLoading}
+            <InfiniteScrollList
+                className=""
+                itemsCount={wallData.posts.length}
+                isLoadingInitial={wallData.isPageLoading}
                 isLoadingMore={wallData.isLoadingMore}
                 hasMore={wallData.hasMore}
-                postsCount={wallData.countPosts}
-                loaderRef={loaderRef}
-            />
+                onLoadMore={wallData.loadMore}
+                emptyState={
+                    <div className="socnet-feed-empty" style={{ marginTop: '15px' }}>
+                        {t('wall.no_posts_yet', 'На стіні поки що немає записів.')}
+                    </div>
+                }
+            >
+                <WallPostList
+                    posts={wallData.posts}
+                    authUser={authUser}
+                    editingPostId={wallData.editingPostId}
+                    editContent={wallData.editContent}
+                    setEditContent={wallData.setEditContent}
+                    editPreview={wallData.editPreview}
+                    removeEditImage={wallData.removeEditImage}
+                    handleEditFileSelect={wallData.handleEditFileSelect}
+                    handlePaste={wallData.handlePaste}
+                    saveEdit={wallData.saveEdit}
+                    cancelEditing={wallData.cancelEditing}
+                    startEditing={wallData.startEditing}
+                    handleDelete={wallData.handleDelete}
+                />
+            </InfiniteScrollList>
         </div>
     );
 }

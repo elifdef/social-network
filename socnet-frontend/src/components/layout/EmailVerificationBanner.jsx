@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '../../api/axios';
-import { notifyError, notifyInfo } from "../Notify";
+import { notifyError, notifyInfo } from "../common/Notify";
 
 const EmailVerificationBanner = ({ user }) => {
     if (!user || user.email_verified_at) 

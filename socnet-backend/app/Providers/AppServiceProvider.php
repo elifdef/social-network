@@ -10,6 +10,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Http\Request;
 use Illuminate\Cache\RateLimiting\Limit;
+use App\Enums\Role;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -54,6 +57,25 @@ class AppServiceProvider extends ServiceProvider
                 $notifiable->getKey() . '/' .
                 sha1($notifiable->getEmailForVerification()) .
                 '?' . $queryParams;
+        });
+
+        // права доступу
+        Gate::define('delete-any-content', function (User $user)
+        {
+            // видаляти пости/коментарі можуть Модератори та Адміни
+            return in_array($user->role, [Role::Moderator, Role::Admin]);
+        });
+
+        Gate::define('edit-any-content', function (User $user)
+        {
+            // редагувати БУДЬ-ЯКІ пости можуть тільки Адміни
+            return $user->role === Role::Admin;
+        });
+
+        Gate::define('manage-users', function (User $user)
+        {
+            // банити мутити юзерів можуть модератори та адміни
+            return $user->role->value >= Role::Moderator->value;
         });
     }
 }

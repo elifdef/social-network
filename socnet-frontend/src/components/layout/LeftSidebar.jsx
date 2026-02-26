@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-import { APP_NAME } from "../../config";
+import { APP_NAME, userRole } from "../../config";
 import { AuthContext } from "../../context/AuthContext";
 
 const LeftSidebar = ({ isOpen }) => {
@@ -44,6 +44,24 @@ const LeftSidebar = ({ isOpen }) => {
                         <Link to="/settings" className={getLinkClass("/settings")}>
                             {t('sidebar.left.settings')}
                         </Link>
+
+                        {user.role >= userRole.Support && (
+                            <Link to="/support" className={getLinkClass("/support")} style={{ color: '#3498db' }}>
+                                {t('common.support')}
+                            </Link>
+                        )}
+
+                        {user.role >= userRole.Moderator && (
+                            <Link to="/moderation" className={getLinkClass("/moderation")} style={{ color: '#2ecc71' }}>
+                                {t('common.moderator')}
+                            </Link>
+                        )}
+
+                        {user.role >= userRole.Admin && (
+                            <Link to="/admin" className={getLinkClass("/admin")} style={{ color: '#ffd700' }}>
+                                {t('common.admin_panel')}
+                            </Link>
+                        )}
                     </>
                 ) : (
                     <>
@@ -61,7 +79,7 @@ const LeftSidebar = ({ isOpen }) => {
                 <div className="socnet-sidebar-profile">
                     <Link to={`/${user.username}`} className="socnet-mini-profile-link">
                         <img
-                            src={user?.avatar || "https://via.placeholder.com/28"}
+                            src={user?.avatar}
                             alt="avatar"
                             className="socnet-mini-avatar"
                         />

@@ -10,6 +10,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Mailer\Exception\TransportException;
 use App\Http\Middleware\UpdateLastSeen;
+use App\Http\Middleware\CheckIfMuted;
+use App\Http\Middleware\CheckIfBanned;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -21,6 +23,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware)
     {
         $middleware->api(append: [UpdateLastSeen::class]);
+        $middleware->alias([
+            'not_muted' => CheckIfMuted::class,
+            'not_banned' => CheckIfBanned::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions)
     {

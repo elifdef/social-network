@@ -15,8 +15,12 @@ import FriendsPage from "../pages/FriendsPage";
 import PostPage from "../pages/PostPage";
 import EmailVerifyPage from "../pages/EmailVerifyPage";
 import NotFoundPage from "../pages/NotFoundPage";
-
+import { AdminPage } from '../pages/AdminPage';
+import SupportPage from "../pages/SupportPage"
+import ModerationPage from "../pages/ModerationPage"
 import { GuestGuard, AuthGuard, SetupGuard } from "./Guards";
+import AdminUserInfo from "../components/admin/AdminUserInfo";
+import { userRole } from "../config";
 
 export default function AppRoutes() {
     const { user } = useContext(AuthContext);
@@ -48,6 +52,21 @@ export default function AppRoutes() {
                     <Route path="/messages" element={<div>messageTemplate</div>} />
                     <Route path="/email-verify/:id/:hash" element={<EmailVerifyPage />} />
                     <Route path="/settings" element={<SettingsPage />} />
+
+                    {user?.role >= userRole.Support && (
+                        <Route path="/support" element={<SupportPage />} />
+                    )}
+
+                    {user?.role >= userRole.Moderator && (
+                        <Route path="/moderation" element={<ModerationPage currentUser={user} />} />
+                    )}
+
+                    {user?.role >= userRole.Admin && (
+                        <>
+                            <Route path="/admin" element={<AdminPage />} />
+                            <Route path="/admin/users/:username" element={<AdminUserInfo />} />
+                        </>
+                    )}
                 </Route>
             </Route>
 

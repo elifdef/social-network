@@ -23,7 +23,7 @@ export default function ProfileActions({
     if (sameUser)
         return (
             <div className="socnet-actions">
-                <Link to="/settings" className="socnet-btn">{t('profile.edit')}</Link>
+                <Link to="/settings" className="socnet-btn">{t('common.edit')}</Link>
             </div>
         );
 

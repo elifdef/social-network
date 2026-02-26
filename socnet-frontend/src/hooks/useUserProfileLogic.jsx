@@ -1,14 +1,15 @@
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useFriendship } from "./useFriendship";
-import { notifyConfirmAction, notifyError, notifyInfo, notifySuccess } from "../components/Notify";
+import { notifyError, notifyInfo, notifySuccess } from "../components/common/Notify";
+import { useModal } from "../context/ModalContext";
 import { useTranslation } from 'react-i18next';
 
 export const useUserProfileLogic = (currentUser, isPreview = false) => {
     const { t } = useTranslation();
     const { user } = useContext(AuthContext);
     const { addFriend, removeFriend, acceptRequest, blockUser, unblockUser } = useFriendship();
-
+    const { openConfirm } = useModal();
     const [status, setStatus] = useState(currentUser?.friendship_status || 'none');
     const [loading, setLoading] = useState(false);
 
@@ -16,9 +17,14 @@ export const useUserProfileLogic = (currentUser, isPreview = false) => {
     const isBlockedByMe = !isPreview && status === 'blocked_by_me';
     const isBlockedByTarget = !isPreview && status === 'blocked_by_target';
     const isFriend = status === 'friends';
+    const isBanned = currentUser?.is_banned === true;
     const displayAvatar = currentUser?.avatar;
 
     const getDisplayBio = () => {
+        if (isBanned) {
+            return <span style={{ color: '#d32f2f', fontWeight: 'bold' }}>{t('profile.banned_status')}</span>;
+        }
+
         if (isBlockedByTarget) {
             return t('profile.restricted_profile_' + (currentUser?.gender === 2 ? "f" : "m"), { name: currentUser.first_name })
         }
@@ -31,7 +37,7 @@ export const useUserProfileLogic = (currentUser, isPreview = false) => {
     };
 
     const getField = (value, formatter = null) => {
-        if (isBlockedByTarget)
+        if (isBlockedByTarget || isBanned)
             return t('profile.hidden');
 
         if (!value)
@@ -73,7 +79,7 @@ export const useUserProfileLogic = (currentUser, isPreview = false) => {
                     if (result.success) setStatus('friends');
                     break;
                 case 'friends':
-                    if (await notifyConfirmAction(t('friends.remove_friends') + "?")) {
+                    if (await openConfirm(t('friends.remove_friends') + "?")) {
                         result = await removeFriend(currentUser.username);
                         if (result.success) setStatus('none');
                     } else {
@@ -115,7 +121,7 @@ export const useUserProfileLogic = (currentUser, isPreview = false) => {
         }
 
         // якщо ні - блокуємо
-        if (await notifyConfirmAction(`${t('common.to_block')} @${currentUser.username}?`)) {
+        if (await openConfirm(`${t('common.to_block')} @${currentUser.username}?`)) {
             setLoading(true);
             const result = await blockUser(currentUser.username);
             if (result.success) {
@@ -135,6 +141,7 @@ export const useUserProfileLogic = (currentUser, isPreview = false) => {
         sameUser,
         isBlockedByMe,
         isBlockedByTarget,
+        isBanned,
         isFriend,
         // дані
         displayAvatar,

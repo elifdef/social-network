@@ -4,7 +4,8 @@ import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import { useFriendship } from "../hooks/useFriendship";
 import { usePageTitle } from "../hooks/usePageTitle";
-import { notifySuccess, notifyError, notifyConfirmAction } from '../components/Notify';
+import { notifySuccess, notifyError } from "../components/common/Notify";
+import { useModal } from "../context/ModalContext";
 import { useTranslation } from 'react-i18next';
 
 export const useFriendsLogic = () => {
@@ -12,6 +13,7 @@ export const useFriendsLogic = () => {
     const { user: currentUser } = useContext(AuthContext);
     const { addFriend, acceptRequest, removeFriend, blockUser, unblockUser } = useFriendship();
     const [searchParams, setSearchParams] = useSearchParams();
+    const { openConfirm } = useModal();
 
     const tabs = [
         { id: 'my', label: t('common.friends') },
@@ -83,7 +85,7 @@ export const useFriendsLogic = () => {
 
     const handleAction = async (action, username) => {
         if (action === 'delete' || action === 'block') {
-            if (!(await notifyConfirmAction(t('common.are_u_sure')))) return;
+            if (!(await openConfirm(t('common.are_u_sure')))) return;
         }
 
         try {

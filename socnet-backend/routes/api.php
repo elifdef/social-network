@@ -8,6 +8,7 @@ Route::prefix('v1')->group(function ()
     require __DIR__ . '/api/users.php';
     require __DIR__ . '/api/friends.php';
     require __DIR__ . '/api/posts.php';
+    require __DIR__ . '/api/admin.php';
 });
 
 // щоб ларавел не перекидував на сторінку логін якої немає

@@ -32,6 +32,12 @@ class AuthController extends Controller
         $tokenModel->user_agent = $request->userAgent();
         $tokenModel->save();
 
+        // для записування хто зайшов
+        $user->loginHistories()->create([
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
         return response()->json([
             'status' => true,
             'message' => 'Login successful',

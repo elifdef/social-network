@@ -1,11 +1,13 @@
 import { useContext } from "react";
 import { useUserProfileLogic } from "../../hooks/useUserProfileLogic";
 import { AuthContext } from "../../context/AuthContext";
+import { userRole } from "../../config";
 import ProfileAvatar from "./ProfileAvatar";
 import ProfileActions from "./ProfileActions";
 import ProfileHeader from "./ProfileHeader";
 import ProfileStatus from "./ProfileStatus";
 import ProfileInfo from "./ProfileInfo";
+import StaffBanner from "./StaffBanner";
 
 export default function UserProfileCard({ currentUser, isPreview = false }) {
     const { user: authUser } = useContext(AuthContext);
@@ -14,19 +16,22 @@ export default function UserProfileCard({ currentUser, isPreview = false }) {
 
     const {
         status, loading, sameUser,
-        isBlockedByMe, isBlockedByTarget,
+        isBanned, isBlockedByMe, isBlockedByTarget,
         displayAvatar, displayBio, displayBirth, displayCountry, displayGender,
         handleFriendshipAction, handleBlockAction
     } = useUserProfileLogic(currentUser, isPreview);
 
+    const isStaff = currentUser.role >= userRole.Support;
+
     return (
         <div className="socnet-card-wrapper">
+            {!isPreview && isStaff && !isBanned && <StaffBanner userRole={currentUser.role} />}
             <div className="socnet-container">
                 <div className="socnet-left-col">
                     <ProfileAvatar
                         user={{ ...currentUser, avatar: displayAvatar }}
                         isPreview={isPreview}
-                        isBlocked={isBlockedByTarget}
+                        isBlocked={isBlockedByTarget || isBanned}
                     />
 
                     {!isPreview && authUser && (!isPreview || sameUser) && (
@@ -38,6 +43,7 @@ export default function UserProfileCard({ currentUser, isPreview = false }) {
                             isBlockedByTarget={isBlockedByTarget}
                             onFriendAction={handleFriendshipAction}
                             onBlockAction={handleBlockAction}
+                            isBanned={isBanned}
                         />
                     )}
                 </div>
@@ -46,7 +52,8 @@ export default function UserProfileCard({ currentUser, isPreview = false }) {
                     <ProfileHeader user={currentUser} />
 
                     <ProfileStatus bio={displayBio} />
-                    {(isPreview || !isBlockedByTarget) && (
+
+                    {(isPreview || (!isBlockedByTarget && !isBanned)) && (
                         <ProfileInfo
                             user={currentUser}
                             displayBirth={displayBirth}

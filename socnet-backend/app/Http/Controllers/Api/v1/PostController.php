@@ -49,6 +49,7 @@ class PostController extends Controller
         $posts = $targetUser->posts()
             ->with('user')
             ->withCount(['likes', 'comments'])
+            ->whereHas('user', function ($query) {$query->where('is_banned', false);})
             ->latest()
             ->paginate(config('posts.max_paginate'));
 
@@ -126,8 +127,11 @@ class PostController extends Controller
      */
     public function destroy(Post $post, Request $request): JsonResponse
     {
-        // видаляти може тільки власник
-        if ($request->user()->id !== $post->user_id)
+        if
+        (
+            $request->user()->id !== $post->user_id // видаляти може власник
+            && $request->user()->cannot('delete-any-content') // або модер або адмін
+        )
             return response()->json([
                 'status' => false,
                 'message' => "You do not have right to delete someone else's post."
@@ -153,8 +157,11 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post): JsonResponse
     {
-        // редагувати може тільки власник
-        if ($request->user()->id !== $post->user_id)
+        if
+        (
+            $request->user()->id !== $post->user_id // редагувати може власник
+            && $request->user()->cannot('edit-any-content') // або адмін
+        )
             return response()->json([
                 'status' => false,
                 'message' => "You do not have permission to edit someone else's post."

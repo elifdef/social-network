@@ -3,9 +3,9 @@ import { Link, useSearchParams } from "react-router-dom";
 import api from "../api/axios";
 import { usePageTitle } from "../hooks/usePageTitle";
 import PostItem from "../components/post/PostItem";
-import { notifyError } from "../components/Notify";
+import { notifyError } from "../components/common/Notify";
 import { useTranslation } from 'react-i18next';
-import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
+import InfiniteScrollList from "../components/common/InfiniteScrollList";
 
 export default function HomePage() {
     const { t } = useTranslation();
@@ -31,62 +31,56 @@ export default function HomePage() {
         setSearchParams({ tab });
     };
 
-    useEffect(() => {
+    const fetchFeed = async () => {
         if (abortControllerRef.current) abortControllerRef.current.abort();
         const newController = new AbortController();
         abortControllerRef.current = newController;
 
-        const fetchFeed = async () => {
-            try {
-                setError(false);
-                if (page === 1) setLoading(true);
-                else setIsLoadingMore(true);
+        try {
+            setError(false);
+            if (page === 1) setLoading(true);
+            else setIsLoadingMore(true);
 
-                const endpoint = activeTab === 'global' ? '/feed/global' : '/feed';
-                const res = await api.get(`${endpoint}?page=${page}`, { signal: newController.signal });
+            const endpoint = activeTab === 'global' ? '/feed/global' : '/feed';
+            const res = await api.get(`${endpoint}?page=${page}`, { signal: newController.signal });
 
-                const newPosts = res.data.data;
-                const meta = res.data.meta;
+            const newPosts = res.data.data;
+            const meta = res.data.meta;
 
-                setPosts(prev => {
-                    // якщо це перша сторінка - просто ставимо нові пости
-                    if (page === 1) return newPosts;
+            setPosts(prev => {
+                if (page === 1) return newPosts;
+                const uniqueNewPosts = newPosts.filter(
+                    newPost => !prev.some(existingPost => existingPost.id === newPost.id)
+                );
+                return [...prev, ...uniqueNewPosts];
+            });
 
-                    // якщо це наступні сторінки - фільтруємо ті що вже є
-                    const uniqueNewPosts = newPosts.filter(
-                        newPost => !prev.some(existingPost => existingPost.id === newPost.id)
-                    );
-
-                    return [...prev, ...uniqueNewPosts];
-                });
-
-                setHasMore(meta.current_page < meta.last_page);
-
-            } catch (err) {
-                if (err.name !== "CanceledError" && err.code !== "ERR_CANCELED") {
-                    setError(true);
-                    if (page === 1) notifyError(t('error.loading', { resource: "feed" }));
-                }
-            } finally {
-                if (!newController.signal.aborted) {
-                    setLoading(false);
-                    setIsLoadingMore(false);
-                }
+            setHasMore(meta.current_page < meta.last_page);
+        } catch (err) {
+            if (err.name !== "CanceledError" && err.code !== "ERR_CANCELED") {
+                setError(true);
+                if (page === 1) notifyError(t('error.loading', { resource: "feed" }));
             }
-        };
+        } finally {
+            if (!newController.signal.aborted) {
+                setLoading(false);
+                setIsLoadingMore(false);
+            }
+        }
+    };
 
+    useEffect(() => {
         fetchFeed();
-        return () => newController.abort();
+        return () => {
+            if (abortControllerRef.current) abortControllerRef.current.abort();
+        }
     }, [activeTab, page]);
 
     const loadMore = useCallback(() => {
         if (!loading && !isLoadingMore && hasMore && !error) {
-            setIsLoadingMore(true); // блокуємо повторні виклики
             setPage(prev => prev + 1);
         }
     }, [loading, isLoadingMore, hasMore, error]);
-
-    const loaderRef = useIntersectionObserver(loadMore, hasMore, isLoadingMore);
 
     const EmptyState = () => (
         <div className="socnet-feed-empty">
@@ -109,18 +103,6 @@ export default function HomePage() {
         </div>
     );
 
-    const ErrorStateUI = () => (
-        <div className="socnet-feed-empty">
-            <h3>{t('error.connection')}</h3>
-            <p>{t('error.loading_post')}</p>
-            <div className="socnet-feed-actions">
-                <button className="socnet-btn-small" onClick={() => window.location.reload()}>
-                    {t('common.reload_page')}
-                </button>
-            </div>
-        </div>
-    );
-
     return (
         <div className="socnet-feed-page">
             <div className="socnet-feed-tabs">
@@ -135,48 +117,20 @@ export default function HomePage() {
                     {t('feed.global_feed')}
                 </button>
             </div>
-
-            {loading && page === 1 ? (
-                <div className="socnet-feed-loading">
-                    {t('common.loading')}...
-                </div>
-            ) : (
-                <div className="socnet-feed-list">
-                    {error && page === 1 ? (
-                        <ErrorStateUI />
-                    ) : posts.length > 0 ? (
-                        <>
-                            {posts.map(post => (
-                                <PostItem key={post.id} post={post} />
-                            ))}
-
-                            {hasMore && !error && (
-                                <div ref={loaderRef} style={{ padding: '20px', textAlign: 'center', color: 'var(--theme-text-muted)' }}>
-                                    {isLoadingMore ? t('common.loading') + '...' : ''}
-                                </div>
-                            )}
-
-                            {!hasMore && (
-                                <div style={{ padding: '20px', textAlign: 'center', color: 'var(--theme-text-muted)', fontSize: '11px' }}>
-                                    {t('wall.no_more_posts')}
-                                </div>
-                            )}
-
-                            {error && page > 1 && (
-                                <div style={{ padding: '10px', textAlign: 'center' }}>
-                                    <span style={{ color: '#bd4c4c', fontSize: '12px' }}>{t('error.connection')}</span>
-                                    <br />
-                                    <button className="socnet-btn-small" style={{ marginTop: '5px' }} onClick={() => fetchFeed()}>
-                                        Спробувати ще раз
-                                    </button>
-                                </div>
-                            )}
-                        </>
-                    ) : (
-                        <EmptyState />
-                    )}
-                </div>
-            )}
+            <InfiniteScrollList
+                itemsCount={posts.length}
+                isLoadingInitial={loading && page === 1}
+                isLoadingMore={isLoadingMore}
+                hasMore={hasMore}
+                onLoadMore={loadMore}
+                error={error}
+                onRetry={fetchFeed}
+                emptyState={<EmptyState />}
+            >
+                {posts.map(post => (
+                    <PostItem key={post.id} post={post} />
+                ))}
+            </InfiniteScrollList>
         </div>
     );
 }

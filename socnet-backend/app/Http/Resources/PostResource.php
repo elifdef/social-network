@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,14 +21,7 @@ class PostResource extends JsonResource
             'content' => $this->content,
             'image' => $this->image ? asset('storage/' . $this->image) : null,
             'created_at' => $this->created_at,
-            'user' => [
-                'id' => $this->user->id,
-                'username' => $this->user->username,
-                'first_name' => $this->user->first_name,
-                'last_name' => $this->user->last_name,
-                'avatar' => $this->user->avatar ? asset('storage/' . $this->user->avatar) : User::defaultAvatar,
-            ],
-
+            'user' => new UserBasicResource($this->whenLoaded('user')),
             'likes_count' => $this->likes_count ?? 0,
             'comments_count' => $this->comments_count ?? 0,
             'is_liked' => $user ? $this->isLikedBy($user) : false,

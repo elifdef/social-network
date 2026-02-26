@@ -18,6 +18,27 @@ class PublicUserResource extends JsonResource
     {
         $currentUser = $request->user('sanctum');
         $status = $this->getFriendshipStatusWith($currentUser);
+
+        // якщо забанені
+        if ($this->is_banned) {
+            return [
+                'id' => $this->id,
+                'username' => $this->username,
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'avatar' => $this->avatar_url,
+                'bio' => null,
+                'gender' => null,
+                'birth_date' => null,
+                'created_at' => null,
+                'is_setup_complete' => true,
+                'friendship_status' => $status,
+                'country' => null,
+                'is_banned' => true,
+            ];
+        }
+
+        // якщо кинули в ЧС
         if ($status === 'blocked_by_target')
         {
             return [
@@ -25,24 +46,23 @@ class PublicUserResource extends JsonResource
                 'username' => $this->username,
                 'first_name' => $this->first_name,
                 'last_name' => $this->last_name,
-                'avatar' => User::defaultAvatar,
+                'avatar' => $this->avatar_url,
                 'bio' => null,
                 'gender' => null,
                 'birth_date' => null,
                 'created_at' => null,
                 'is_setup_complete' => true,
                 'friendship_status' => $status,
-                'country' => null
+                'country' => null,
+                'is_banned' => (bool)$this->is_banned,
             ];
         }
         return [
-            // $this посилається на об'єкт User
             'id' => $this->id,
             'username' => $this->username,
-            'email' => $this->when($currentUser && $currentUser->id === $this->id, $this->email),
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
-            'avatar' => $this->avatar ? asset('storage/' . $this->avatar) : User::defaultAvatar,
+            'avatar' => $this->avatar_url,
             'bio' => $this->bio,
             'gender' => $this->gender,
             'created_at' => $this->created_at,
@@ -51,8 +71,11 @@ class PublicUserResource extends JsonResource
             'last_seen' => $this->last_seen_at,
             'country' => $this->country,
             'is_setup_complete' => (bool)$this->is_setup_complete,
-            'email_verified_at' => $this->email_verified_at,
+            'role' => $this->role,
             'friendship_status' => $status,
+            'is_banned' => (bool)$this->is_banned,
+
+            // Лічильники
             'friends_count' => $this->getAllFriendIds()->count(),
             'followers_count' => $this->receivedFriendships()->wherePivot('status', Friendship::STATUS_PENDING)->count()
         ];
