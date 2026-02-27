@@ -3,13 +3,13 @@ import { usePageTitle } from "../hooks/usePageTitle";
 
 const SupportPage = () => {
     const { t } = useTranslation();
-    usePageTitle(t('common.support', 'Підтримка'));
+    usePageTitle(t('common.support_panel'));
 
     return (
         <div className="socnet-card-wrapper">
-            <h2 className="socnet-section-title">{t('common.support', 'Підтримка')}</h2>
+            <h2 className="socnet-section-title">{t('common.support_panel')}</h2>
             <div className="socnet-feed-empty">
-                Підтримка (У розробці)
+                (У розробці)
                 <div>
                     Підтримайте себе самі
                 </div>

@@ -16,21 +16,7 @@ export default function UserWall({ profileUser, isOwnProfile }) {
         <div className="socnet-wall">
             <WallHeader postsCount={wallData.countPosts} />
 
-            {isOwnProfile && (
-                <CreatePostForm
-                    content={wallData.content}
-                    setContent={wallData.setContent}
-                    preview={wallData.preview}
-                    removeImage={wallData.removeImage}
-                    isDragging={wallData.isDragging}
-                    handleDragOver={wallData.handleDragOver}
-                    handleDragLeave={wallData.handleDragLeave}
-                    handleDrop={wallData.handleDrop}
-                    handleFileSelect={wallData.handleFileSelect}
-                    handlePaste={wallData.handlePaste}
-                    handleSubmit={wallData.handleSubmit}
-                />
-            )}
+            {isOwnProfile && (<CreatePostForm onSubmitSuccess={wallData.createPost} />)}
 
             <InfiniteScrollList
                 className=""
@@ -41,7 +27,7 @@ export default function UserWall({ profileUser, isOwnProfile }) {
                 onLoadMore={wallData.loadMore}
                 emptyState={
                     <div className="socnet-feed-empty" style={{ marginTop: '15px' }}>
-                        {t('wall.no_posts_yet', 'На стіні поки що немає записів.')}
+                        {t('wall.no_posts_yet')}
                     </div>
                 }
             >

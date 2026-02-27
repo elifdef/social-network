@@ -46,14 +46,17 @@ const LeftSidebar = ({ isOpen }) => {
                         </Link>
 
                         {user.role >= userRole.Support && (
-                            <Link to="/support" className={getLinkClass("/support")} style={{ color: '#3498db' }}>
-                                {t('common.support')}
-                            </Link>
+                            <>
+                                <hr />
+                                <Link to="/support" className={getLinkClass("/support")} style={{ color: '#3498db' }}>
+                                    {t('common.support_panel')}
+                                </Link>
+                            </>
                         )}
 
                         {user.role >= userRole.Moderator && (
                             <Link to="/moderation" className={getLinkClass("/moderation")} style={{ color: '#2ecc71' }}>
-                                {t('common.moderator')}
+                                {t('common.moderator_panel')}
                             </Link>
                         )}
 

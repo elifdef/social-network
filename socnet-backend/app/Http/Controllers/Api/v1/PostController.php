@@ -49,7 +49,10 @@ class PostController extends Controller
         $posts = $targetUser->posts()
             ->with('user')
             ->withCount(['likes', 'comments'])
-            ->whereHas('user', function ($query) {$query->where('is_banned', false);})
+            ->whereHas('user', function ($query)
+            {
+                $query->where('is_banned', false);
+            })
             ->latest()
             ->paginate(config('posts.max_paginate'));
 
@@ -103,18 +106,18 @@ class PostController extends Controller
 
         $path = null;
         if ($request->hasFile('image'))
-        {
             $path = $this->fileService->upload(
                 file: $request->file('image'),
                 folder: $request->user()->username,
                 prefix: 'post'
             );
-        }
 
         $post = $request->user()->posts()->create([
             'content' => $request->input('content'),
             'image' => $path
         ]);
+        $post->load('user');
+
         return response()->json((new PostResource($post))->resolve(), 201);
     }
 
@@ -220,6 +223,10 @@ class PostController extends Controller
         }
 
         $post->update($data);
+
+        $post->load('user');
+        $post->loadCount(['likes', 'comments']);
+
         return response()->json((new PostResource($post))->resolve());
     }
 

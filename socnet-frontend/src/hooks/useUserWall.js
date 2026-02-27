@@ -12,12 +12,6 @@ export const useUserWall = (profileUser) => {
     const [countPosts, setCountPosts] = useState(0);
     const [isPageLoading, setIsPageLoading] = useState(true);
 
-    // для створення
-    const [content, setContent] = useState('');
-    const [image, setImage] = useState(null);
-    const [preview, setPreview] = useState(null);
-    const [isDragging, setIsDragging] = useState(false);
-
     // для редагування
     const [editingPostId, setEditingPostId] = useState(null);
     const [editContent, setEditContent] = useState('');
@@ -42,11 +36,8 @@ export const useUserWall = (profileUser) => {
 
         try {
             const res = await PostService.getUserPosts(profileUser.username, pageNumber);
-
             const processedPosts = res.data;
 
-            // якщо це перша сторінка - замінюємо пости, ні - в кінець
-            // з фільтрацією щоб уникнути повторів ключів під час рендеру
             if (pageNumber === 1)
                 setPosts(processedPosts);
             else
@@ -66,14 +57,11 @@ export const useUserWall = (profileUser) => {
             else
                 notifyError(t('error.loading_post'));
         } finally {
-            if (pageNumber === 1)
-                setIsPageLoading(false);
-            else
-                setIsLoadingMore(false);
+            if (pageNumber === 1) setIsPageLoading(false);
+            else setIsLoadingMore(false);
         }
     };
 
-    // перше завантаження
     useEffect(() => {
         setPage(1);
         setHasMore(true);
@@ -82,7 +70,6 @@ export const useUserWall = (profileUser) => {
         fetchPosts(1);
     }, [profileUser?.username]);
 
-    // для другого/третього/.../n-го завантаження
     const loadMore = useCallback(() => {
         if (!isLoadingMore && hasMore) {
             setIsLoadingMore(true);
@@ -92,71 +79,43 @@ export const useUserWall = (profileUser) => {
         }
     }, [isLoadingMore, hasMore, page, profileUser?.username]);
 
-    const handleDragOver = (e) => { e.preventDefault(); setIsDragging(true); };
-    const handleDragLeave = (e) => { e.preventDefault(); setIsDragging(false); };
+    const createPost = async (content, image) => {
+        try {
+            const newPost = await PostService.create({ image, content });
+            setPosts([newPost, ...posts]);
+            setCountPosts(countPosts + 1);
+            return true;
+        } catch (error) {
+            notifyError(error.response?.data?.message || t('common.error'));
+            return false;
+        }
+    };
 
-    const setFileState = (file, setImageState, setPreviewState) => {
+    const setEditFileState = (file) => {
         if (!file) return;
         if (!validateImageFile(file)) return;
-
-        setImageState(file);
-        setPreviewState(URL.createObjectURL(file));
-        if (setImageState === setEditImage) setDeleteExistingImage(false);
+        setEditImage(file);
+        setEditPreview(URL.createObjectURL(file));
+        setDeleteExistingImage(false);
     };
 
-    const handleDrop = (e) => {
-        e.preventDefault();
-        setIsDragging(false);
-        setFileState(e.dataTransfer.files[0], setImage, setPreview);
-    };
+    const handleEditFileSelect = (e) => setEditFileState(e.target.files[0]);
 
-    // для інпута при створенні
-    const handleFileSelect = (e) => {
-        setFileState(e.target.files[0], setImage, setPreview);
-    };
-
-    // для інпута при редагуванні
-    const handleEditFileSelect = (e) => {
-        setFileState(e.target.files[0], setEditImage, setEditPreview);
-    };
-
-    const handlePaste = (e, target = 'create') => {
+    const handlePaste = (e) => {
         const items = e.clipboardData.items;
         for (let i = 0; i < items.length; i++) {
             if (items[i].type.indexOf('image') !== -1) {
                 const file = items[i].getAsFile();
-                (target === 'edit')
-                    ? setFileState(file, setEditImage, setEditPreview)
-                    : setFileState(file, setImage, setPreview);
+                setEditFileState(file);
                 e.preventDefault();
                 return;
             }
         }
     };
 
-    const handleSubmit = async () => {
-        if (!content.trim() && !image) {
-            notifyError(t('post.empty_post'));
-            return;
-        }
-        try {
-            const newPost = await PostService.create({ image, content });
-            setPosts([newPost, ...posts]);
-            setCountPosts(countPosts + 1);
-            setContent('');
-            setImage(null);
-            setPreview(null);
-        } catch (error) {
-            notifyError(error.response?.data?.message || t('common.error'));
-        }
-    };
-
-    const removeImage = () => { setImage(null); setPreview(null); };
-
     const startEditing = (post) => {
         setEditingPostId(post.id);
         setEditContent(post.content || '');
-        // стара картинка як превю
         setEditPreview(post.image ? `${post.image}` : null);
         setEditImage(null);
         setDeleteExistingImage(false);
@@ -171,14 +130,12 @@ export const useUserWall = (profileUser) => {
     };
 
     const removeEditImage = () => {
-        // якщо вибрали НОВИЙ файл і передумали то просто зануляєм
         if (editImage) {
             setEditImage(null);
             setEditPreview(null);
         } else {
-            // якщо це СТАРА картинка з сервера
             setEditPreview(null);
-            setDeleteExistingImage(true); // мітка на видалення
+            setDeleteExistingImage(true);
         }
     };
 
@@ -215,13 +172,12 @@ export const useUserWall = (profileUser) => {
 
     return {
         posts, countPosts,
-        content, setContent, image, preview, isDragging,
-        handleDragOver, handleDragLeave, handleDrop, handlePaste, handleFileSelect, handleSubmit, removeImage, removeEditImage,
+        createPost,
         editingPostId,
         editContent, setEditContent,
         editPreview,
-        setEditImage, handleEditFileSelect, setEditPreview,
-        startEditing, cancelEditing, saveEdit,
+        setEditImage, handleEditFileSelect, setEditPreview, handlePaste,
+        startEditing, cancelEditing, saveEdit, removeEditImage,
         handleDelete,
         hasMore, isLoadingMore, loadMore,
         isPageLoading

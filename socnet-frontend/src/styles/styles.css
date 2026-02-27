@@ -1994,6 +1994,10 @@ input:-webkit-autofill:active {
     gap: 5px;
 }
 
+.socnet-nav-list hr {
+    width: 100%;
+}
+
 .socnet-nav-item {
     display: block;
     padding: 6px 10px;
