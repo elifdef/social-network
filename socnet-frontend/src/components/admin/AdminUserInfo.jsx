@@ -59,8 +59,8 @@ export default function AdminUserInfo() {
         }
     };
 
-    if (isLoading) return <div className="socnet-feed-loading">{t('admin.loading_dossier')}</div>;
-    if (!user) return <div className="socnet-feed-empty">{t('admin.user_not_found')}</div>;
+    if (isLoading) return <div className="socnet-empty-state">{t('admin.loading_dossier')}</div>;
+    if (!user) return <div className="socnet-empty-state with-card">{t('admin.user_not_found')}</div>;
 
     return (
         <div className="admin-dossier-wrapper">

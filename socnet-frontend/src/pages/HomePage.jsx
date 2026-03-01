@@ -83,7 +83,7 @@ export default function HomePage() {
     }, [loading, isLoadingMore, hasMore, error]);
 
     const EmptyState = () => (
-        <div className="socnet-feed-empty">
+        <div className="socnet-empty-state with-card">
             <h3>{t('common.welcome')}!</h3>
             {activeTab === 'feed' ? (
                 <>
@@ -105,14 +105,14 @@ export default function HomePage() {
 
     return (
         <div className="socnet-feed-page">
-            <div className="socnet-feed-tabs">
+            <div className="socnet-tabs">
                 <button
-                    className={`socnet-feed-tab ${activeTab === 'feed' ? 'active' : ''}`}
+                    className={`socnet-tab ${activeTab === 'feed' ? 'active' : ''}`}
                     onClick={() => handleTabChange('feed')}>
                     {t('feed.my_feed')}
                 </button>
                 <button
-                    className={`socnet-feed-tab ${activeTab === 'global' ? 'active' : ''}`}
+                    className={`socnet-tab ${activeTab === 'global' ? 'active' : ''}`}
                     onClick={() => handleTabChange('global')}>
                     {t('feed.global_feed')}
                 </button>

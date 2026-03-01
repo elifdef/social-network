@@ -106,7 +106,7 @@ export const PostsManager = ({ currentUser }) => {
                 hasMore={hasMore}
                 onLoadMore={loadMore}
                 emptyState={
-                    <div className="socnet-feed-empty">
+                    <div className="socnet-empty-state with-card">
                         <h3>{t('post.posts_not_found')}</h3>
                         <p>{t('admin.posts_not_found_desc')}</p>
                     </div>

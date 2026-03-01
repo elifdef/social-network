@@ -49,7 +49,7 @@ export default function PostPage() {
 
     if (error)
         return (
-            <div className="socnet-feed-empty">
+            <div className="socnet-empty-state with-card">
                 <h3>{error}</h3>
                 <p>{t('error.loading_post')}</p>
                 <div className="socnet-feed-actions">

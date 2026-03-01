@@ -157,7 +157,7 @@ export const UsersManager = ({ canBan = true }) => {
             />
 
             {isLoading ? (
-                <div className="socnet-feed-loading">{t('common.loading')}</div>
+                <div className="socnet-empty-state">{t('common.loading')}</div>
             ) : (
                 <div className="admin-users-list">
                     {users.map(user => (
@@ -170,7 +170,7 @@ export const UsersManager = ({ canBan = true }) => {
                         />
                     ))}
                     {users.length === 0 && (
-                        <div className="socnet-feed-empty">{t('admin.users_not_found')}</div>
+                        <div className="socnet-empty-state with-card">{t('admin.users_not_found')}</div>
                     )}
                 </div>
             )}

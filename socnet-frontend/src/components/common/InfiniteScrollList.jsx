@@ -20,7 +20,7 @@ export default function InfiniteScrollList({
     // перше завантаження
     if (isLoadingInitial) {
         return (
-            <div className="socnet-feed-loading">
+            <div className="socnet-empty-state">
                 {t('common.loading')}...
             </div>
         );
@@ -28,7 +28,7 @@ export default function InfiniteScrollList({
 
     if (error && itemsCount === 0) {
         return (
-            <div className="socnet-feed-empty">
+            <div className="socnet-empty-state with-card">
                 <h3>{t('error.connection')}</h3>
                 {onRetry && (
                     <button className="socnet-btn-small" style={{ marginTop: '10px' }} onClick={onRetry}>
@@ -42,7 +42,7 @@ export default function InfiniteScrollList({
     // немає постів взагалі
     if (itemsCount === 0) {
         return emptyState || (
-            <div className="socnet-feed-empty">
+            <div className="socnet-empty-state with-card">
                 {t('common.empty')}
             </div>
         );

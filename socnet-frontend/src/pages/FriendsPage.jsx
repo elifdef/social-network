@@ -19,11 +19,11 @@ export default function FriendsPage() {
     return (
         <div className="socnet-friends-page">
             <h1 className="socnet-friends-title">{t('friends.your_contacts')}</h1>
-            <div className="socnet-friends-tabs">
+            <div className="socnet-tabs">
                 {tabs.map(tab => (
                     <button
                         key={tab.id}
-                        className={`socnet-friends-tab ${activeTab === tab.id ? 'active' : ''}`}
+                        className={`socnet-tab ${activeTab === tab.id ? 'active' : ''}`}
                         onClick={() => handleTabChange(tab.id)}
                     >
                         {tab.label}
@@ -37,7 +37,7 @@ export default function FriendsPage() {
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && activeTab === 'all' && handleSearchSubmit()}
-                    className="socnet-friends-search-input"
+                    className="socnet-form-input"
                 />
                 {activeTab === 'all' && (
                     <button className="socnet-friends-search-btn" onClick={handleSearchSubmit}>
@@ -48,11 +48,11 @@ export default function FriendsPage() {
 
             <div className="socnet-friends-list">
                 {loading ? (
-                    <div className="socnet-friends-loading">{t('common.loading')}</div>
+                    <div className="socnet-empty-state">{t('common.loading')}</div>
                 ) : (
                     <>
                         {displayUsers.length === 0 && (
-                            <div className="socnet-friends-empty">
+                            <div className="socnet-empty-state">
                                 {t('friends.list_empty')}
                             </div>
                         )}

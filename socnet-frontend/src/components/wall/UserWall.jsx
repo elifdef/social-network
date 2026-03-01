@@ -26,7 +26,7 @@ export default function UserWall({ profileUser, isOwnProfile }) {
                 hasMore={wallData.hasMore}
                 onLoadMore={wallData.loadMore}
                 emptyState={
-                    <div className="socnet-feed-empty" style={{ marginTop: '15px' }}>
+                    <div className="socnet-empty-state with-card" style={{ marginTop: '15px' }}>
                         {t('wall.no_posts_yet')}
                     </div>
                 }

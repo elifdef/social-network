@@ -9,9 +9,9 @@ import { BannedScreen } from './components/auth/BannedScreen';
 const GlobalLoading = () => {
   const { t } = useTranslation();
   return (
-    <div className="global-screen-wrapper">
+    <div className="socnet-fullscreen-center">
       <title>{t('common.loading')}</title>
-      <div className="socnet-feed-loading">{t('common.loading')}</div>
+      <div className="socnet-empty-state">{t('common.loading')}</div>
     </div>
   );
 };
@@ -19,7 +19,7 @@ const GlobalLoading = () => {
 const GlobalError = () => {
   const { t } = useTranslation();
   return (
-    <div className="global-screen-wrapper">
+    <div className="socnet-fullscreen-center">
       <title>{t('error.connection')}</title>
       <ErrorState
         title={t('error.server_down')}

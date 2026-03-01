@@ -6,7 +6,7 @@ const NotFoundPage = () => {
     const { t } = useTranslation();
     
     return (
-        <div className="not-found-container">
+        <div className="socnet-fullscreen-center">
             <div className="not-found-content">
                 <NotFound width={256} height={256} />
                 <h1 className="not-found-title">{t('error.page_not_found')}</h1>

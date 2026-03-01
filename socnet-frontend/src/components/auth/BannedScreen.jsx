@@ -14,7 +14,7 @@ export const BannedScreen = () => {
     if (!user) return null;
 
     return (
-        <div className="banned-screen-wrapper">
+        <div className="socnet-fullscreen-center">
             <div className="socnet-card-wrapper banned-card">
                 <img
                     src="/banned-avatar.png"

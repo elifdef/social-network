@@ -8,7 +8,7 @@ export default function LoginPage() {
     usePageTitle(t('auth.signin'));
 
     return (
-        <div className="socnet-auth-container">
+        <div className="socnet-fullscreen-center">
             <div className="socnet-auth-card">
                 <div className="socnet-auth-header">
                     <h1 className="socnet-auth-title">{t('auth.signin')}</h1>

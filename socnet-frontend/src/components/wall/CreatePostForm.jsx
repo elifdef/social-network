@@ -69,6 +69,7 @@ export default function CreatePostForm({ onSubmitSuccess }) {
             onDrop={handleDrop}
         >
             <Textarea
+                className="socnet-form-textarea fixed-size"
                 placeholder={isDragging ? t('wall.drop_image') : t('wall.write_post')}
                 value={content}
                 onChange={e => setContent(e.target.value)}

@@ -8,7 +8,7 @@ const SupportPage = () => {
     return (
         <div className="socnet-card-wrapper">
             <h2 className="socnet-section-title">{t('common.support_panel')}</h2>
-            <div className="socnet-feed-empty">
+            <div className="socnet-empty-state with-card">
                 (У розробці)
                 <div>
                     Підтримайте себе самі

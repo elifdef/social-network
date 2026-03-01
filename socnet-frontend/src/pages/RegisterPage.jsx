@@ -8,7 +8,7 @@ export default function RegisterPage() {
     usePageTitle(t('auth.signup'));
 
     return (
-        <div className="socnet-auth-container">
+        <div className="socnet-fullscreen-center">
             <div className="socnet-auth-card" style={{ maxWidth: '400px' }}>
                 <div className="socnet-auth-header">
                     <h1 className="socnet-auth-title">{t('auth.signup')}</h1>

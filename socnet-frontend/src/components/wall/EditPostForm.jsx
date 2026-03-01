@@ -14,7 +14,7 @@ export default function EditPostForm({
         <div className="socnet-post">
             <div className="socnet-edit-mode">
                 <Textarea
-                    className="socnet-edit-textarea"
+                    className="socnet-form-textarea fixed-size"
                     value={editContent}
                     onChange={(e) => setEditContent(e.target.value)}
                     onPaste={(e) => handlePaste(e, 'edit')}

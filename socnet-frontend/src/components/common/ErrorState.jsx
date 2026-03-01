@@ -6,7 +6,7 @@ export default function ErrorState({ title, description, onRetry }) {
     const handleRetry = onRetry || (() => window.location.reload());
 
     return (
-        <div className="socnet-feed-empty" style={{ margin: '20px auto', maxWidth: '500px' }}>
+        <div className="socnet-empty-state with-card" style={{ margin: '20px auto', maxWidth: '500px' }}>
             <h3>{title || t('error.connection')}</h3>
             <p>{description || t('error.loading', { resource: t('common.profile') })}</p>
 
