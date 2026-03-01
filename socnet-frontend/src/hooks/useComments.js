@@ -8,7 +8,6 @@ export const useComments = (postId) => {
     const { t } = useTranslation();
     const { openConfirm } = useModal();
     const [comments, setComments] = useState([]);
-    const [text, setText] = useState("");
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -17,10 +16,8 @@ export const useComments = (postId) => {
 
         api.get(`/posts/${postId}/comments`)
             .then(res => {
-                if (isMounted) {
-                    const comments = res.data.data;
-                    setComments(comments);
-                }
+                if (isMounted)
+                    setComments(res.data.data);
             })
             .catch(err => notifyError(err))
             .finally(() => {
@@ -30,15 +27,13 @@ export const useComments = (postId) => {
         return () => { isMounted = false; };
     }, [postId]);
 
-    const addComment = async (e) => {
-        e.preventDefault();
-        if (!text.trim())
+    const addComment = async (content) => {
+        if (!content.trim())
             return false;
 
         try {
-            const res = await api.post(`/posts/${postId}/comments`, { content: text });
+            const res = await api.post(`/posts/${postId}/comments`, { content });
             setComments(prev => [res.data, ...prev]);
-            setText("");
             return true;
         } catch (err) {
             notifyError(t('error.add_comment'));
@@ -61,5 +56,5 @@ export const useComments = (postId) => {
         }
     };
 
-    return { comments, text, setText, loading, addComment, removeComment };
+    return { comments, loading, addComment, removeComment };
 };

@@ -1,8 +1,20 @@
+import { useState } from "react";
 import SendIcon from "../../assets/sendComment.svg?react";
 
-export default function CommentForm({ user, text, setText, onSubmit, placeholder }) {
+export default function CommentForm({ user, onSubmit, placeholder }) {
+    const [text, setText] = useState("");
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!text.trim()) return;
+
+        const success = await onSubmit(text);
+        if (success)
+            setText("");
+    };
+
     return (
-        <form className="socnet-comment-form" onSubmit={onSubmit}>
+        <form className="socnet-comment-form" onSubmit={handleSubmit}>
             {user && (
                 <>
                     <img

@@ -21,7 +21,7 @@ class CommentController extends Controller
         return CommentResource::collection($comments);
     }
 
-// створити коментар
+    // створити коментар
     public function store(Request $request, Post $post)
     {
         $currentUser = $request->user('sanctum');
@@ -43,7 +43,7 @@ class CommentController extends Controller
             'user_id' => $currentUser->id
         ]);
 
-        return new CommentResource($comment->load('user'));
+        return (new CommentResource($comment->load('user')))->resolve();
     }
 
     // видалити коментар

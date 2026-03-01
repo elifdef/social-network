@@ -8,6 +8,8 @@ export default function CommentList({ loading, comments, currentUser, onDelete, 
     if (comments.length === 0)
         return <div className="no-comments">{noCommentsText}</div>;
 
+    console.log(comments);
+    
     return (
         <div className="socnet-comments-list">
             {comments.map(comment => (

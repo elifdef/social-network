@@ -4,6 +4,7 @@ export default function ActionModal({
     isOpen,
     onClose,
     type,
+    placeholder,
     message,
     defaultText = '',
     btnSubmit,
@@ -57,7 +58,7 @@ export default function ActionModal({
                         onChange={(e) => setInputValue(e.target.value)}
                         className="socnet-form-input"
                         style={{ marginBottom: '15px' }}
-                        placeholder="Введіть текст..."
+                        placeholder={placeholder}
                     />
                 )}
 
@@ -69,6 +70,7 @@ export default function ActionModal({
                             onResolve(type === 'prompt' ? inputValue : true);
                             onClose();
                         }}
+                        disabled={!inputValue.trim()}
                     >
                         {btnSubmit}
                     </button>

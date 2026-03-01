@@ -8,26 +8,26 @@ import { useTranslation } from 'react-i18next';
 export default function CommentsSection({ postId, onCountChange }) {
     const { t } = useTranslation();
     const { user } = useContext(AuthContext);
-    const { comments, text, setText, loading, addComment, removeComment } = useComments(postId);
+    const { comments, loading, addComment, removeComment } = useComments(postId);
 
-    const handleAddComment = async (e) => {
-        const success = await addComment(e);
+    const handleAddComment = async (content) => {
+        const success = await addComment(content);
         if (success)
             onCountChange(1);
+        return success;
     };
 
     const handleRemoveComment = async (commentId) => {
         const success = await removeComment(commentId);
-        if (success)
+        if (success) {
             onCountChange(-1);
+        }
     };
 
     return (
         <div className="socnet-comments-container">
             <CommentForm
                 user={user}
-                text={text}
-                setText={setText}
                 onSubmit={handleAddComment}
                 placeholder={t('comment.create_comment')}
             />
