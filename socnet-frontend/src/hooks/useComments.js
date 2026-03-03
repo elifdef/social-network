@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../api/axios";
 import { notifyError } from "../components/common/Notify";
 import { useTranslation } from 'react-i18next';
@@ -8,24 +8,66 @@ export const useComments = (postId) => {
     const { t } = useTranslation();
     const { openConfirm } = useModal();
     const [comments, setComments] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [isLoadingInitial, setIsLoadingInitial] = useState(true);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [error, setError] = useState(false);
 
-    useEffect(() => {
+    const fetchComments = useCallback(() => {
         let isMounted = true;
-        setLoading(true);
 
-        api.get(`/posts/${postId}/comments`)
+        if (page === 1) setIsLoadingInitial(true);
+        else setIsLoadingMore(true);
+
+        setError(false);
+
+        api.get(`/posts/${postId}/comments?page=${page}`)
             .then(res => {
-                if (isMounted)
-                    setComments(res.data.data);
+                if (isMounted) {
+                    const newComments = res.data.data;
+                    const meta = res.data.meta;
+
+                    setComments(prev => {
+                        if (page === 1) return newComments;
+
+                        const uniqueNewComments = newComments.filter(
+                            newComment => !prev.some(existing => existing.id === newComment.id)
+                        );
+
+                        return [...prev, ...uniqueNewComments];
+                    });
+
+                    setHasMore(meta.current_page < meta.last_page);
+                }
             })
-            .catch(err => notifyError(err))
+            .catch(err => {
+                if (isMounted) {
+                    notifyError(t('common.loading_comments'))
+                    setError(true);
+                    if (page === 1) notifyError(err);
+                }
+            })
             .finally(() => {
-                if (isMounted) setLoading(false);
+                if (isMounted) {
+                    setIsLoadingInitial(false);
+                    setIsLoadingMore(false);
+                }
             });
 
         return () => { isMounted = false; };
-    }, [postId]);
+    }, [postId, page]);
+
+    useEffect(() => {
+        const cleanup = fetchComments();
+        return cleanup;
+    }, [fetchComments]);
+
+    const loadMore = useCallback(() => {
+        if (!isLoadingInitial && !isLoadingMore && hasMore && !error) {
+            setPage(p => p + 1);
+        }
+    }, [isLoadingInitial, isLoadingMore, hasMore, error]);
 
     const addComment = async (content) => {
         if (!content.trim())
@@ -56,5 +98,15 @@ export const useComments = (postId) => {
         }
     };
 
-    return { comments, loading, addComment, removeComment };
+    return {
+        comments,
+        isLoadingInitial,
+        isLoadingMore,
+        hasMore,
+        error,
+        fetchComments,
+        loadMore,      
+        addComment,
+        removeComment
+    };
 };

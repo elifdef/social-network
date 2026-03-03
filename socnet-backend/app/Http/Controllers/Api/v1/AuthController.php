@@ -48,6 +48,12 @@ class AuthController extends Controller
     // реєстрація
     public function register(Request $request)
     {
+        if (!config('features.allow_registration'))
+            return response()->json([
+                'status' => false,
+                'message' => 'New user registration is currently suspended'
+            ], 403);
+
         $validated = $request->validate([
             'username' => 'required|string|min:4|max:32|unique:users|regex:/^[A-Za-z0-9_]+$/',
             'email' => 'required|email|unique:users',
@@ -65,7 +71,8 @@ class AuthController extends Controller
         $user = User::create([
             'username' => $validated['username'],
             'email' => $validated['email'],
-            'password' => $validated['password']
+            'password' => $validated['password'],
+            'email_verified_at' => config('features.require_email_verification') ? null : now()
         ]);
 
         return response()->json([

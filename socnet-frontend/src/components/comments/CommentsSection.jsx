@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 export default function CommentsSection({ postId, onCountChange }) {
     const { t } = useTranslation();
     const { user } = useContext(AuthContext);
-    const { comments, loading, addComment, removeComment } = useComments(postId);
+    const { comments, isLoadingInitial, isLoadingMore, hasMore, error, loadMore, fetchComments, addComment, removeComment } = useComments(postId);
 
     const handleAddComment = async (content) => {
         const success = await addComment(content);
@@ -33,12 +33,16 @@ export default function CommentsSection({ postId, onCountChange }) {
             />
 
             <CommentList
-                loading={loading}
                 comments={comments}
                 currentUser={user}
                 onDelete={handleRemoveComment}
-                loadingText={t('common.loading')}
                 noCommentsText={t('comment.no_comments')}
+                isLoadingInitial={isLoadingInitial}
+                isLoadingMore={isLoadingMore}
+                hasMore={hasMore}
+                error={error}
+                onLoadMore={loadMore}
+                onRetry={fetchComments}
             />
         </div>
     );

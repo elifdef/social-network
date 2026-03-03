@@ -13,6 +13,7 @@
     "loading": "Error loading {{resource}}",
     "connection": "Network error",
     "loading_post": "An error occurred while loading posts.",
+    "loading_comments": "An error occurred while loading comments.",
     "save_changes": "An error occurred while saving changes.",
     "change_email": "An error occurred while changing email.",
     "registration": "An error occurred during registration.",

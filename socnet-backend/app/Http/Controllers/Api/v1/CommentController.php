@@ -20,7 +20,7 @@ class CommentController extends Controller
                 $query->where('is_banned', false);
             })
             ->latest() // нові зверху
-            ->paginate(20);
+            ->paginate(config('comments.max_paginate'));
 
         return CommentResource::collection($comments);
     }
@@ -72,7 +72,7 @@ class CommentController extends Controller
         $comments = Comment::where('user_id', $user->id)
             ->with(['user', 'post.user'])
             ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            ->paginate(config('comments.max_paginate'));
 
         return CommentResource::collection($comments);
     }

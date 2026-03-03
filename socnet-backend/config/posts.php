@@ -1,5 +1,3 @@
 <?php
 
-return [
-    'max_paginate' => env('MAX_PAGINATE_POSTS'),
-];
+return ['max_paginate' => env('MAX_PAGINATE_POSTS')];

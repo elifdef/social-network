@@ -1,15 +1,34 @@
-import CommentItem from "./CommentItem";
+import CommentItem from './CommentItem';
+import InfiniteScrollList from '../common/InfiniteScrollList';
 
-export default function CommentList({ loading, comments, currentUser, onDelete, loadingText, noCommentsText }) {
-
-    if (loading)
-        return <div className="loading-text">{loadingText}</div>;
-
-    if (comments.length === 0)
-        return <div className="no-comments">{noCommentsText}</div>;
-
+export default function CommentList({
+    comments,
+    currentUser,
+    onDelete,
+    noCommentsText,
+    isLoadingInitial,
+    isLoadingMore,
+    hasMore,
+    error,
+    onLoadMore,
+    onRetry
+}) {
     return (
-        <div className="socnet-comments-list">
+        <InfiniteScrollList
+            itemsCount={comments.length}
+            isLoadingInitial={isLoadingInitial}
+            isLoadingMore={isLoadingMore}
+            hasMore={hasMore}
+            onLoadMore={onLoadMore}
+            error={error}
+            onRetry={onRetry}
+            className="socnet-comments-list"
+            emptyState={
+                <div className="socnet-empty-state">
+                    <p>{noCommentsText}</p>
+                </div>
+            }
+        >
             {comments.map(comment => (
                 <CommentItem
                     key={comment.id}
@@ -18,6 +37,6 @@ export default function CommentList({ loading, comments, currentUser, onDelete, 
                     onDelete={onDelete}
                 />
             ))}
-        </div>
+        </InfiniteScrollList>
     );
 }
