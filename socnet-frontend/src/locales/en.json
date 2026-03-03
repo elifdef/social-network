@@ -95,7 +95,9 @@
     "moderator": "Moderator",
     "admin": "Admin",
     "rules": "Rules",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "activity": "Activity",
+    "my_activity": "My activity"
   },
 
   "auth": {
@@ -380,5 +382,22 @@
     "your_post": "your post",
     "friend_request_male": "wants to add you as a friend",
     "friend_request_female": "wants to add you as a friend"
+  },
+
+  "activity": {
+    "tabs": {
+      "likes": "Likes",
+      "comments": "Comments",
+      "reposts": "Reposts"
+    },
+    "likes": {
+      "empty": "You haven't liked any posts yet."
+    },
+    "comments": {
+      "empty": "You haven't left any comments yet.",
+      "you_commented_on": "You commented on the",
+      "post": "post",
+      "of_user": "by"
+    }
   }
 }

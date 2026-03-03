@@ -19,7 +19,13 @@ class UserController extends Controller
         $this->fileService = $fileService;
     }
 
-    // вивести дані ВСІХ користувачів
+    /**
+     * Вивід базових данних ВСІХ користувачів 
+     * З пагінацією 20 юзерів на сторінку
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function index(Request $request)
     {
         $search = $request->input('search');

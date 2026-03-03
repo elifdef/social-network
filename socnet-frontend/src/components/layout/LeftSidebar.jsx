@@ -49,6 +49,9 @@ const LeftSidebar = ({ isOpen }) => {
                             {t('common.notifications')}
                             {unreadCount > 0 && (<span className="socnet-badge">{displayCount}</span>)}
                         </Link>
+                        <Link to="/activity" className={getLinkClass("/activity")}>
+                            {t('common.activity')}
+                        </Link>
                         <Link to="/settings" className={getLinkClass("/settings")}>
                             {t('sidebar.left.settings')}
                         </Link>

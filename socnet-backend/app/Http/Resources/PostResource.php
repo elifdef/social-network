@@ -24,7 +24,7 @@ class PostResource extends JsonResource
             'user' => new UserBasicResource($this->whenLoaded('user')),
             'likes_count' => $this->likes_count ?? 0,
             'comments_count' => $this->comments_count ?? 0,
-            'is_liked' => $user ? $this->isLikedBy($user) : false,
+            'is_liked' => (bool) $this->is_liked,
         ];
     }
 }

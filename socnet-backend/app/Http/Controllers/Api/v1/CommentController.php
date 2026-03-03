@@ -64,4 +64,16 @@ class CommentController extends Controller
         $comment->delete();
         return response()->json(['message' => 'Deleted']);
     }
+
+    public function myComments(Request $request)
+    {
+        $user = $request->user();
+
+        $comments = Comment::where('user_id', $user->id)
+            ->with(['user', 'post.user'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        return CommentResource::collection($comments);
+    }
 }

@@ -23,7 +23,7 @@ export const NotificationProvider = ({ children }) => {
                     setNotifications(res.data.notifications);
                     setUnreadCount(res.data.unread_count);
                 })
-                .catch(err => console.error("Помилка завантаження сповіщень:", err));
+                .catch(err => console.error("Error load notification: ", err));
         }
     }, [user]);
 

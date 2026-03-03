@@ -39,9 +39,14 @@
 - Встановити всі бібліотеки через `npm install`
  
 ## Запуск
-Бекенд: `php artisan serve`
+#### Бекенд: 
+Фоновий воркер: `php artisan queue:listen`
 
-Фронтенд: `npm run dev`
+WebSocket-сервер: `php artisan reverb:start`
+
+Основний запуск: `php artisan serve`
+
+#### Фронтенд: `npm run dev`
 
 ## Майбутні можливості
 1.	Система коментування постів. [100%]

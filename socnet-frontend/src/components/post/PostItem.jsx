@@ -4,7 +4,7 @@ import PostHeader from "./PostHeader";
 import PostContent from "./PostContent";
 import PostFooter from "./PostFooter";
 
-export default function PostItem({ post, onEdit, onDelete, isOwner }) {
+export default function PostItem({ post, onEdit, onDelete, isOwner, onLikeToggle }) {
     const [postData, setPostData] = useState(post);
 
     useEffect(() => {
@@ -26,6 +26,9 @@ export default function PostItem({ post, onEdit, onDelete, isOwner }) {
                 is_liked: result.liked,
                 likes_count: result.likes_count
             }));
+
+            if (onLikeToggle)
+                onLikeToggle(postData.id, result.liked);
         }
     };
 

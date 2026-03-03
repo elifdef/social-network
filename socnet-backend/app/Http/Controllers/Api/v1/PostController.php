@@ -46,15 +46,24 @@ class PostController extends Controller
                 'message' => 'The user has restricted your access to their posts.'
             ], 403);
 
-        $posts = $targetUser->posts()
+        $query = $targetUser->posts()
             ->with('user')
             ->withCount(['likes', 'comments'])
             ->whereHas('user', function ($query)
             {
                 $query->where('is_banned', false);
-            })
-            ->latest()
-            ->paginate(config('posts.max_paginate'));
+            });
+
+        // перевіряєм лайки ТІЛЬКИ якщо юзер авторизований
+        if ($currentUser)
+        {
+            $query->withExists(['likes as is_liked' => function ($q) use ($currentUser)
+            {
+                $q->where('user_id', $currentUser->id);
+            }]);
+        }
+
+        $posts = $query->latest()->paginate(config('posts.max_paginate'));
 
         return PostResource::collection($posts);
     }
@@ -80,6 +89,14 @@ class PostController extends Controller
 
         $post->load('user');
         $post->loadCount(['likes', 'comments']);
+
+        if ($currentUser)
+            $post->loadExists(['likes as is_liked' => function ($query) use ($currentUser)
+            {
+                $query->where('user_id', $currentUser->id);
+            }]);
+        else
+            $post->is_liked = false;
 
         return response()->json((new PostResource($post))->resolve());
     }
@@ -116,7 +133,14 @@ class PostController extends Controller
             'content' => $request->input('content'),
             'image' => $path
         ]);
+        $user = $request->user();
+
         $post->load('user');
+
+        $post->loadExists(['likes as is_liked' => function ($query) use ($user)
+        {
+            $query->where('user_id', $user->id);
+        }]);
 
         return response()->json((new PostResource($post))->resolve(), 201);
     }
@@ -224,8 +248,15 @@ class PostController extends Controller
 
         $post->update($data);
 
+        $user = $request->user();
+
         $post->load('user');
         $post->loadCount(['likes', 'comments']);
+
+        $post->loadExists(['likes as is_liked' => function ($query) use ($user)
+        {
+            $query->where('user_id', $user->id);
+        }]);
 
         return response()->json((new PostResource($post))->resolve());
     }
@@ -246,6 +277,10 @@ class PostController extends Controller
         $posts = Post::whereIn('user_id', $friendIds)
             ->with('user')
             ->withCount(['likes', 'comments'])
+            ->withExists(['likes as is_liked' => function ($query) use ($user)
+            {
+                $query->where('user_id', $user->id);
+            }])
             ->latest()
             ->paginate(config('posts.max_paginate'));
 
@@ -279,13 +314,42 @@ class PostController extends Controller
                 ->pluck('friend_id');
 
             $query->whereNotIn('user_id', $blockedBy->merge($blockedByMe));
+
+            $query->withExists(['likes as is_liked' => function ($q) use ($user)
+            {
+                $q->where('user_id', $user->id);
+            }]);
         }
 
         $posts = $query
-            ->with('user')
             ->withCount(['likes', 'comments'])
             ->latest()
             ->paginate(config('posts.max_paginate'));
+        return PostResource::collection($posts);
+    }
+
+    /**
+     * Повертає список постів де стоїть НАШ лайк
+     *
+     * @param Request $request
+     * @return AnonymousResourceCollection
+     */
+    public function likedPosts(Request $request)
+    {
+        $user = $request->user();
+
+        $posts = Post::select('posts.*')
+            ->join('likes', 'posts.id', '=', 'likes.post_id')
+            ->where('likes.user_id', $user->id)
+            ->with(['user'])
+            ->withCount(['likes', 'comments'])
+            ->withExists(['likes as is_liked' => function ($query) use ($user)
+            {
+                $query->where('user_id', $user->id);
+            }])
+            ->orderBy('likes.created_at', 'desc')
+            ->paginate(config('posts.max_paginate'));
+
         return PostResource::collection($posts);
     }
 }

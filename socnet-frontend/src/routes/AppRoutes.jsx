@@ -21,6 +21,7 @@ import { GuestGuard, AuthGuard, SetupGuard } from "./Guards";
 import AdminUserInfo from "../components/admin/AdminUserInfo";
 import { userRole } from "../config";
 import NotificationsPage from "../pages/NotificationsPage";
+import ActivityPage from "../pages/ActivityPage";
 
 export default function AppRoutes() {
     const { user } = useContext(AuthContext);
@@ -55,6 +56,7 @@ export default function AppRoutes() {
                     <Route path="/email-verify/:id/:hash" element={<EmailVerifyPage />} />
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/notifications" element={<NotificationsPage />} />
+                    <Route path="/activity/:tab?" element={<ActivityPage />} />
 
                     {user?.role >= userRole.Support && (
                         <Route path="/support" element={<SupportPage />} />

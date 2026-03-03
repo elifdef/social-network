@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['throttle:120,1', 'not_banned'])->controller(PostController::class)->group(function ()
 {
     // пости
-    Route::get('/users/{username}/posts', 'index');     // всі пости користувача
-    Route::get('/posts/{post}', 'show');                // один пост по ID
+    Route::get('/users/{username}/posts', 'index'); // всі пости користувача
+    Route::get('/posts/{post}', 'show'); // один пост по ID
 
     // коментарі
     Route::get('/posts/{post}/comments', [CommentController::class, 'index']);
@@ -21,9 +21,12 @@ Route::middleware(['auth:sanctum', 'throttle:180,1', 'not_banned'])->group(funct
 {
     Route::get('/feed', [PostController::class, 'feed']);
     Route::get('/feed/global', [PostController::class, 'globalFeed']);
+    Route::get('/activity/liked', [PostController::class, 'likedPosts']);
+    Route::get('/activity/comments', [CommentController::class, 'myComments']);
 
     // щоб писати пости/коментарі/ставити лайки потрібно підтвердити пошту
-    Route::middleware(['verified', 'not_muted'])->group(function () {
+    Route::middleware(['verified', 'not_muted'])->group(function ()
+    {
         // пости
         Route::post('/posts', [PostController::class, 'store']);
         Route::put('/posts/{post}', [PostController::class, 'update']);
@@ -33,7 +36,8 @@ Route::middleware(['auth:sanctum', 'throttle:180,1', 'not_banned'])->group(funct
         Route::post('/posts/{post}/like', [LikeController::class, 'toggle']);
 
         // коментарі
-        Route::controller(CommentController::class)->group(function() {
+        Route::controller(CommentController::class)->group(function ()
+        {
             Route::post('/posts/{post}/comments', 'store');
             Route::delete('/comments/{comment}', 'destroy');
         });
