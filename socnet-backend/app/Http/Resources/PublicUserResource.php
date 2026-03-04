@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use App\Models\Friendship;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -65,7 +64,7 @@ class PublicUserResource extends JsonResource
             'avatar' => $this->avatar_url,
             'bio' => $this->bio,
             'gender' => $this->gender,
-            'created_at' => $this->created_at,
+            'created_at' => $this->created_at->toISOString(),
             'birth_date' => $this->birth_date,
             'is_online' => $this->is_online,
             'last_seen' => $this->last_seen_at,
@@ -75,7 +74,6 @@ class PublicUserResource extends JsonResource
             'friendship_status' => $status,
             'is_banned' => (bool)$this->is_banned,
 
-            // Лічильники
             'friends_count' => $this->getAllFriendIds()->count(),
             'followers_count' => $this->receivedFriendships()->wherePivot('status', Friendship::STATUS_PENDING)->count()
         ];

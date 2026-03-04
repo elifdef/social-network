@@ -29,7 +29,7 @@ class UserResource extends JsonResource
             'is_setup_complete' => (bool)$this->is_setup_complete,
             'email_verified_at' => $this->email_verified_at,
             'role' => $this->role,
-            'created_at' => $this->created_at,
+            'created_at' => $this->created_at->toISOString(),
             'is_banned' => (bool)$this->is_banned,
 
             // якщо забанений -> дістаємо останню причину з логів

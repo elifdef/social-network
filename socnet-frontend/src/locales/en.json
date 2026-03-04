@@ -4,10 +4,6 @@
     "verification_email": "Verifying your email..."
   },
 
-  "warn": {
-    "large_file": "The file is too large. Maximum size: {{size}} MB"
-  },
-
   "error": {
     "email_send": "Error sending email.",
     "loading": "Error loading {{resource}}",
@@ -88,6 +84,7 @@
     "back": "← Back",
     "browse": "Browse...",
     "no_file_selected": "No file selected.",
+    "no_more_data": "Nothing more to show.",
     "upload": "Upload",
     "admin_panel": "Administration",
     "moderator_panel": "Moderation panel",
@@ -202,7 +199,8 @@
     "delete_post": "Delete this post?",
     "empty_post": "The post can't be empty.",
     "not_found": "Post not found.",
-    "posts_not_found": "Posts not found."
+    "posts_not_found": "Posts not found.",
+    "nested_too_deep": "This post has too many nested attachments to display."
   },
 
   "comment": {
@@ -394,14 +392,46 @@
       "comments": "Comments",
       "reposts": "Reposts"
     },
+
     "likes": {
       "empty": "You haven't liked any posts yet."
     },
+
     "comments": {
       "empty": "You haven't left any comments yet.",
       "you_commented_on": "You commented on the",
-      "post": "post",
       "of_user": "by"
     }
+  },
+
+  "rules": {
+    "page_title": "Rules",
+    "header": "Site Rules",
+    "footer_note": "Rules will be updated. If you don't like something -> alt + f4.",
+    "items": [
+      {
+        "title": "User Data",
+        "text": "This social network does not collect any personal data. We only log your IP address, browser, and operating system used for login, and that's it."
+      },
+      {
+        "title": "Personal Information",
+        "text": "During registration, you DO NOT HAVE TO provide your real first name, last name, birthday, gender, or country. However, please avoid naming yourself 'fjidfjid wkoreo' who was born on February 31, 2090 BC."
+      },
+      {
+        "title": "Data Storage",
+        "text": "The social network operates on the principle: 'If a user deletes material, we must delete it too. User replaced material? We must replace it and permanently remove the old one'."
+      },
+      {
+        "title": "Content Publishing",
+        "text": "It is strictly forbidden to publish:",
+        "subItems": [
+          "AI-generated content (e.g., '#🇯🇵Japan is turning footsteps into electricity!' or AI-generated videos with no real meaning).",
+          "Political content.",
+          "Fake information (unless clearly stated as a joke).",
+          "Someone else's personal information (3 warnings).",
+          "Illegal materials (severe violations will result in an immediate and permanent account ban)."
+        ]
+      }
+    ]
   }
 }

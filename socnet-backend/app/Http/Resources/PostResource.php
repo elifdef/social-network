@@ -32,7 +32,7 @@ class PostResource extends JsonResource
                 });
             }),
 
-            'created_at' => $this->created_at,
+            'created_at' => $this->created_at->toISOString(),
             'user' => new UserBasicResource($this->whenLoaded('user')),
             'likes_count' => $this->likes_count ?? 0,
             'comments_count' => $this->comments_count ?? 0,
