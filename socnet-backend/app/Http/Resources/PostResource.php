@@ -14,17 +14,32 @@ class PostResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $user = $request->user('sanctum');
-
         return [
             'id' => $this->id,
             'content' => $this->content,
-            'image' => $this->image ? asset('storage/' . $this->image) : null,
+            'entities' => $this->entities,
+            'original_post_id' => $this->original_post_id,
+            'attachments' => $this->whenLoaded('attachments', function ()
+            {
+                return $this->attachments->map(function ($attachment)
+                {
+                    return [
+                        'id' => $attachment->id,
+                        'type' => $attachment->type,
+                        'url' => $attachment->file_url,
+                        'sort_order' => $attachment->sort_order
+                    ];
+                });
+            }),
+
             'created_at' => $this->created_at,
             'user' => new UserBasicResource($this->whenLoaded('user')),
             'likes_count' => $this->likes_count ?? 0,
             'comments_count' => $this->comments_count ?? 0,
-            'is_liked' => (bool) $this->is_liked,
+            'reposts_count' => $this->reposts_count ?? 0,
+            'is_liked' => (bool)$this->is_liked,
+
+            'original_post' => new PostResource($this->whenLoaded('originalPost'))
         ];
     }
 }

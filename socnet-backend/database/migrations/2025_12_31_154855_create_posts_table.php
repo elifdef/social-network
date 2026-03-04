@@ -11,14 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table)
+        {
             $table->string('id')->primary();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->text('content')->nullable();
-            $table->string('image')->nullable();
+            $table->json('entities')->nullable();
+            $table->string('original_post_id')->nullable();
+
             $table->timestamps();
-            $table->index('user_id'); // щоб швидко знаходити пости конкретного юзера
-            $table->index('created_at'); // для сортування по даті створення
+            $table->index('user_id');
+            $table->index('created_at');
+        });
+
+        Schema::table('posts', function (Blueprint $table)
+        {
+            $table->foreign('original_post_id')
+                ->references('id')
+                ->on('posts')
+                ->onDelete('set null');
         });
     }
 

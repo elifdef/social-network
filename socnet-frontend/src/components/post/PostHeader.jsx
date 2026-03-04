@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { useDateFormatter } from '../../hooks/useDateFormatter';
+import EditIcon from '../../assets/edit.svg?react';
+import DeleteIcon from '../../assets/delete.svg?react';
 
 export default function PostHeader({ post, isOwner, onEdit, onDelete }) {
     const formatDate = useDateFormatter();
@@ -25,8 +27,19 @@ export default function PostHeader({ post, isOwner, onEdit, onDelete }) {
 
             {isOwner && onEdit && onDelete && (
                 <div className="socnet-post-actions-top">
-                    <button className="socnet-action-icon" onClick={() => onEdit(post)}>✎</button>
-                    <button className="socnet-action-icon" onClick={() => onDelete(post.id)}>×</button>
+                    <button 
+                        className="socnet-action-icon" 
+                        onClick={() => onEdit(post)}
+                    >
+                        <EditIcon width={16} height={16} />
+                    </button>
+                    
+                    <button 
+                        className="socnet-action-icon" 
+                        onClick={() => onDelete(post.id)}
+                    >
+                        <DeleteIcon width={16} height={16} />
+                    </button>
                 </div>
             )}
         </div>

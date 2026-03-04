@@ -1,8 +1,9 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { usePageTitle } from '../hooks/usePageTitle';
 import LikedPostsTab from '../components/activity/LikedPostsTab';
 import MyCommentsTab from '../components/activity/MyCommentsTab';
-import { usePageTitle } from '../hooks/usePageTitle';
+import MyRepostsTab from '../components/activity/MyRepostsTab';
 
 export default function ActivityPage() {
     const { t } = useTranslation();
@@ -25,7 +26,7 @@ export default function ActivityPage() {
         switch (tab) {
             case 'likes': return <LikedPostsTab />;
             case 'comments': return <MyCommentsTab />;
-            case 'reposts': return <div>репости...</div>;
+            case 'reposts': return <MyRepostsTab />;;
             default: return <div>Розділ не знайдено</div>;
         }
     };

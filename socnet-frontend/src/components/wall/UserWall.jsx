@@ -36,14 +36,17 @@ export default function UserWall({ profileUser, isOwnProfile }) {
                     editingPostId={wallData.editingPostId}
                     editContent={wallData.editContent}
                     setEditContent={wallData.setEditContent}
-                    editPreview={wallData.editPreview}
-                    removeEditImage={wallData.removeEditImage}
+                    existingMedia={wallData.existingMedia}
+                    newEditPreviews={wallData.newEditPreviews}
                     handleEditFileSelect={wallData.handleEditFileSelect}
                     handlePaste={wallData.handlePaste}
+                    removeExistingMedia={wallData.removeExistingMedia}
+                    removeNewEditImage={wallData.removeNewEditImage}
                     saveEdit={wallData.saveEdit}
                     cancelEditing={wallData.cancelEditing}
                     startEditing={wallData.startEditing}
                     handleDelete={wallData.handleDelete}
+                    onRepostSuccess={wallData.handleRepostSuccess}
                 />
             </InfiniteScrollList>
         </div>

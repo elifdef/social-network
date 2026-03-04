@@ -15,35 +15,42 @@ const linkifyOptions = {
     }
 };
 
-export default function PostContent({ content, image, post, onUpdate, style }) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+export default function PostContent({ content, post, onUpdate, className }) {
+    const [selectedImage, setSelectedImage] = useState(null);
+    const attachments = post?.attachments || [];
 
     return (
         <>
-            <div className="socnet-post-content" style={style}>
-                {content &&
+            <div className={`socnet-post-content ${className || ''}`}>
+                {/* текст */}
+                {content && (
                     <p className="socnet-post-text">
                         <Linkify options={linkifyOptions}>{content}</Linkify>
-                    </p>}
+                    </p>
+                )}
 
-                {image && (
-                    <div className="socnet-post-image">
-                        <img
-                            src={image}
-                            className="socnet-post-image"
-                            onClick={() => setIsModalOpen(true)}
-                            style={{ cursor: 'pointer' }}
-                        />
+                {/* галерея */}
+                {attachments.length > 0 && (
+                    <div className={`socnet-post-gallery ${attachments.length === 1 ? 'count-1' : 'count-more'}`}>
+                        {attachments.map((media) => (
+                            <img
+                                key={media.id}
+                                src={media.url}
+                                alt="Attachment"
+                                className="socnet-gallery-image"
+                                onClick={() => setSelectedImage(media.url)}
+                            />
+                        ))}
                     </div>
                 )}
             </div>
 
-            {image && (
+            {selectedImage && (
                 <PhotoModal
-                    isOpen={isModalOpen}
-                    image={image}
+                    isOpen={!!selectedImage}
+                    image={selectedImage}
                     post={post}
-                    onClose={() => setIsModalOpen(false)}
+                    onClose={() => setSelectedImage(null)}
                     onUpdate={onUpdate}
                 />
             )}

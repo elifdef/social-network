@@ -5,10 +5,11 @@ export default function WallPostList({
     posts, authUser,
     editingPostId,
     editContent, setEditContent,
-    editPreview, removeEditImage,
+    existingMedia, newEditPreviews,
+    removeExistingMedia, removeNewEditImage,
     handleEditFileSelect, handlePaste,
     saveEdit, cancelEditing,
-    startEditing, handleDelete
+    startEditing, handleDelete, handleRepostSuccess
 }) {
     return (
         <div className="socnet-post-list">
@@ -19,8 +20,10 @@ export default function WallPostList({
                             post={post}
                             editContent={editContent}
                             setEditContent={setEditContent}
-                            editPreview={editPreview}
-                            removeEditImage={removeEditImage}
+                            existingMedia={existingMedia}
+                            newEditPreviews={newEditPreviews}
+                            removeExistingMedia={removeExistingMedia}
+                            removeNewEditImage={removeNewEditImage}
                             handleEditFileSelect={handleEditFileSelect}
                             handlePaste={handlePaste}
                             saveEdit={saveEdit}
@@ -32,6 +35,7 @@ export default function WallPostList({
                             isOwner={authUser && authUser.id === post.user.id}
                             onEdit={startEditing}
                             onDelete={handleDelete}
+                            onRepostSuccess={handleRepostSuccess}
                         />
                     )}
                 </div>

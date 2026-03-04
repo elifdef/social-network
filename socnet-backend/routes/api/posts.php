@@ -21,8 +21,11 @@ Route::middleware(['auth:sanctum', 'throttle:180,1', 'not_banned'])->group(funct
 {
     Route::get('/feed', [PostController::class, 'feed']);
     Route::get('/feed/global', [PostController::class, 'globalFeed']);
+
+    // моя активність
     Route::get('/activity/liked', [PostController::class, 'likedPosts']);
     Route::get('/activity/comments', [CommentController::class, 'myComments']);
+    Route::get('/activity/reposts', [PostController::class, 'reposts']);
 
     // щоб писати пости/коментарі/ставити лайки потрібно підтвердити пошту
     Route::middleware(['verified', 'not_muted'])->group(function ()

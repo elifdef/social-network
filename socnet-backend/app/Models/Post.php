@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class Post extends Model
 {
-    protected $fillable = ['user_id', 'content', 'image'];
+    protected $fillable = ['user_id', 'content', 'image', 'original_post_id'];
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -47,5 +47,29 @@ class Post extends Model
     public function isLikedBy(User $user)
     {
         return $this->likes()->where('user_id', $user->id)->exists();
+    }
+
+    /**
+     * пост може бути репостом ІНШОГО поста.
+     */
+    public function originalPost()
+    {
+        return $this->belongsTo(Post::class, 'original_post_id');
+    }
+
+    /**
+     * у поста може бути багато репостів
+     */
+    public function reposts()
+    {
+        return $this->hasMany(Post::class, 'original_post_id');
+    }
+
+    /**
+     * вкладення
+     */
+    public function attachments()
+    {
+        return $this->hasMany(PostAttachment::class);
     }
 }

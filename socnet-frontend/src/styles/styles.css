@@ -1078,6 +1078,78 @@ input:-webkit-autofill:active {
     padding-bottom: 50px;
 }
 
+/* галерея у пості */
+.socnet-post-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.socnet-gallery-image {
+    cursor: pointer;
+    object-fit: cover;
+    flex-grow: 1;
+}
+
+.socnet-post-gallery.count-1 .socnet-gallery-image {
+    width: 100%;
+    max-height: 400px;
+}
+
+.socnet-post-gallery.count-more .socnet-gallery-image {
+    width: calc(50% - 2px);
+    max-height: 250px;
+}
+
+/* превю при створенні/редагуванні */
+.socnet-post-previews-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.socnet-post-preview {
+    position: relative;
+}
+
+.socnet-post-preview img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.socnet-post-preview.existing img {
+    border: 2px solid var(--theme-primary, #4CAF50);
+}
+
+.socnet-post-preview.new img {
+    opacity: 0.8;
+}
+
+.socnet-preview-remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.socnet-preview-remove-btn:hover {
+    background: rgba(255, 0, 0, 0.8);
+}
+
 .socnet-back-btn {
     border: none;
     background: none;
@@ -1100,14 +1172,23 @@ input:-webkit-autofill:active {
 .socnet-action-icon {
     background: transparent;
     border: none;
-    color: var(--theme-input-border);
     cursor: pointer;
-    font-size: 14px;
-    padding: 2px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    color: var(--theme-text-muted, #666);
+    transition: all 0.2s ease;
 }
 
 .socnet-action-icon:hover {
-    color: var(--theme-link);
+    background-color: var(--theme-bg-hover, rgba(0, 0, 0, 0.05));
+    color: var(--theme-text, #fff);
+}
+
+.socnet-action-icon[title="Видалити"]:hover {
+    background-color: rgba(255, 0, 0, 0.1);
+    color: #ff4444;
 }
 
 .socnet-edit-mode {
@@ -1191,7 +1272,8 @@ input:-webkit-autofill:active {
 
 /* коментарі */
 .socnet-like-btn,
-.socnet-comment-btn {
+.socnet-comment-btn,
+.socnet-repost-btn {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -2542,7 +2624,6 @@ input:-webkit-autofill:active {
     width: 8px;
     height: 8px;
     background-color: var(--theme-link);
-    border-radius: 50%;
     margin-top: 15px;
 }
 
@@ -2681,6 +2762,42 @@ input:-webkit-autofill:active {
     color: #777;
     font-style: italic;
     margin-top: 3px;
+}
+
+/* репост */
+.socnet-repost-wrapper {
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid var(--theme-border);
+    background-color: var(--theme-bg-hover);
+}
+
+.socnet-repost-wrapper .socnet-post-actions {
+    display: none;
+}
+
+.socnet-repost-branch {
+    margin-top: 12px;
+    margin-left: 16px;
+    padding-left: 16px;
+    border-left: 2px solid var(--theme-border);
+}
+
+.socnet-post-footer-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.socnet-repost-limit-msg {
+    padding: 12px;
+    background-color: var(--theme-bg-page);
+    border: 1px dashed var(--theme-border);
+    color: var(--theme-text-muted);
+    font-style: italic;
+    font-size: 11px;
+    text-align: center;
+    margin-top: 10px;
 }
 
 /* для телефонів */

@@ -3,9 +3,12 @@ import postAPI from "../api/post.api";
 class PostService {
     async create(data) {
         const formData = new FormData();
-
         if (data.content) formData.append('content', data.content);
-        if (data.image) formData.append('image', data.image);
+        if (data.original_post_id) formData.append('original_post_id', data.original_post_id);
+        if (data.images && data.images.length > 0)
+            data.images.forEach(file => {
+                formData.append('media[]', file);
+            });
 
         const res = await postAPI.post(formData);
         return res.data;
@@ -18,11 +21,22 @@ class PostService {
 
     async update(id, data) {
         const formData = new FormData();
-
         formData.append('_method', 'PUT');
-        if (data.content !== undefined && data.content !== null) formData.append('content', data.content);
-        if (data.image) formData.append('image', data.image);
-        if (data.deleteImage) formData.append('delete_image', '1');
+
+        if (data.content !== undefined && data.content !== null) {
+            formData.append('content', data.content);
+        }
+
+        if (data.images && data.images.length > 0) {
+            data.images.forEach(file => {
+                formData.append('media[]', file);
+            });
+        }
+
+        if (data.deletedMedia && data.deletedMedia.length > 0)
+            data.deletedMedia.forEach(mediaId => {
+                formData.append('deleted_media[]', mediaId);
+            });
 
         const res = await postAPI.put(id, formData);
         return res.data;
@@ -37,6 +51,6 @@ class PostService {
         const res = await postAPI.userPosts(username, pageNumber);
         return res.data;
     }
-};
+}
 
 export default new PostService();

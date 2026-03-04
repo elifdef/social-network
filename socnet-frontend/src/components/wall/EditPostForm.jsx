@@ -5,7 +5,10 @@ import Button from "../UI/Button";
 export default function EditPostForm({
     post,
     editContent, setEditContent,
-    editPreview, removeEditImage,
+    existingMedia = [],      // масив старих обєктів з бекенда
+    newEditPreviews = [],    // масив превюшок для нових файлів
+    removeExistingMedia,     
+    removeNewEditImage,      
     handleEditFileSelect, handlePaste,
     saveEdit, cancelEditing
 }) {
@@ -22,29 +25,41 @@ export default function EditPostForm({
                     maxLength={2048}
                 />
 
-                {editPreview && (
-                    <div className="socnet-post-preview">
-                        <img src={editPreview} alt="Preview" />
-                        <button className="socnet-preview-close" onClick={removeEditImage}>
-                            ×
-                        </button>
+                {(existingMedia.length > 0 || newEditPreviews.length > 0) && (
+                    <div className="socnet-post-previews-container">
+                        {/* старі картинки */}
+                        {existingMedia.map((media) => (
+                            <div key={`exist-${media.id}`} className="socnet-post-preview existing">
+                                <img src={media.url} alt="Existing Preview" />
+                                <Button className="socnet-preview-close" onClick={() => removeExistingMedia(media.id)}>
+                                    ×
+                                </Button>
+                            </div>
+                        ))}
+
+                        {/* нові картинки */}
+                        {newEditPreviews.map((previewStr, index) => (
+                            <div key={`new-${index}`} className="socnet-post-preview new">
+                                <img src={previewStr} alt="New Preview" />
+                                <Button className="socnet-preview-close" onClick={() => removeNewEditImage(index)}>
+                                    ×
+                                </Button>
+                            </div>
+                        ))}
                     </div>
                 )}
 
                 <div className="socnet-edit-actions">
                     <label className="socnet-btn-small socnet-btn-attach">
                         {t('common.photo')}
-                        <input type="file" hidden accept="image/*" onChange={handleEditFileSelect} />
+                        <input type="file" multiple hidden accept="image/*" onChange={handleEditFileSelect} />
                     </label>
 
                     <Button className="socnet-btn-small" onClick={() => saveEdit(post.id)}>
                         {t('common.save')}
                     </Button>
 
-                    <Button
-                        className="socnet-btn-small socnet-btn-cancel"
-                        onClick={cancelEditing}
-                    >
+                    <Button className="socnet-btn-small socnet-btn-cancel" onClick={cancelEditing}>
                         {t('common.cancel')}
                     </Button>
                 </div>

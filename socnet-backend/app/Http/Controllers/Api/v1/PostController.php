@@ -43,12 +43,18 @@ class PostController extends Controller
         if ($currentUser && $currentUser->isBlockedByTarget($currentUser->id, $targetUser->id))
             return response()->json([
                 'status' => false,
-                'message' => 'The user has restricted your access to their posts.'
+                'message' => 'The user has restricted your access to their posts.',
+                'data' => []
             ], 403);
 
         $query = $targetUser->posts()
-            ->with('user')
-            ->withCount(['likes', 'comments'])
+            ->with(['user',
+                'attachments',
+                'originalPost.user',
+                'originalPost.attachments',
+                'originalPost.originalPost.user',
+                'originalPost.originalPost.attachments'])
+            ->withCount(['likes', 'comments', 'reposts'])
             ->whereHas('user', function ($query)
             {
                 $query->where('is_banned', false);
@@ -56,12 +62,10 @@ class PostController extends Controller
 
         // перевіряєм лайки ТІЛЬКИ якщо юзер авторизований
         if ($currentUser)
-        {
             $query->withExists(['likes as is_liked' => function ($q) use ($currentUser)
             {
                 $q->where('user_id', $currentUser->id);
             }]);
-        }
 
         $posts = $query->latest()->paginate(config('posts.max_paginate'));
 
@@ -87,8 +91,15 @@ class PostController extends Controller
                 'message' => 'The user has restricted your access to the post.'
             ], 403);
 
-        $post->load('user');
-        $post->loadCount(['likes', 'comments']);
+        $post->load([
+            'user',
+            'attachments',
+            'originalPost.user',
+            'originalPost.attachments',
+            'originalPost.originalPost.user',
+            'originalPost.originalPost.attachments'
+        ]);
+        $post->loadCount(['likes', 'comments', 'reposts']);
 
         if ($currentUser)
             $post->loadExists(['likes as is_liked' => function ($query) use ($currentUser)
@@ -112,31 +123,61 @@ class PostController extends Controller
     {
         $request->validate([
             'content' => 'nullable|string|max:2048',
-            'image' => 'nullable|image|max:' . config('uploads.max_size')
+            'entities' => 'nullable|json',
+            'original_post_id' => 'nullable|string|exists:posts,id',
+            'media' => 'nullable|array|max:10',
+            'media.*' => 'file|max:' . config('uploads.max_size')
         ]);
 
-        if (!$request->input('content') && !$request->hasFile('image'))
+        if (!$request->input('content') && !$request->hasFile('media') && !$request->input('original_post_id'))
             return response()->json([
                 'status' => false,
-                'message' => 'Post cannot be empty.'
+                'message' => 'Post cannot be completely empty.'
             ], 422);
 
-        $path = null;
-        if ($request->hasFile('image'))
-            $path = $this->fileService->upload(
-                file: $request->file('image'),
-                folder: $request->user()->username,
-                prefix: 'post'
-            );
+        $entities = $request->has('entities') && $request->input('entities')
+            ? json_decode($request->input('entities'), true)
+            : null;
 
         $post = $request->user()->posts()->create([
             'content' => $request->input('content'),
-            'image' => $path
+            'entities' => $entities,
+            'original_post_id' => $request->input('original_post_id')
         ]);
+
+        if ($request->hasFile('media'))
+        {
+            foreach ($request->file('media') as $index => $file)
+            {
+                $mime = $file->getMimeType();
+                $type = 'document';
+                if (str_starts_with($mime, 'image/')) $type = 'image';
+                elseif (str_starts_with($mime, 'video/')) $type = 'video';
+                elseif (str_starts_with($mime, 'audio/')) $type = 'audio';
+
+                $path = $this->fileService->upload(
+                    file: $file,
+                    folder: $request->user()->username,
+                    prefix: 'media'
+                );
+
+                $post->attachments()->create([
+                    'type' => $type,
+                    'file_path' => $path,
+                    'sort_order' => $index
+                ]);
+            }
+        }
+
         $user = $request->user();
-
-        $post->load('user');
-
+        $post->load([
+            'user',
+            'attachments',
+            'originalPost.user',
+            'originalPost.attachments',
+            'originalPost.originalPost.user',
+            'originalPost.originalPost.attachments'
+        ]);
         $post->loadExists(['likes as is_liked' => function ($query) use ($user)
         {
             $query->where('user_id', $user->id);
@@ -154,18 +195,17 @@ class PostController extends Controller
      */
     public function destroy(Post $post, Request $request): JsonResponse
     {
-        if
-        (
-            $request->user()->id !== $post->user_id // видаляти може власник
-            && $request->user()->cannot('delete-any-content') // або модер або адмін
-        )
+        if ($request->user()->id !== $post->user_id && $request->user()->cannot('delete-any-content'))
             return response()->json([
                 'status' => false,
                 'message' => "You do not have right to delete someone else's post."
             ], 403);
 
-        if ($post->image)
-            Storage::disk('public')->delete($post->image);
+        $attachments = $post->attachments()->get();
+        foreach ($attachments as $attachment)
+        {
+            Storage::disk('public')->delete($attachment->file_path);
+        }
 
         $post->delete();
         return response()->json([
@@ -184,11 +224,7 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post): JsonResponse
     {
-        if
-        (
-            $request->user()->id !== $post->user_id // редагувати може власник
-            && $request->user()->cannot('edit-any-content') // або адмін
-        )
+        if ($request->user()->id !== $post->user_id && $request->user()->cannot('edit-any-content'))
             return response()->json([
                 'status' => false,
                 'message' => "You do not have permission to edit someone else's post."
@@ -196,63 +232,88 @@ class PostController extends Controller
 
         $request->validate([
             'content' => 'nullable|string|max:2048',
-            'image' => 'nullable|image|max:' . config('uploads.max_size'),
-            'delete_image' => 'boolean'
+            'entities' => 'nullable|json',
+            'deleted_media' => 'nullable|array',
+            'deleted_media.*' => 'integer|exists:post_attachments,id',
+            'media' => 'nullable|array|max:10',
+            'media.*' => 'file|max:' . config('uploads.max_size')
         ]);
 
         $futureContent = $request->has('content') ? $request->input('content') : $post->content;
+        $hasRepost = !empty($post->original_post_id);
 
-        $hasNewImage = $request->hasFile('image');
-        $willDeleteOldImage = $request->boolean('delete_image');
+        $currentMediaCount = $post->attachments()->count();
+        $deletedMediaCount = $request->has('deleted_media') ? count($request->input('deleted_media')) : 0;
+        $newMediaCount = $request->hasFile('media') ? count($request->file('media')) : 0;
+        $futureMediaExists = ($currentMediaCount - $deletedMediaCount + $newMediaCount) > 0;
 
-        $futureImageExists = $post->image; // припускаємо що залишається стара
-
-        if ($willDeleteOldImage && !$hasNewImage)
-            $futureImageExists = null; // стару видалили, нової не дали
-        elseif ($hasNewImage)
-            $futureImageExists = true; // буде нова картинка
-
-        // перевірна на те, чи не буде фінальний варіант порожнім
-        if (empty($futureContent) && empty($futureImageExists))
+        if (empty($futureContent) && !$futureMediaExists && !$hasRepost)
             return response()->json([
                 'status' => false,
-                'message' => "Post can't be a empty."
+                'message' => "Post can't be empty."
             ], 422);
 
         $data = [];
-
-        // оновлення тексту
-        if ($request->has('content'))
-            $data['content'] = $futureContent;
-
-        // якщо видаляємо стару картинку
-        if ($willDeleteOldImage && !$hasNewImage)
+        if ($request->has('content')) $data['content'] = $futureContent;
+        if ($request->has('entities'))
         {
-            if ($post->image)
-                Storage::disk('public')->delete($post->image);
-            $data['image'] = null;
+            $entitiesInput = $request->input('entities');
+            $data['entities'] = $entitiesInput ? json_decode($entitiesInput, true) : null;
         }
 
-        // якщо завантажуємо нову картинку
-        if ($hasNewImage)
+        if (!empty($data))
         {
-            if ($post->image)
-                Storage::disk('public')->delete($post->image);
-
-            $data['image'] = $this->fileService->upload(
-                file: $request->file('image'),
-                folder: $request->user()->username,
-                prefix: 'post'
-            );
+            $post->update($data);
         }
 
-        $post->update($data);
+        // видаляємо старі файли
+        if ($request->has('deleted_media'))
+        {
+            $attachmentsToDelete = $post->attachments()->whereIn('id', $request->input('deleted_media'))->get();
+            foreach ($attachmentsToDelete as $attachment)
+            {
+                Storage::disk('public')->delete($attachment->file_path);
+                $attachment->delete();
+            }
+        }
+
+        // додаємо нові
+        if ($request->hasFile('media'))
+        {
+            $lastOrder = $post->attachments()->max('sort_order') ?? -1;
+
+            foreach ($request->file('media') as $index => $file)
+            {
+                $mime = $file->getMimeType();
+                $type = 'document';
+                if (str_starts_with($mime, 'image/')) $type = 'image';
+                elseif (str_starts_with($mime, 'video/')) $type = 'video';
+                elseif (str_starts_with($mime, 'audio/')) $type = 'audio';
+
+                $path = $this->fileService->upload(
+                    file: $file,
+                    folder: $request->user()->username,
+                    prefix: 'media'
+                );
+
+                $post->attachments()->create([
+                    'type' => $type,
+                    'file_path' => $path,
+                    'sort_order' => $lastOrder + 1 + $index
+                ]);
+            }
+        }
 
         $user = $request->user();
-
-        $post->load('user');
-        $post->loadCount(['likes', 'comments']);
-
+        $post->load([
+            'user',
+            'attachments',
+            'originalPost.user',
+            'originalPost.attachments',
+            'originalPost.originalPost.user',
+            'originalPost.originalPost.attachments'
+        ]);
+        $post->loadCount(['likes', 'comments', 'reposts']);
         $post->loadExists(['likes as is_liked' => function ($query) use ($user)
         {
             $query->where('user_id', $user->id);
@@ -272,11 +333,18 @@ class PostController extends Controller
     {
         $user = $request->user();
         $friendIds = $user->getAllFriendIds();
-        $friendIds->push($user->id); // щоб бачити і свої пости
+        $friendIds->push($user->id);
 
         $posts = Post::whereIn('user_id', $friendIds)
-            ->with('user')
-            ->withCount(['likes', 'comments'])
+            ->with([
+                'user',
+                'attachments',
+                'originalPost.user',
+                'originalPost.attachments',
+                'originalPost.originalPost.user',
+                'originalPost.originalPost.attachments'
+            ])
+            ->withCount(['likes', 'comments', 'reposts'])
             ->withExists(['likes as is_liked' => function ($query) use ($user)
             {
                 $query->where('user_id', $user->id);
@@ -299,16 +367,21 @@ class PostController extends Controller
     {
         $user = $request->user('sanctum');
 
-        $query = Post::with('user:id,username,first_name,last_name,avatar')->latest();
+        $query = Post::with([
+            'user:id,username,first_name,last_name,avatar',
+            'attachments',
+            'originalPost.user',
+            'originalPost.attachments',
+            'originalPost.originalPost.user',
+            'originalPost.originalPost.attachments'
+        ])->latest();
 
         if ($user)
         {
-            // отримуємо ID тих хто заблокував МЕНЕ
             $blockedBy = Friendship::where('friend_id', $user->id)
                 ->where('status', Friendship::STATUS_BLOCKED)
                 ->pluck('user_id');
 
-            // отримуємо ID тих кого заблокував Я
             $blockedByMe = Friendship::where('user_id', $user->id)
                 ->where('status', Friendship::STATUS_BLOCKED)
                 ->pluck('friend_id');
@@ -322,9 +395,10 @@ class PostController extends Controller
         }
 
         $posts = $query
-            ->withCount(['likes', 'comments'])
+            ->withCount(['likes', 'comments', 'reposts'])
             ->latest()
             ->paginate(config('posts.max_paginate'));
+
         return PostResource::collection($posts);
     }
 
@@ -341,8 +415,15 @@ class PostController extends Controller
         $posts = Post::select('posts.*')
             ->join('likes', 'posts.id', '=', 'likes.post_id')
             ->where('likes.user_id', $user->id)
-            ->with(['user'])
-            ->withCount(['likes', 'comments'])
+            ->with([
+                'user',
+                'attachments',
+                'originalPost.user',
+                'originalPost.attachments',
+                'originalPost.originalPost.user',
+                'originalPost.originalPost.attachments'
+            ])
+            ->withCount(['likes', 'comments', 'reposts'])
             ->withExists(['likes as is_liked' => function ($query) use ($user)
             {
                 $query->where('user_id', $user->id);
@@ -351,5 +432,25 @@ class PostController extends Controller
             ->paginate(config('posts.max_paginate'));
 
         return PostResource::collection($posts);
+    }
+
+    public function reposts(Request $request)
+    {
+        $user = $request->user();
+
+        $reposts = $user->posts()
+            ->whereNotNull('original_post_id')
+            ->with([
+                'user',
+                'attachments',
+                'originalPost.user',
+                'originalPost.attachments',
+                'originalPost.originalPost.user',
+                'originalPost.originalPost.attachments'
+            ])
+            ->latest()
+            ->paginate(config('posts.max_paginate'));
+
+        return PostResource::collection($reposts);
     }
 }

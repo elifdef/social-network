@@ -32,7 +32,10 @@
     "deleting": "Error deleting",
     "email_invalid_link": "The link is invalid or outdated.",
     "page_not_found": "Page not found",
-    "email_not_confirm": "This action is unavailable due to an unconfirmed email address."
+    "email_not_confirm": "This action is unavailable due to an unconfirmed email address.",
+    "large_file": "The file is too large. Maximum size: {{size}} MB.",
+    "max_files": "You can attach up to 10 images.",
+    "file_too_large": "Some files exceed {{size}} MB in size."
   },
 
   "success": {

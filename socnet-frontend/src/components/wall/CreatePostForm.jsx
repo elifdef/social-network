@@ -4,21 +4,40 @@ import ImageAttach from '../../assets/ImageAttach.svg?react';
 import Textarea from "../UI/Textarea";
 import { notifyError } from "../common/Notify";
 import { validateImageFile } from "../../services/upload";
+import { MAX_FILE_SIZE_KB } from "../../config";
 
 export default function CreatePostForm({ onSubmitSuccess }) {
     const { t } = useTranslation();
 
     const [content, setContent] = useState('');
-    const [image, setImage] = useState(null);
-    const [preview, setPreview] = useState(null);
+    const [images, setImages] = useState([]);
+    const [previews, setPreviews] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
 
-    const setFileState = (file) => {
-        if (!file) return;
-        if (!validateImageFile(file)) return;
+    const addFiles = (filesList) => {
+        const rawFiles = Array.from(filesList).filter(validateImageFile);
+        const validFiles = [];
+        let hasOversized = false;
 
-        setImage(file);
-        setPreview(URL.createObjectURL(file));
+        rawFiles.forEach(file => {
+            if (file.size > MAX_FILE_SIZE_KB * 1024)
+                hasOversized = true;
+            else
+                validFiles.push(file);
+        });
+
+        if (hasOversized)
+            notifyError(t('error.file_too_large', { size: MAX_FILE_SIZE_KB / 1024}));
+
+        if (images.length + validFiles.length > 10) {
+            notifyError(t('error.max_files_10'));
+            return;
+        }
+
+        if (validFiles.length === 0) return;
+
+        setImages(prev => [...prev, ...validFiles]);
+        setPreviews(prev => [...prev, ...validFiles.map(f => URL.createObjectURL(f))]);
     };
 
     const handleDragOver = (e) => { e.preventDefault(); setIsDragging(true); };
@@ -27,37 +46,49 @@ export default function CreatePostForm({ onSubmitSuccess }) {
     const handleDrop = (e) => {
         e.preventDefault();
         setIsDragging(false);
-        setFileState(e.dataTransfer.files[0]);
+        addFiles(e.dataTransfer.files);
     };
 
-    const handleFileSelect = (e) => setFileState(e.target.files[0]);
+    const handleFileSelect = (e) => {
+        addFiles(e.target.files);
+        e.target.value = null;
+    };
 
     const handlePaste = (e) => {
         const items = e.clipboardData.items;
+        const pastedFiles = [];
         for (let i = 0; i < items.length; i++) {
             if (items[i].type.indexOf('image') !== -1) {
-                const file = items[i].getAsFile();
-                setFileState(file);
-                e.preventDefault();
-                return;
+                pastedFiles.push(items[i].getAsFile());
             }
+        }
+        if (pastedFiles.length > 0) {
+            e.preventDefault();
+            addFiles(pastedFiles);
         }
     };
 
-    const removeImage = () => { setImage(null); setPreview(null); };
+    const removeImage = (indexToRemove) => {
+        setImages(prev => prev.filter((_, idx) => idx !== indexToRemove));
+        setPreviews(prev => {
+            URL.revokeObjectURL(prev[indexToRemove]);
+            return prev.filter((_, idx) => idx !== indexToRemove);
+        });
+    };
 
     const handleSubmit = async () => {
-        if (!content.trim() && !image) {
+        if (!content.trim() && images.length === 0) {
             notifyError(t('post.empty_post'));
             return;
         }
 
-        const success = await onSubmitSuccess(content, image);
+        const success = await onSubmitSuccess(content, images);
 
         if (success) {
             setContent('');
-            setImage(null);
-            setPreview(null);
+            setImages([]);
+            previews.forEach(url => URL.revokeObjectURL(url));
+            setPreviews([]);
         }
     };
 
@@ -75,18 +106,22 @@ export default function CreatePostForm({ onSubmitSuccess }) {
                 onChange={e => setContent(e.target.value)}
                 onPaste={handlePaste}
                 maxLength={2048}
-            ></Textarea>
+            />
 
-            {preview && (
-                <div className="socnet-post-preview">
-                    <img src={preview} alt="Preview" />
-                    <button onClick={removeImage}>×</button>
+            {previews.length > 0 && (
+                <div className="socnet-post-previews-container">
+                    {previews.map((preview, index) => (
+                        <div key={index} className="socnet-post-preview new">
+                            <img src={preview} alt={`Preview ${index}`} />
+                            <button className="socnet-preview-remove-btn" onClick={() => removeImage(index)}>×</button>
+                        </div>
+                    ))}
                 </div>
             )}
 
             <div className="socnet-wall-actions">
                 <label className="socnet-attach-btn" title={t('wall.attach_photo')}>
-                    <input type="file" hidden onChange={handleFileSelect} accept="image/*" />
+                    <input type="file" multiple hidden onChange={handleFileSelect} accept="image/*" />
                     <ImageAttach width={20} height={20} />
                 </label>
                 <button className="socnet-btn-small" onClick={handleSubmit}>
