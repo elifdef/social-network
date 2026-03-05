@@ -4,54 +4,18 @@ import { Link } from "react-router-dom";
 import { useDateFormatter } from "../hooks/useDateFormatter";
 import { NotificationContext } from "../context/NotificationContext";
 import { usePageTitle } from '../hooks/usePageTitle';
+import { useNotificationText } from '../hooks/useNotificationText';
 
 export default function NotificationsPage() {
     const { t } = useTranslation();
     const { notifications, markAsRead, unreadCount } = useContext(NotificationContext);
     const formatDate = useDateFormatter();
+    const { getNotificationData } = useNotificationText();
+
     usePageTitle(t('notifications.my_notifications'));
 
-    const renderText = (typeKey, data) => {
-        const gender = data.user_gender === 2 ? 'female' : 'male';
-        let key = typeKey;
-
-        if (key.includes('NewLike')) key = 'new_like';
-        if (key.includes('NewComment')) key = 'new_comment';
-        if (key.includes('NewFriendRequest')) key = 'new_friend_request';
-
-        const postLink = (text) => (
-            <Link
-                to={`/post/${data.post_id}`}
-                className="socnet-link"
-                onClick={(e) => e.stopPropagation()}
-            >
-                {text}
-            </Link>
-        );
-
-        switch (key) {
-            case 'new_like':
-                return (
-                    <>
-                        {t('notifications.liked', { context: gender })} {postLink(t('notifications.your_post'))}
-                    </>
-                );
-            case 'new_comment':
-                return (
-                    <>
-                        {t('notifications.commented', { context: gender })} {postLink(t('notifications.your_post'))}
-                    </>
-                );
-            case 'new_friend_request':
-                return t('notifications.friend_request', { context: gender });
-            default:
-                return '';
-        }
-    };
-
     const handleNotificationClick = (notif) => {
-        if (!notif.read_at)
-            markAsRead(notif.id);
+        if (!notif.read_at) markAsRead(notif.id);
     };
 
     return (
@@ -70,6 +34,7 @@ export default function NotificationsPage() {
                     {notifications.map((notif) => {
                         const isUnread = !notif.read_at;
                         const data = notif.data || {};
+                        const { actionText, linkText, linkUrl } = getNotificationData(notif.type, data);
 
                         return (
                             <div
@@ -93,7 +58,15 @@ export default function NotificationsPage() {
                                         </Link>
                                         {' '}
                                         <span>
-                                            {renderText(notif.type, data)}
+                                            {actionText}
+                                            {actionText && linkText ? ' ' : ''}
+                                            {linkUrl && linkText ? (
+                                                <Link to={linkUrl} className="socnet-link" onClick={(e) => e.stopPropagation()}>
+                                                    {linkText}
+                                                </Link>
+                                            ) : (
+                                                linkText
+                                            )}
                                         </span>
                                     </div>
 

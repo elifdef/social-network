@@ -3,12 +3,16 @@ import postAPI from "../api/post.api";
 class PostService {
     async create(data) {
         const formData = new FormData();
+
         if (data.content) formData.append('content', data.content);
         if (data.original_post_id) formData.append('original_post_id', data.original_post_id);
-        if (data.images && data.images.length > 0)
+        if (data.target_user_id) formData.append('target_user_id', data.target_user_id);
+
+        if (data.images && data.images.length > 0) {
             data.images.forEach(file => {
                 formData.append('media[]', file);
             });
+        }
 
         const res = await postAPI.post(formData);
         return res.data;

@@ -12,11 +12,13 @@ export default function UserWall({ profileUser, isOwnProfile }) {
     const wallData = useUserWall(profileUser);
     const { t } = useTranslation();
 
+    const canWriteOnWall = authUser && (isOwnProfile || profileUser.friendship_status !== "blocked_by_target");
+
     return (
         <div className="socnet-wall">
             <WallHeader postsCount={wallData.countPosts} />
 
-            {isOwnProfile && (<CreatePostForm onSubmitSuccess={wallData.createPost} />)}
+            {canWriteOnWall && (<CreatePostForm onSubmitSuccess={wallData.createPost} />)}
 
             <InfiniteScrollList
                 itemsCount={wallData.posts.length}
@@ -47,6 +49,7 @@ export default function UserWall({ profileUser, isOwnProfile }) {
                     startEditing={wallData.startEditing}
                     handleDelete={wallData.handleDelete}
                     onRepostSuccess={wallData.handleRepostSuccess}
+                    profileUser={profileUser}
                 />
             </InfiniteScrollList>
         </div>

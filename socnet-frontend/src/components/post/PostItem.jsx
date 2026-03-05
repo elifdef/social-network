@@ -56,7 +56,7 @@ export default function PostItem({
 
         const content = await openPrompt(
             t('post.add_repost_comment'),
-            t('post.repost_placeholder')
+            ""
         );
 
         if (content === null) return;
@@ -71,6 +71,11 @@ export default function PostItem({
             });
 
             notifySuccess(t('post.repost_success'));
+
+            setPostData(prev => ({
+                ...prev,
+                reposts_count: (prev.reposts_count || 0) + 1
+            }));
 
             if (onRepostSuccess && response.data)
                 onRepostSuccess(response.data);
@@ -97,19 +102,25 @@ export default function PostItem({
                 onUpdate={handlePostUpdate}
             />
 
-            {postData.original_post_id && (
+            {postData.is_repost && (
                 <div className="socnet-repost-branch">
-                    {postData.original_post && depth < 3 ? (
+                    {postData.original_post_id && postData.original_post && depth < 3 ? (
                         <PostItem
                             post={postData.original_post}
                             isInner={true}
                             readonly={true}
                             depth={depth + 1}
                         />
-                    ) : (
+                    ) : postData.original_post_id && depth >= 3 ? (
                         <div className="socnet-repost-limit-msg">
                             {t('post.nested_too_deep')}
                         </div>
+
+                    ) : (
+                        <div className="socnet-deleted-stub">
+                            {t('post.original_deleted')}
+                        </div>
+
                     )}
                 </div>
             )}

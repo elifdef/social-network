@@ -4,9 +4,12 @@ import api from '../../api/axios';
 import ActivityCommentItem from './ActivityCommentItem';
 import InfiniteScrollList from '../common/InfiniteScrollList';
 import { notifyError } from '../common/Notify';
+import { useModal } from '../../context/ModalContext';
 
-export default function MyCommentsTab() {
+export default function MyCommentsTab({ onCountUpdate }) {
     const { t } = useTranslation();
+    const { openConfirm } = useModal();
+
     const [comments, setComments] = useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
@@ -37,13 +40,12 @@ export default function MyCommentsTab() {
                         return [...prev, ...uniqueNewComments];
                     });
 
-                    setHasMore(meta.current_page < meta.last_page);
+                    setHasMore(meta ? meta.current_page < meta.last_page : false);
                 }
             })
             .catch(err => {
                 if (isMounted) {
-                    notifyError(t('common.loading_comments'))
-                    console.log(err);
+                    notifyError(t('error.loading_comments'));
                     setError(true);
                 }
             })
@@ -55,7 +57,7 @@ export default function MyCommentsTab() {
             });
 
         return () => { isMounted = false; };
-    }, [page]);
+    }, [page, t]);
 
     useEffect(() => {
         const cleanup = fetchComments();
@@ -67,6 +69,20 @@ export default function MyCommentsTab() {
             setPage(p => p + 1);
         }
     }, [isLoadingInitial, isLoadingMore, hasMore, error]);
+
+    const handleDeleteComment = async (commentId) => {
+        const isConfirmed = await openConfirm(t('comment.remove_comment'));
+        if (!isConfirmed) return;
+
+        try {
+            await api.delete(`/comments/${commentId}`);
+            setComments(prev => prev.filter(c => c.id !== commentId));
+            if (onCountUpdate) onCountUpdate(-1);
+
+        } catch (error) {
+            notifyError(t('error.deleting'));
+        }
+    };
 
     return (
         <InfiniteScrollList
@@ -89,6 +105,7 @@ export default function MyCommentsTab() {
                 <ActivityCommentItem
                     key={comment.id}
                     comment={comment}
+                    onDelete={() => handleDeleteComment(comment.id)}
                 />
             ))}
         </InfiniteScrollList>

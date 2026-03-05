@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class Post extends Model
 {
-    protected $fillable = ['user_id', 'content', 'image', 'original_post_id'];
+    protected $fillable = ['user_id', 'target_user_id', 'content', 'image', 'original_post_id', 'is_repost'];
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -55,6 +55,14 @@ class Post extends Model
     public function originalPost()
     {
         return $this->belongsTo(Post::class, 'original_post_id');
+    }
+
+    /**
+     * звязок з власником стіни, на якій написаний пост
+     */
+    public function targetUser()
+    {
+        return $this->belongsTo(User::class, 'target_user_id');
     }
 
     /**

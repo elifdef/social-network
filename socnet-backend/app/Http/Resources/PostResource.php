@@ -33,13 +33,20 @@ class PostResource extends JsonResource
             }),
 
             'created_at' => $this->created_at->toISOString(),
+
+            // автор поста
             'user' => new UserBasicResource($this->whenLoaded('user')),
+
+            // кому написали
+            'target_user' => new UserBasicResource($this->whenLoaded('targetUser')),
+
             'likes_count' => $this->likes_count ?? 0,
             'comments_count' => $this->comments_count ?? 0,
             'reposts_count' => $this->reposts_count ?? 0,
             'is_liked' => (bool)$this->is_liked,
 
-            'original_post' => new PostResource($this->whenLoaded('originalPost'))
+            'original_post' => new PostResource($this->whenLoaded('originalPost')),
+            'is_repost' => (bool)$this->is_repost
         ];
     }
 }

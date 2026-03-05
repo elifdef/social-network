@@ -187,6 +187,34 @@ input:-webkit-autofill:active {
     color: #000;
 }
 
+.socnet-tab-count {
+    color: var(--theme-text-muted);
+    margin-left: 6px;
+    font-size: 10px;
+    font-weight: normal;
+}
+
+.socnet-tab.active .socnet-tab-count {
+    color: inherit;
+    opacity: 0.8;
+}
+
+.socnet-relative-card {
+    position: relative;
+    padding-right: 40px;
+}
+
+.socnet-absolute-actions {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+}
+
+.socnet-absolute-actions .socnet-action-icon:hover {
+    color: var(--theme-error, #e64646);
+}
+
 /* порожні списки */
 .socnet-empty-state {
     text-align: center;
@@ -2783,6 +2811,18 @@ input:-webkit-autofill:active {
     border-left: 2px solid var(--theme-border);
 }
 
+.socnet-deleted-stub {
+    padding: 15px;
+    margin-top: 10px;
+    background-color: var(--theme-bg-page);
+    border: 1px dashed var(--theme-border);
+    border-radius: 8px;
+    color: var(--theme-text-muted);
+    font-size: 13px;
+    text-align: center;
+    font-style: italic;
+}
+
 .socnet-post-footer-actions {
     display: flex;
     gap: 15px;
@@ -2798,6 +2838,197 @@ input:-webkit-autofill:active {
     font-size: 11px;
     text-align: center;
     margin-top: 10px;
+}
+
+/* аналітика сайту */
+.admin-stats-row {
+    margin-bottom: 20px;
+}
+
+.admin-stats-label {
+    font-size: 11px;
+    color: var(--theme-text-muted);
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.admin-stats-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--theme-link);
+    margin-top: 5px;
+}
+
+.admin-chart-card {
+    background-color: var(--theme-bg-box);
+    border: 1px solid var(--theme-border);
+}
+
+.admin-chart-title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--theme-text-main);
+}
+
+.admin-chart-container {
+    width: 100%;
+    height: 250px;
+}
+
+.admin-chart-tooltip {
+    background-color: var(--theme-bg-box) !important;
+    border: 1px solid var(--theme-border) !important;
+    padding: 10px;
+    color: var(--theme-text-main) !important;
+    font-size: 11px;
+}
+
+.admin-chart-legend {
+    font-size: 11px;
+    padding-top: 10px;
+}
+
+.admin-content-wrapper {
+    margin-top: 15px;
+}
+
+.admin-dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.admin-timeframe-badge {
+    background-color: var(--theme-bg-box);
+    border: 1px solid var(--theme-border);
+    color: var(--theme-text-muted);
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.admin-infrastructure-row {
+    margin-bottom: 20px;
+}
+
+.admin-server-card,
+.admin-online-card {
+    background-color: var(--theme-bg-box);
+    border: 1px solid var(--theme-border);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Метрики сервера */
+.admin-server-metric {
+    margin-bottom: 15px;
+}
+
+.admin-server-metric-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--theme-text-main);
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.admin-progress-track {
+    width: 100%;
+    height: 6px;
+    background-color: var(--theme-bg-page);
+    border: 1px solid var(--theme-border);
+    overflow: hidden;
+}
+
+.admin-progress-bar {
+    height: 100%;
+    transition: width 0.5s ease-in-out;
+}
+
+.admin-progress-bar.cpu {
+    background-color: #5b9bd5;
+}
+
+.admin-progress-bar.disk {
+    background-color: #e64646;
+}
+
+.admin-server-info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--theme-border);
+}
+
+.admin-server-info-row:last-child {
+    border-bottom: none;
+}
+
+.admin-online-badge {
+    background-color: var(--theme-success);
+    color: #fff;
+    padding: 2px 6px;
+    font-size: 10px;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.admin-online-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.admin-online-user {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 6px;
+    border: 1px solid var(--theme-border);
+    background-color: var(--theme-bg-page);
+    transition: background 0.2s;
+}
+
+.admin-online-user:hover {
+    background-color: var(--theme-btn-hover);
+}
+
+.admin-online-avatar {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.admin-online-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-online-name {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--theme-link);
+}
+
+.admin-online-nick {
+    font-size: 10px;
+    color: var(--theme-text-muted);
+}
+
+.admin-online-indicator {
+    width: 8px;
+    height: 8px;
+    background-color: var(--theme-success);
+    box-shadow: 0 0 5px var(--theme-success);
 }
 
 /* для телефонів */

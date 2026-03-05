@@ -31,7 +31,8 @@
     "email_not_confirm": "This action is unavailable due to an unconfirmed email address.",
     "large_file": "The file is too large. Maximum size: {{size}} MB.",
     "max_files": "You can attach up to 10 images.",
-    "file_too_large": "Some files exceed {{size}} MB in size."
+    "file_too_large": "Some files exceed {{size}} MB in size.",
+    "error_load_stats": "Error loading statistics"
   },
 
   "success": {
@@ -98,7 +99,13 @@
     "rules": "Rules",
     "notifications": "Notifications",
     "activity": "Activity",
-    "my_activity": "My activity"
+    "my_activity": "My activity",
+    "comment": "Comment",
+    "comments": "Comments",
+    "like": "Like",
+    "likes": "Likes",
+    "repost": "Repost",
+    "reposts": "Reposts"
   },
 
   "auth": {
@@ -200,7 +207,12 @@
     "empty_post": "The post can't be empty.",
     "not_found": "Post not found.",
     "posts_not_found": "Posts not found.",
-    "nested_too_deep": "This post has too many nested attachments to display."
+    "nested_too_deep": "This post has too many nested attachments to display.",
+    "original_deleted": "The original post has been deleted or hidden.",
+    "wrote_on_wall_male": "wrote on the wall of",
+    "wrote_on_wall_female": "wrote on the wall of",
+    "repost_success": "",
+    "add_repost_comment": ""
   },
 
   "comment": {
@@ -362,7 +374,20 @@
     "violation_history": "Violation History",
     "action": "Action",
     "reason": "Reason",
-    "no_violations": "User has no violations yet"
+    "no_violations": "User has no violations yet",
+    "dashboard": "Dashboard",
+    "registrations_chart": "Registrations (last 7 days)",
+    "activity_chart": "Activity (Posts vs Comments)",
+    "new_users": "New users",
+    "last_7_days": "Data for the last 7 days",
+    "server_health": "Server Health",
+    "cpu_load": "CPU Load",
+    "disk_usage": "Disk Space",
+    "free": "free",
+    "version": "Version",
+    "ram_usage": "Memory (RAM)",
+    "users_online": "Online Now",
+    "no_one_online": "There are no users online right now."
   },
 
   "banned": {
@@ -383,16 +408,16 @@
     "commented_female": "commented on",
     "your_post": "your post",
     "friend_request_male": "wants to add you as a friend",
-    "friend_request_female": "wants to add you as a friend"
+    "friend_request_female": "wants to add you as a friend",
+    "reposted_male": "shared",
+    "reposted_female": "shared",
+    "wall_post_male": "wrote on your wall.",
+    "wall_post_female": "wrote on your wall.",
+    "repost_male": "shared your post.",
+    "repost_female": "shared your post."
   },
 
   "activity": {
-    "tabs": {
-      "likes": "Likes",
-      "comments": "Comments",
-      "reposts": "Reposts"
-    },
-
     "likes": {
       "empty": "You haven't liked any posts yet."
     },
@@ -401,6 +426,10 @@
       "empty": "You haven't left any comments yet.",
       "you_commented_on": "You commented on the",
       "of_user": "by"
+    },
+
+    "reposts": {
+      "empty": "You haven't repost any posts yet."
     }
   },
 

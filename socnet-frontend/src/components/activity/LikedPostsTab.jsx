@@ -5,7 +5,7 @@ import PostItem from '../post/PostItem';
 import InfiniteScrollList from '../common/InfiniteScrollList';
 import { notifyError } from '../common/Notify';
 
-export default function LikedPostsTab() {
+export default function LikedPostsTab({ onCountUpdate }) {
     const { t } = useTranslation();
     const [posts, setPosts] = useState([]);
     const [page, setPage] = useState(1);
@@ -70,6 +70,7 @@ export default function LikedPostsTab() {
     const handleLikeToggle = (postId, isLiked) => {
         if (!isLiked) {
             setPosts(prev => prev.filter(p => p.id !== postId));
+            if (onCountUpdate) onCountUpdate(-1);
         }
     };
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\v1\FeedController;
 use App\Http\Controllers\Api\v1\PostController;
 use App\Http\Controllers\Api\v1\LikeController;
 use App\Http\Controllers\Api\v1\CommentController;
@@ -19,13 +20,10 @@ Route::middleware(['throttle:120,1', 'not_banned'])->controller(PostController::
 // дії залогіненого користувача  (180 запитів / мін)
 Route::middleware(['auth:sanctum', 'throttle:180,1', 'not_banned'])->group(function ()
 {
-    Route::get('/feed', [PostController::class, 'feed']);
-    Route::get('/feed/global', [PostController::class, 'globalFeed']);
+    // стрічка з постами
+    Route::get('/feed', [FeedController::class, 'feed']);
+    Route::get('/feed/global', [FeedController::class, 'globalFeed']);
 
-    // моя активність
-    Route::get('/activity/liked', [PostController::class, 'likedPosts']);
-    Route::get('/activity/comments', [CommentController::class, 'myComments']);
-    Route::get('/activity/reposts', [PostController::class, 'reposts']);
 
     // щоб писати пости/коментарі/ставити лайки потрібно підтвердити пошту
     Route::middleware(['verified', 'not_muted'])->group(function ()

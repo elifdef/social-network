@@ -14,13 +14,19 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table)
         {
             $table->string('id')->primary();
+
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+            $table->foreignId('target_user_id')->nullable()->constrained('users')->onDelete('cascade');
+
             $table->text('content')->nullable();
             $table->json('entities')->nullable();
             $table->string('original_post_id')->nullable();
-
+            $table->boolean('is_repost')->default(false);
             $table->timestamps();
+
             $table->index('user_id');
+            $table->index('target_user_id');
             $table->index('created_at');
         });
 

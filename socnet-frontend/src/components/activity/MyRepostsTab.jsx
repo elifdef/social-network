@@ -3,9 +3,13 @@ import { useTranslation } from 'react-i18next';
 import api from '../../api/axios';
 import PostItem from '../post/PostItem';
 import InfiniteScrollList from '../common/InfiniteScrollList';
+import { notifyError } from '../common/Notify';
+import { useModal } from '../../context/ModalContext';
 
-export default function MyRepostsTab() {
+export default function MyRepostsTab({ onCountUpdate }) {
     const { t } = useTranslation();
+    const { openConfirm } = useModal();
+
     const [reposts, setReposts] = useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
@@ -35,7 +39,7 @@ export default function MyRepostsTab() {
                         return [...prev, ...uniqueNew];
                     });
 
-                    setHasMore(meta.current_page < meta.last_page);
+                    setHasMore(meta ? meta.current_page < meta.last_page : false);
                 }
             })
             .catch(err => {
@@ -62,6 +66,20 @@ export default function MyRepostsTab() {
         }
     }, [isLoadingInitial, isLoadingMore, hasMore, error]);
 
+    const handleDelete = async (postId) => {
+        const isConfirmed = await openConfirm(t('post.delete_post'));
+        if (!isConfirmed) return;
+
+        try {
+            await api.delete(`/posts/${postId}`);
+            setReposts(prev => prev.filter(p => p.id !== postId));
+            if (onCountUpdate) onCountUpdate(-1);
+
+        } catch (error) {
+            notifyError(t('error.deleting'));
+        }
+    };
+
     return (
         <InfiniteScrollList
             itemsCount={reposts.length}
@@ -82,7 +100,8 @@ export default function MyRepostsTab() {
                 <PostItem
                     key={post.id}
                     post={post}
-                    readonly={true}
+                    isOwner={true}
+                    onDelete={handleDelete}
                 />
             ))}
         </InfiniteScrollList>

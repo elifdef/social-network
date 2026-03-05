@@ -26,7 +26,7 @@ class AdminUserResource extends JsonResource
             'role' => $this->role,
             'is_muted' => (bool)$this->is_muted,
             'is_banned' => (bool)$this->is_banned,
-            'last_seen' => $this->last_seen_at->toISOString(),
+            'last_seen' => $this->last_seen_at,
             'created_at' => $this->created_at->toISOString(),
             'posts_count' => $this->whenCounted('posts'),
             'comments_count' => $this->whenCounted('comments'),
