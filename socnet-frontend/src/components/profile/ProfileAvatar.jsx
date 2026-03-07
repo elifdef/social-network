@@ -4,8 +4,7 @@ export default function ProfileAvatar({ user, isPreview, isBlocked }) {
             <img
                 src={user.avatar}
                 alt={user.username}
-                className="socnet-avatar"
-                style={!isPreview && isBlocked ? { opacity: 0.6, filter: 'grayscale(100%)' } : {}}
+                className={`socnet-avatar ${(!isPreview && isBlocked) ? 'socnet-avatar-blocked' : ''}`}
             />
         </div>
     );

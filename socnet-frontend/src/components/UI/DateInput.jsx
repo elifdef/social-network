@@ -6,8 +6,7 @@ const DateInput = ({ label, wrapperClass = "socnet-form-group", className = "soc
             {label && <Label>{label}</Label>}
             <input
                 type="date"
-                className={className}
-                style={{ colorScheme: 'dark' }}
+                className={`${className} socnet-date-input-dark`}
                 {...props}
             />
         </div>

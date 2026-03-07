@@ -22,21 +22,21 @@ export const useNotificationText = () => {
         switch (key) {
             case 'new_like':
                 return {
-                    actionText: t('notifications.liked', { context: gender }),
+                    actionText: t(`notifications.liked_${gender}`),
                     linkText: t('notifications.your_post'),
                     linkUrl
                 };
 
             case 'new_comment':
                 return {
-                    actionText: t('notifications.commented', { context: gender }),
+                    actionText: t(`notifications.commented_${gender}`),
                     linkText: t('notifications.your_post'),
                     linkUrl
                 };
 
             case 'new_friend_request':
                 return {
-                    actionText: t('notifications.friend_request', { context: gender }),
+                    actionText: t(`notifications.friend_request_${gender}`),
                     linkText: null,
                     linkUrl: null
                 };
@@ -44,14 +44,14 @@ export const useNotificationText = () => {
             case 'wall_post':
                 return {
                     actionText: '',
-                    linkText: t('notifications.wall_post', { context: gender }),
+                    linkText: t(`notifications.wall_post_${gender}`),
                     linkUrl
                 };
 
             case 'repost':
                 return {
                     actionText: '',
-                    linkText: t('notifications.repost', { context: gender }),
+                    linkText: t(`notifications.repost_${gender}`),
                     linkUrl
                 };
 
@@ -61,7 +61,7 @@ export const useNotificationText = () => {
                     linkText: '',
                     linkUrl: null
                 };
-                
+
             default:
                 return { actionText: '', linkText: null, linkUrl: null };
         }

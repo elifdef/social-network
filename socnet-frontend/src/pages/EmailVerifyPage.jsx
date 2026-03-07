@@ -14,7 +14,6 @@ const EmailVerifyPage = () => {
     const [message, setMessage] = useState(t('info.verification_email'));
 
     useEffect(() => {
-        // якщо пошта вже підтверджена редірект на профіль
         if (user?.email_verified_at) {
             navigate(`/${user.username}`);
             return;
@@ -33,14 +32,12 @@ const EmailVerifyPage = () => {
                     setUser(prev => ({ ...prev, email_verified_at: verifiedDate }));
                 }
 
-                // посилаємо сигнал іншій вкладці
                 const channel = new BroadcastChannel('auth_channel');
                 channel.postMessage({
                     type: 'EMAIL_VERIFIED',
                     date: verifiedDate
                 });
 
-                // закриваєм канал після відправки
                 setTimeout(() => {
                     channel.close();
                     navigate(`/${user?.username || ''}`);
@@ -48,7 +45,7 @@ const EmailVerifyPage = () => {
 
             } catch (error) {
                 setStatus('error');
-                setMessage(error.response?.data?.message || t('email_invalid_link'));
+                setMessage(error.response?.data?.message || t('error.email_invalid_link'));
             }
         };
         verifyEmail();
@@ -59,12 +56,12 @@ const EmailVerifyPage = () => {
             {status === 'loading' && <h2>{message}</h2>}
 
             {status === 'success' && (
-                <h2 style={{ color: 'green' }}>{t('success.email_confirm')}</h2>
+                <h2 className="socnet-text-success">{t('success.email_confirm')}</h2>
             )}
 
             {status === 'error' && (
                 <div>
-                    <h2 style={{ color: 'red' }}>{t('error.validation')}</h2>
+                    <h2 className="socnet-text-error">{t('error.validation')}</h2>
                     <p>{message}</p>
                 </div>
             )}

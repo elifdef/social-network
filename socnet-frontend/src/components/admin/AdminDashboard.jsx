@@ -36,7 +36,7 @@ export default function AdminDashboard() {
     return (
         <div className="admin-dashboard-wrapper">
             <div className="admin-dashboard-header">
-                <span className="admin-timeframe-badge">{t('admin.last_7_days')}</span>
+                <span className="admin-timeframe-badge">{t('admin.dashboard.last_7_days')}</span>
                 <button className="socnet-btn-small" onClick={fetchStats}>
                     {t('common.reload_page')}
                 </button>
@@ -61,11 +61,11 @@ export default function AdminDashboard() {
 
             <div className="admin-tables-row admin-infrastructure-row">
                 <div className="admin-table-card admin-server-card">
-                    <h3 className="admin-chart-title">{t('admin.server_health')}</h3>
+                    <h3 className="admin-chart-title">{t('admin.dashboard.server_health')}</h3>
 
                     <div className="admin-server-metric">
                         <div className="admin-server-metric-header">
-                            <span>{t('admin.cpu_load')}</span>
+                            <span>{t('admin.dashboard.cpu_load')}</span>
                             <span>{stats.server.cpu_load}%</span>
                         </div>
                         <div className="admin-progress-track">
@@ -75,7 +75,7 @@ export default function AdminDashboard() {
 
                     <div className="admin-server-metric">
                         <div className="admin-server-metric-header">
-                            <span>{t('admin.disk_usage')} ({stats.server.disk_free_gb} GB {t('admin.free')})</span>
+                            <span>{t('admin.dashboard.disk_usage')} ({stats.server.disk_free_gb} GB {t('admin.dashboard.free')})</span>
                             <span>{stats.server.disk_percent}%</span>
                         </div>
                         <div className="admin-progress-track">
@@ -84,23 +84,23 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="admin-server-info-row">
-                        <span className="socnet-label">{t('admin.version')} PHP:</span>
+                        <span className="socnet-label">{t('admin.dashboard.version')} PHP:</span>
                         <span className="socnet-value">{stats.server.php_version}</span>
                     </div>
                     <div className="admin-server-info-row">
-                        <span className="socnet-label">{t('admin.ram_usage')}:</span>
+                        <span className="socnet-label">{t('admin.dashboard.ram_usage')}:</span>
                         <span className="socnet-value">{stats.server.memory_mb} MB</span>
                     </div>
                 </div>
 
                 <div className="admin-table-card admin-online-card">
                     <h3 className="admin-chart-title">
-                        {t('admin.users_online')}
+                        {t('admin.dashboard.users_online')}
                         <span className="admin-online-badge">{stats.realtime.online_count}</span>
                     </h3>
 
                     {stats.realtime.users.length === 0 ? (
-                        <div className="socnet-empty-state">{t('admin.no_one_online')}</div>
+                        <div className="socnet-empty-state">{t('admin.dashboard.no_one_online')}</div>
                     ) : (
                         <div className="admin-online-list">
                             {stats.realtime.users.map(user => (
@@ -120,7 +120,7 @@ export default function AdminDashboard() {
 
             <div className="admin-tables-row">
                 <div className="admin-table-card admin-chart-card">
-                    <h3 className="admin-chart-title">{t('admin.registrations_chart')}</h3>
+                    <h3 className="admin-chart-title">{t('admin.dashboard.registrations_chart')}</h3>
                     <div className="admin-chart-container">
                         <ResponsiveContainer>
                             <LineChart data={stats.charts.registrations} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
@@ -128,14 +128,14 @@ export default function AdminDashboard() {
                                 <XAxis dataKey="date" stroke="var(--theme-text-muted)" fontSize={10} tickMargin={10} />
                                 <YAxis stroke="var(--theme-text-muted)" fontSize={10} allowDecimals={false} />
                                 <Tooltip contentClassName="admin-chart-tooltip" wrapperClassName="admin-chart-tooltip-wrapper" />
-                                <Line type="monotone" dataKey="count" name={t('admin.new_users')} stroke="var(--theme-success)" strokeWidth={3} activeDot={{ r: 6, fill: 'var(--theme-success)' }} />
+                                <Line type="monotone" dataKey="count" name={t('admin.dashboard.new_users')} stroke="var(--theme-success)" strokeWidth={3} activeDot={{ r: 6, fill: 'var(--theme-success)' }} />
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
                 <div className="admin-table-card admin-chart-card">
-                    <h3 className="admin-chart-title">{t('admin.activity_chart')}</h3>
+                    <h3 className="admin-chart-title">{t('admin.dashboard.activity_chart')}</h3>
                     <div className="admin-chart-container">
                         <ResponsiveContainer>
                             <BarChart data={stats.charts.activity} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>

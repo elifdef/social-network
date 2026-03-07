@@ -33,7 +33,7 @@ export default function ReportModal({ isOpen, onClose, targetType, targetId }) {
         e.preventDefault();
 
         if (!selectedReason) {
-            notifyError(t('report.choose_reason'));
+            notifyError(t('reports.choose_reason'));
             return;
         }
 
@@ -71,7 +71,7 @@ export default function ReportModal({ isOpen, onClose, targetType, targetId }) {
         <div className="socnet-modal-overlay" onClick={handleClose}>
             <div className="socnet-modal-dialog" onClick={e => e.stopPropagation()}>
 
-                <h2 className="socnet-section-title" style={{ marginTop: 0, marginBottom: '15px' }}>
+                <h2 className="socnet-section-title report-modal-title">
                     {t('reports.title')}
                 </h2>
 
@@ -110,7 +110,7 @@ export default function ReportModal({ isOpen, onClose, targetType, targetId }) {
                         </>
                     )}
 
-                    <div className="socnet-modal-actions" style={{ marginTop: '20px' }}>
+                    <div className="socnet-modal-actions report-modal-actions">
                         <button
                             type="button"
                             className="socnet-btn socnet-btn-cancel"

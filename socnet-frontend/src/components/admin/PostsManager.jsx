@@ -10,7 +10,7 @@ import Button from '../UI/Button';
 import Input from '../UI/Input';
 import PostContent from '../post/PostContent';
 import PostFooter from '../post/PostFooter';
-import PostItem from '../post/PostItem'; // 🔥 Додали для відображення репостів
+import PostItem from '../post/PostItem';
 import InfiniteScrollList from '../common/InfiniteScrollList';
 import { userRole } from '../../config';
 
@@ -66,7 +66,7 @@ export const PostsManager = ({ currentUser }) => {
 
     const handleDelete = async (postId) => {
         const reason = await openPrompt(
-            t('admin.delete_reason'),
+            t('admin.posts.delete_reason'),
             "",
             t('common.delete'),
             t('common.cancel')
@@ -82,16 +82,19 @@ export const PostsManager = ({ currentUser }) => {
             notifyError(error.response?.data?.message || t('error.deleting'));
         }
     };
-    const handleEdit = (postId) => { alert("under construction"); };
+
+    const handleEdit = (postId) => {
+        alert(t('admin.common.under_construction'));
+    };
 
     return (
         <>
-            <form onSubmit={handleSearch} className="admin-search-bar" style={{ display: 'flex', gap: '10px', alignItems: 'flex-end', marginBottom: '15px' }}>
-                <div style={{ flex: 1 }}>
+            <form onSubmit={handleSearch} className="admin-search-bar admin-post-search">
+                <div className="admin-post-search-input">
                     <Input
-                        label={t('admin.filter_user_posts')}
+                        label={t('admin.posts.filter_label')}
                         type="text"
-                        placeholder={t('admin.username_without_sobaka')}
+                        placeholder={t('admin.posts.filter_placeholder')}
                         value={targetUser}
                         onChange={(e) => setTargetUser(e.target.value)}
                     />
@@ -109,7 +112,7 @@ export const PostsManager = ({ currentUser }) => {
                 emptyState={
                     <div className="socnet-empty-state with-card">
                         <h3>{t('post.posts_not_found')}</h3>
-                        <p>{t('admin.posts_not_found_desc')}</p>
+                        <p>{t('admin.posts.not_found_desc')}</p>
                     </div>
                 }
             >
@@ -129,10 +132,9 @@ export const PostsManager = ({ currentUser }) => {
                                             {post.user?.first_name} {post.user?.last_name}
                                         </Link>
 
-                                        {/* 🔥 Кому написали */}
                                         {showTargetUser && (
                                             <span className="socnet-post-target-text">
-                                                {' '}{t('post.wrote_on_wall', { context: post.user?.gender === 2 ? 'female' : 'male' })}{' '}
+                                                {' '}{t(`post.wrote_on_wall_${post.user?.gender === 2 ? 'female' : 'male'}`)}{' '}
                                                 <Link to={`/${post.target_user.username}`} className="socnet-post-author target" target="_blank">
                                                     {post.target_user.first_name} {post.target_user.last_name}
                                                 </Link>
@@ -144,25 +146,35 @@ export const PostsManager = ({ currentUser }) => {
                                     </span>
                                 </div>
 
-                                <div className="socnet-post-actions-top" style={{ opacity: 1 }}>
+                                <div className="socnet-post-actions-top admin-post-actions-visible">
                                     {isAdmin && (
-                                        <button className="socnet-action-icon" onClick={() => handleEdit(post.id)} title={t('common.edit')}>✎</button>
+                                        <button
+                                            className="socnet-action-icon"
+                                            onClick={() => handleEdit(post.id)}
+                                            title={t('common.edit')}
+                                        >
+                                            ✎
+                                        </button>
                                     )}
-                                    <button className="socnet-post-delete" onClick={() => handleDelete(post.id)} title={t('common.delete')}>✖</button>
+                                    <button
+                                        className="socnet-post-delete"
+                                        onClick={() => handleDelete(post.id)}
+                                        title={t('common.delete')}
+                                    >
+                                        ✖
+                                    </button>
                                 </div>
                             </div>
 
-                            {/* 🔥 Контент (галерея тепер працює через attachments всередині PostContent) */}
                             <PostContent content={post.content} post={post} onUpdate={() => { }} />
 
-                            {/* 🔥 Репости */}
                             {post.is_repost && (
                                 <div className="socnet-repost-branch">
                                     {post.original_post_id && post.original_post ? (
                                         <PostItem
                                             post={post.original_post}
                                             isInner={true}
-                                            readonly={true} // Оригінал теж тільки для читання
+                                            readonly={true}
                                         />
                                     ) : (
                                         <div className="socnet-deleted-stub">
@@ -173,14 +185,13 @@ export const PostsManager = ({ currentUser }) => {
                             )}
 
                             <div className="admin-footer-wrapper">
-                                {/* 🔥 Футер у режимі "Тільки статистика" */}
                                 <PostFooter
                                     postId={post.id}
-                                    isLiked={false} // Модератор не бачить "свій" лайк, тільки загальну кількість
+                                    isLiked={false}
                                     likesCount={post.likes_count || 0}
                                     commentsCount={post.comments_count || 0}
-                                    repostsCount={post.reposts_count || 0} // Додали репости
-                                    readonly={true} // Блокує кліки і робить іконки тьмянішими
+                                    repostsCount={post.reposts_count || 0}
+                                    readonly={true}
                                 />
                             </div>
                         </div>

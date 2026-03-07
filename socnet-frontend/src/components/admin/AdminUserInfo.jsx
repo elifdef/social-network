@@ -23,7 +23,7 @@ export default function AdminUserInfo() {
             const res = await api.get(`/admin/users/${username}`);
             setUser(res.data.data);
         } catch (error) {
-            notifyError(t('admin.error_load_user'));
+            notifyError(t('admin.user_info.error_load'));
         } finally {
             setIsLoading(false);
         }
@@ -35,11 +35,11 @@ export default function AdminUserInfo() {
 
     const handleToggleAction = async (actionType, currentStatus) => {
         const actionText = actionType === 'ban'
-            ? (currentStatus ? t('admin.unban') : t('admin.ban'))
-            : (currentStatus ? t('admin.unmute') : t('admin.mute'));
+            ? (currentStatus ? t('admin.actions.unban') : t('admin.actions.ban'))
+            : (currentStatus ? t('admin.actions.unmute') : t('admin.actions.mute'));
 
         const reason = await openPrompt(
-            t('admin.action_reason_prompt'),
+            t('admin.actions.reason_prompt'),
             "",
             actionText,
             t('common.cancel')
@@ -49,18 +49,18 @@ export default function AdminUserInfo() {
 
         try {
             const res = await api.post(`/admin/users/${username}/${actionType}`, {
-                reason: reason || t('admin.reason_not_specified')
+                reason: reason || t('admin.actions.reason_not_specified')
             });
 
             notifySuccess(res.data.message);
             fetchUserDossier();
         } catch (error) {
-            notifyError(error.response?.data?.message || t('admin.error_action'));
+            notifyError(error.response?.data?.message || t('admin.actions.error_action'));
         }
     };
 
-    if (isLoading) return <div className="socnet-empty-state">{t('admin.loading_dossier')}</div>;
-    if (!user) return <div className="socnet-empty-state with-card">{t('admin.user_not_found')}</div>;
+    if (isLoading) return <div className="socnet-empty-state">{t('admin.user_info.loading_dossier')}</div>;
+    if (!user) return <div className="socnet-empty-state with-card">{t('admin.user_info.not_found')}</div>;
 
     return (
         <div className="admin-dossier-wrapper">
@@ -69,43 +69,43 @@ export default function AdminUserInfo() {
                 <div className="admin-dossier-row">
                     <div className="admin-dossier-col">
                         <p><strong>ID:</strong> {user.id}</p>
-                        <p><strong>{t('admin.email_label')}:</strong> {user.email}</p>
+                        <p><strong>{t('admin.user_info.email_label')}:</strong> {user.email}</p>
                         <p><strong>{t('common.first_name')}:</strong> {user.first_name}</p>
                         <p><strong>{t('common.last_name')}:</strong> {user?.last_name}</p>
-                        <p><strong>{t('admin.registered_at')}:</strong> {formatDate(user.created_at)}</p>
-                        <p><strong>{t('admin.last_active')}:</strong> {user.last_seen ? formatDate(user.last_seen) : t('admin.never')}</p>
+                        <p><strong>{t('admin.user_info.registered_at')}:</strong> {formatDate(user.created_at)}</p>
+                        <p><strong>{t('admin.user_info.last_active')}:</strong> {user.last_seen ? formatDate(user.last_seen) : t('admin.user_info.never')}</p>
                         <p><strong>{t('common.role')}:</strong> {user.role}</p>
-                        <p><strong>{t('admin.account_status')}:</strong>
+                        <p><strong>{t('admin.user_info.account_status')}:</strong>
                             {user.is_banned
-                                ? <span className="admin-status-red"> {t('admin.status_banned')}</span>
-                                : <span className="admin-status-green"> {t('admin.status_active')}</span>}
-                            {user.is_muted && <span className="admin-status-orange"> {t('admin.status_muted')}</span>}
+                                ? <span className="admin-status-red"> {t('admin.user_info.status_banned')}</span>
+                                : <span className="admin-status-green"> {t('admin.user_info.status_active')}</span>}
+                            {user.is_muted && <span className="admin-status-orange"> {t('admin.user_info.status_muted')}</span>}
                         </p>
                     </div>
 
                     <div className="admin-stats-box">
-                        <h4>{t('admin.content_stats')}</h4>
-                        <p>{t('admin.posts_written')}: <strong>{user.posts_count || 0}</strong></p>
-                        <p>{t('admin.comments_left')}: <strong>{user.comments_count || 0}</strong></p>
-                        <p>{t('admin.likes_given')}: <strong>{user.likes_count || 0}</strong></p>
+                        <h4>{t('admin.user_info.content_stats')}</h4>
+                        <p>{t('admin.user_info.posts_written')}: <strong>{user.posts_count || 0}</strong></p>
+                        <p>{t('admin.user_info.comments_left')}: <strong>{user.comments_count || 0}</strong></p>
+                        <p>{t('admin.user_info.likes_given')}: <strong>{user.likes_count || 0}</strong></p>
                     </div>
                 </div>
 
                 <div className="admin-actions-box">
-                    <h4>{t('admin.moderator_actions')}</h4>
+                    <h4>{t('admin.actions.title')}</h4>
                     <div className="admin-btn-group">
                         <Button
-                        className="admin-btn-warning"
+                            className="admin-btn-warning"
                             variant={user.is_muted ? 'primary' : 'save'}
                             onClick={() => handleToggleAction('mute', user.is_muted)}
                         >
-                            {user.is_muted ? t('admin.unmute') : t('admin.mute')}
+                            {user.is_muted ? t('admin.actions.unmute') : t('admin.actions.mute')}
                         </Button>
                         <Button
                             className={user.is_banned ? 'admin-btn-unban' : 'admin-btn-ban'}
                             onClick={() => handleToggleAction('ban', user.is_banned)}
                         >
-                            {user.is_banned ? t('admin.unban') : t('admin.ban')}
+                            {user.is_banned ? t('admin.actions.unban') : t('admin.actions.ban')}
                         </Button>
                     </div>
                 </div>
@@ -113,13 +113,13 @@ export default function AdminUserInfo() {
 
             <div className="admin-tables-row">
                 <div className="socnet-card-wrapper admin-table-card">
-                    <h3>{t('admin.recent_logins')}</h3>
+                    <h3>{t('admin.user_info.recent_logins')}</h3>
                     <table className="admin-table">
                         <thead>
                             <tr>
-                                <th>{t('admin.date')}</th>
-                                <th>{t('admin.ip_address')}</th>
-                                <th>{t('admin.device')}</th>
+                                <th>{t('common.date')}</th>
+                                <th>{t('admin.user_info.ip_address')}</th>
+                                <th>{t('admin.user_info.device')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -132,20 +132,22 @@ export default function AdminUserInfo() {
                                     </tr>
                                 ))
                             ) : (
-                                <tr><td colSpan="3" style={{ textAlign: 'center' }}>{t('admin.history_empty')}</td></tr>
+                                <tr>
+                                    <td colSpan="3" className="admin-table-empty-row">{t('admin.user_info.history_empty')}</td>
+                                </tr>
                             )}
                         </tbody>
                     </table>
                 </div>
 
                 <div className="socnet-card-wrapper admin-table-card">
-                    <h3>{t('admin.violation_history')}</h3>
+                    <h3>{t('admin.user_info.violation_history')}</h3>
                     <table className="admin-table">
                         <thead>
                             <tr>
-                                <th>{t('admin.date')}</th>
-                                <th>{t('admin.action')}</th>
-                                <th>{t('admin.reason')}</th>
+                                <th>{t('common.date')}</th>
+                                <th>{t('admin.user_info.action')}</th>
+                                <th>{t('admin.user_info.reason')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -165,7 +167,9 @@ export default function AdminUserInfo() {
                                     );
                                 })
                             ) : (
-                                <tr><td colSpan="3" style={{ textAlign: 'center' }}>{t('admin.no_violations')}</td></tr>
+                                <tr>
+                                    <td colSpan="3" className="admin-table-empty-row">{t('admin.user_info.no_violations')}</td>
+                                </tr>
                             )}
                         </tbody>
                     </table>

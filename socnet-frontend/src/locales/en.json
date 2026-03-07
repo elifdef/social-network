@@ -21,33 +21,36 @@
     "not_match_password": "New passwords do not match",
     "check_entered_data": "Check the entered data",
     "not_image": "This file is not an image.",
-    "server_down": "The server is down",
-    "server_down_desc": "This is Joe our server. He tripped, fell, and dozed off. Please wait while we try to wake him up. ",
+    "server_down": "Server unavailable",
+    "server_down_desc": "This is Joe our server. He tripped, fell, and dozed off. Please wait while we try to wake him up.",
     "server_down_desc_old": "A critical error has occurred on the server side. Please try again later.",
-    "deleting": "Error deleting",
+    "deleting": "Error while deleting",
     "email_invalid_link": "The link is invalid or outdated.",
     "page_not_found": "Page not found",
     "email_not_confirm": "This action is unavailable due to an unconfirmed email address.",
     "large_file": "The file is too large. Maximum size: {{size}} MB.",
     "max_files": "You can attach up to 10 images.",
     "file_too_large": "Some files exceed {{size}} MB in size.",
-    "load_stats": "Error loading statistics",
-    "loading_reposts": "Error loading reposts."
+    "error_load_stats": "Error loading statistics",
+    "loading_likes": "Error loading liked posts.",
+    "loading_reposts": "Error loading reposts.",
+    "load_stats": "An error occurred while loading statistics."
   },
   "success": {
     "changes_saved": "Changes saved.",
-    "password_changed": "Password has been changed",
-    "email_confirm": "Email has been verified."
+    "password_changed": "Password changed successfully.",
+    "email_confirm": "Email verified successfully."
   },
   "common": {
     "welcome": "Welcome",
     "loading": "Loading...",
+    "processing": "Processing...",
     "reload_page": "Reload page",
     "error": "Error",
     "save": "Save",
     "warn": "Warning",
     "saving": "Saving...",
-    "load": "Load",
+    "load": "Load more",
     "change": "Change",
     "cancel": "Cancel",
     "post": "Post",
@@ -79,6 +82,7 @@
     "gender_male": "Male",
     "gender_female": "Female",
     "birthday": "Birthday",
+    "date": "Date",
     "preview": "Preview",
     "back": "← Back",
     "browse": "Browse...",
@@ -93,17 +97,20 @@
     "edit": "Edit",
     "support": "Support",
     "moderator": "Moderator",
+    "moderation": "Moderation",
     "admin": "Admin",
     "rules": "Rules",
     "notifications": "Notifications",
     "activity": "Activity",
     "my_activity": "My activity",
-    "comment": "Comment",
     "comments": "Comments",
+    "comment": "Comment",
     "like": "Like",
     "likes": "Likes",
     "repost": "Repost",
-    "reposts": "Reposts"
+    "reposts": "Reposts",
+    "role": "Role",
+    "saved": "Saved"
   },
   "auth": {
     "signin": "Sign in",
@@ -130,7 +137,7 @@
     "right": {
       "title": "First time here?",
       "description": "Create an account to add friends, write posts, like & comment!",
-      "btn_text": "Let's go"
+      "btn_text": "Let's go!"
     },
     "guest": {
       "view_like_guest": "You are viewing the site as a guest.",
@@ -150,7 +157,7 @@
   },
   "main": {
     "title": "Welcome to {{name}}",
-    "subtitle": "A small corner of the internet where there is no AI slop.",
+    "subtitle": "A small corner of the internet with no AI slop.",
     "blocks": {
       "share": {
         "title": "Share your moments",
@@ -194,12 +201,12 @@
     "empty_post": "The post can't be empty.",
     "not_found": "Post not found.",
     "posts_not_found": "Posts not found.",
-    "nested_too_deep": "This post has too many nested attachments to display.",
+    "nested_too_deep": "This post contains too many nested attachments to display.",
     "original_deleted": "The original post has been deleted or hidden.",
     "wrote_on_wall_male": "wrote on the wall of",
     "wrote_on_wall_female": "wrote on the wall of",
-    "repost_success": "",
-    "add_repost_comment": ""
+    "repost_success": "Post has been successfully shared on your wall!",
+    "add_repost_comment": "Add a comment to your repost..."
   },
   "comment": {
     "no_comments": "There are no comments yet.",
@@ -216,7 +223,7 @@
     "hidden": "Hidden",
     "status_not_set": "Status not set",
     "your_status": "Your status...",
-    "not_setup": "Profile not yet setup",
+    "not_setup": "Profile not set up yet",
     "not_setup_desc": "@{{name}} has not filled in their profile details yet.",
     "restricted_profile_m": "{{name}} has restricted your access to their profile.",
     "restricted_profile_f": "{{name}} has restricted your access to their profile.",
@@ -247,10 +254,12 @@
     "title": "Wall",
     "write_post": "Write a post...",
     "send_btn": "Share",
-    "empty_wall": "There are no posts yet.",
+    "empty_wall": "No posts yet.",
     "attach_photo": "Attach a photo",
     "posts_count_one": "{{count}} post",
     "posts_count_other": "{{count}} posts",
+    "posts_count_few": "{{count}} posts",
+    "posts_count_many": "{{count}} posts",
     "no_posts": "No posts yet.",
     "no_more_posts": "No more posts to show."
   },
@@ -275,8 +284,8 @@
   "feed": {
     "my_feed": "My feed",
     "global_feed": "Global feed",
-    "my_feed_empty": "Your feed is empty.\n Find friends or view global feed.",
-    "global_feed_empty": "There are no posts on this social network yet.\n Be the first to do it and make history!",
+    "my_feed_empty": "Your feed is empty.\nFind friends or view the global feed.",
+    "global_feed_empty": "There are no posts on this social network yet.\nBe the first to post and make history!",
     "find_friends": "Find friends",
     "view_global_feed": "View global feed"
   },
@@ -292,87 +301,138 @@
     "change_password": "Change password",
     "current_password": "Current password",
     "new_password": "New password",
-    "danger_zone": "Danger Zone",
+    "danger_zone": "Danger zone",
     "delete_account": "Delete account",
     "quote": "— Will you do it?\n— Yes.\n— And at what cost?\n— Everything.",
     "delete_warning": "This action cannot be undone. You will permanently lose your profile, photos, posts, and messages.",
-    "same_info": "Well, Well, Well... mommy’s little hacker wants to play programmer. Look at this genius who watched 5 minutes of BroCode videos and now thinks he’s a developer. Go clean your room or take out the trash — do something useful for once."
+    "same_info": "Well, Well, Well... mommy’s little hacker wants to play programmer. Look at this genius who watched 5 minutes of BroCode videos and now thinks he’s a developer. Go clean your room or take out the trash — do something useful for once.",
+    "same_info_old": "No changes were made."
   },
   "admin": {
     "control_panel": "Control panel",
-    "users_management": "Users Management",
+    "users_management": "Users management",
     "moderation_posts": "Posts moderation",
-    "search_user": "Search user",
+    "search_user": "Search for user",
     "search_placeholder": "Enter email or username...",
-    "filter_user_posts": "Filter by user (leave blank for global feed)",
-    "username_without_sobaka": "Enter username without @...",
     "users_not_found": "Users not found",
-    "user_not_found": "User not found",
-    "posts_not_found_desc": "The feed is clean, or the user with that username has not posted anything yet.",
     "error_load_users": "Error loading users",
-    "error_load_user": "Failed to load user data",
-    "error_action": "Action execution error",
-    "loading_dossier": "Loading dossier...",
-    "email_label": "Email",
-    "registered_at": "Registered",
-    "last_active": "Last active",
-    "never": "Never",
-    "account_status": "Account status",
-    "status_banned": "BANNED",
-    "status_banned_full": "Banned",
-    "status_active": "Active",
-    "status_active_full": "Active",
-    "status_muted": "(Muted)",
-    "status_muted_full": "Read-only (Mute)",
-    "content_stats": "Content statistics",
-    "posts_written": "Posts written",
-    "comments_left": "Comments left",
-    "likes_given": "Likes given",
-    "posts_count": "Posts: {{count}}",
-    "moderator_actions": "Moderator actions",
-    "delete_reason": "Please explain the reason for deletion.",
-    "action_reason_prompt": "Please specify the reason for this action",
-    "action_reason_placeholder": "Specify the reason (e.g., Spam in comments)",
-    "reason_not_specified": "Reason not specified",
-    "confirm_status_change": "Are you sure you want to change the status ({{action}})?",
-    "confirm_ban": "Are you sure you want to ban this user?",
-    "confirm_unban": "Are you sure you want to unban this user?",
     "allow_posting": "Allow posting",
     "forbid_posting": "Set to Read-only",
     "read_only": "Read-only",
-    "unmute": "Unmute",
-    "mute": "Mute",
-    "unban": "Unban Account",
-    "ban": "Ban Account",
-    "recent_logins": "Recent Logins (IP Addresses)",
-    "date": "Date",
-    "ip_address": "IP Address",
-    "device": "Device",
-    "history_empty": "History is empty",
-    "violation_history": "Violation History",
-    "action": "Action",
-    "reason": "Reason",
-    "no_violations": "User has no violations yet",
-    "dashboard": "Dashboard",
-    "registrations_chart": "Registrations (last 7 days)",
-    "activity_chart": "Activity (Posts vs Comments)",
-    "new_users": "New users",
-    "last_7_days": "Data for the last 7 days",
-    "server_health": "Server Health",
-    "cpu_load": "CPU Load",
-    "disk_usage": "Disk Space",
-    "free": "free",
-    "version": "Version",
-    "ram_usage": "Memory (RAM)",
-    "users_online": "Online Now",
-    "no_one_online": "There are no users online right now."
+    "common": {
+      "admin_response": "Moderator's response:",
+      "prompt_placeholder": "Enter an explanation for the user...",
+      "under_construction": "This feature is under construction."
+    },
+    "stats": {
+      "total": "Total",
+      "pending": "Pending",
+      "resolved": "Resolved",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "last_7_days": "Data for the last 7 days",
+      "server_health": "Server Health",
+      "cpu_load": "CPU Load",
+      "disk_usage": "Disk Space",
+      "free": "free",
+      "version": "Version",
+      "ram_usage": "Memory (RAM)",
+      "users_online": "Online Now",
+      "no_one_online": "There are no users online right now.",
+      "registrations_chart": "Registrations (last 7 days)",
+      "activity_chart": "Activity (Posts vs Comments)",
+      "new_users": "New users"
+    },
+    "posts": {
+      "filter_label": "Filter by user (leave blank for global feed)",
+      "filter_placeholder": "Enter username without @...",
+      "delete_reason": "Provide a reason for deleting this post",
+      "not_found_desc": "The feed is clean, or the user with that username has not posted anything yet."
+    },
+    "user_info": {
+      "loading_dossier": "Loading dossier...",
+      "not_found": "User not found",
+      "error_load": "Failed to load user data",
+      "email_label": "Email",
+      "registered_at": "Registered",
+      "last_active": "Last active",
+      "never": "Never",
+      "account_status": "Account status",
+      "status_banned": "BANNED",
+      "status_banned_full": "Banned",
+      "status_active": "Active",
+      "status_active_full": "Active",
+      "status_muted": "(Muted)",
+      "status_muted_full": "Read-only (Mute)",
+      "content_stats": "Content statistics",
+      "posts_written": "Posts written",
+      "comments_left": "Comments left",
+      "likes_given": "Likes given",
+      "posts_count": "Posts: {{count}}",
+      "recent_logins": "Recent logins (IP addresses)",
+      "ip_address": "IP Address",
+      "device": "Device",
+      "history_empty": "History is empty",
+      "violation_history": "Violation history",
+      "action": "Action",
+      "reason": "Reason",
+      "no_violations": "User has no violations yet"
+    },
+    "actions": {
+      "title": "Moderator actions",
+      "reason_prompt": "Please specify the reason for this action",
+      "reason_placeholder": "Specify the reason (e.g., Spam in comments)",
+      "reason_not_specified": "Reason not specified",
+      "error_action": "Action execution error",
+      "confirm_status_change": "Are you sure you want to change the status ({{action}})?",
+      "confirm_ban": "Are you sure you want to ban this user?",
+      "confirm_unban": "Are you sure you want to unban this user?",
+      "unmute": "Unmute",
+      "mute": "Mute",
+      "unban": "Unban Account",
+      "ban": "Ban Account"
+    },
+    "reports": {
+      "tab": "Reports",
+      "empty": "No reports in this category.",
+      "from": "From:",
+      "target": "Target:",
+      "reason": "Reason:",
+      "details": "User details:",
+      "btn_resolve": "Approve report",
+      "btn_reject": "Reject report",
+      "prompt_resolve": "Approve report",
+      "prompt_reject": "Reject report",
+      "target_post": "Post from {{date}}",
+      "target_comment": "Comment from {{date}}",
+      "target_deleted": "Deleted content (ID: {{id}})"
+    },
+    "appeals": {
+      "tab": "Appeals",
+      "empty": "No appeals in this category.",
+      "from": "Appeal from:",
+      "message": "Appeal message:",
+      "btn_approve": "Unban",
+      "btn_reject": "Reject appeal",
+      "prompt_approve": "Approve appeal",
+      "prompt_reject": "Reject appeal"
+    }
   },
   "banned": {
     "title": "Account Blocked",
     "message": "{{name}}, your account (@{{username}}) has been temporarily or permanently suspended from the platform.",
     "reason_label": "Reason for blocking",
+    "reason_not_specified": "Reason not specified",
     "appeal_btn": "Submit Appeal",
-    "appeal_alert": "The appeal function will be available later (Under construction)"
+    "appeal_form_title": "Appeal Submission",
+    "appeal_placeholder": "Explain why you believe the block was a mistake or tell us how you've corrected your behavior...",
+    "appeal_submit": "Submit for review",
+    "appeal_pending": "Your appeal is under review. Please wait for a decision.",
+    "appeal_success": "Appeal submitted successfully!",
+    "appeal_error": "Error submitting appeal. Please try again later."
   },
   "notifications": {
     "my_notifications": "My Notifications",
@@ -390,7 +450,8 @@
     "wall_post_male": "wrote on your wall.",
     "wall_post_female": "wrote on your wall.",
     "repost_male": "shared your post.",
-    "repost_female": "shared your post."
+    "repost_female": "shared your post.",
+    "report_reviewed_click": "Your report has been reviewed. Click to see details."
   },
   "activity": {
     "likes": {
@@ -398,11 +459,11 @@
     },
     "comments": {
       "empty": "You haven't left any comments yet.",
-      "you_commented_on": "You commented on the",
+      "you_commented_on": "You commented on",
       "of_user": "by"
     },
     "reposts": {
-      "empty": "You haven't repost any posts yet."
+      "empty": "You haven't reposted any posts yet."
     }
   },
   "rules": {
@@ -412,7 +473,7 @@
     "items": [
       {
         "title": "User Data",
-        "text": "This social network does not collect any personal data. We only log your IP address, browser, and operating system used for login, and that's it."
+        "text": "The social network operates on the principle: \"If a user deletes content, we delete it too. If a user replaces content, the old version is permanently removed.\""
       },
       {
         "title": "Personal Information",
@@ -436,11 +497,12 @@
     ]
   },
   "reports": {
-    "title": "Report Content",
+    "title": "Report",
     "reason_label": "Select a reason",
+    "choose_reason": "Please select a reason.",
     "details_label": "Additional details (optional)",
     "details_placeholder": "Describe the issue in more detail...",
-    "submit_btn": "Submit Report",
+    "submit_btn": "Submit report",
     "success": "Your report has been submitted successfully. Thank you!",
     "error_load_reasons": "Failed to load report reasons.",
     "review_result_title": "Report Review Result",

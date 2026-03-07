@@ -17,7 +17,7 @@ export const BannedScreen = () => {
 
     useEffect(() => {
         if (!user) return;
-        
+
         const checkStatus = async () => {
             try {
                 const res = await api.get('/appeals/status');
@@ -65,7 +65,7 @@ export const BannedScreen = () => {
                 <div className="banned-reason-box">
                     <h4 className="banned-reason-label">{t('banned.reason_label')}</h4>
                     <p className="banned-reason-text">
-                        {user.ban_reason || t('admin.reason_not_specified')}
+                        {user.ban_reason || t('banned.reason_not_specified')}
                     </p>
                 </div>
 
@@ -74,17 +74,17 @@ export const BannedScreen = () => {
                 ) : (
                     <>
                         {hasPendingAppeal ? (
-                            <div className="socnet-info-block" style={{ marginTop: '15px', textAlign: 'center', backgroundColor: 'var(--theme-bg-hover)' }}>
-                                <span className="socnet-value" style={{ color: 'var(--theme-link)' }}>
+                            <div className="socnet-info-block banned-appeal-pending-box">
+                                <span className="socnet-value banned-appeal-pending-text">
                                     {t('banned.appeal_pending')}
                                 </span>
                             </div>
                         ) : (
-                            <div className="banned-actions" style={{ flexDirection: 'column', gap: '15px' }}>
-                                
+                            <div className="banned-actions banned-actions-vertical">
+
                                 {isAppealing ? (
-                                    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                        <h4 className="banned-reason-label" style={{ marginBottom: 0 }}>
+                                    <div className="banned-appeal-form">
+                                        <h4 className="banned-reason-label banned-appeal-form-title">
                                             {t('banned.appeal_form_title')}
                                         </h4>
                                         <textarea
@@ -95,16 +95,16 @@ export const BannedScreen = () => {
                                             placeholder={t('banned.appeal_placeholder')}
                                             disabled={isSubmitting}
                                         />
-                                        <div style={{ display: 'flex', gap: '10px' }}>
-                                            <Button 
-                                                onClick={handleAppealSubmit} 
+                                        <div className="banned-appeal-buttons">
+                                            <Button
+                                                onClick={handleAppealSubmit}
                                                 disabled={isSubmitting || !appealText.trim()}
-                                                style={{ flex: 1 }}
+                                                className="banned-btn-flex"
                                             >
                                                 {isSubmitting ? t('common.saving') : t('banned.appeal_submit')}
                                             </Button>
-                                            <Button 
-                                                variant="secondary" 
+                                            <Button
+                                                variant="secondary"
                                                 onClick={() => setIsAppealing(false)}
                                                 disabled={isSubmitting}
                                             >
@@ -113,8 +113,8 @@ export const BannedScreen = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
-                                        <Button onClick={() => setIsAppealing(true)} className="banned-btn-appeal" style={{ flex: 1 }}>
+                                    <div className="banned-default-buttons">
+                                        <Button onClick={() => setIsAppealing(true)} className="banned-btn-appeal banned-btn-flex">
                                             {t('banned.appeal_btn')}
                                         </Button>
                                         <Button onClick={logout} className="admin-btn-danger">

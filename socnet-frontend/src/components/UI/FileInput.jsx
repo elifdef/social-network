@@ -16,21 +16,20 @@ const FileInput = ({
     };
 
     return (
-        <div className={className} style={{ display: 'inline-block' }}>
+        <div className={`socnet-file-input-wrapper ${className}`}>
             <input
                 type="file"
                 ref={inputRef}
                 onChange={onFileSelect}
                 accept={accept}
-                style={{ display: 'none' }}
+                className="socnet-hidden-input"
                 {...props}
             />
 
             <button
                 type="button"
-                className="socnet-btn"
+                className="socnet-btn socnet-btn-auto-width"
                 onClick={handleClick}
-                style={{ width: 'auto' }}
             >
                 {btnText || t('common.upload')}
             </button>

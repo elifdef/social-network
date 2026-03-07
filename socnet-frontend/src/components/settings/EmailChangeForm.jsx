@@ -6,6 +6,8 @@ const EmailChangeForm = ({
     passwordForEmail, setPasswordForEmail,
     loading, onSubmit, t
 }) => {
+    const isVerified = Boolean(user?.email_verified_at);
+
     return (
         <div className="socnet-settings-box">
             <strong>{t('settings.change_email')}</strong>
@@ -18,8 +20,8 @@ const EmailChangeForm = ({
 
                 <div className="socnet-settings-info-item">
                     <span>{t('settings.verification_status')}:</span>
-                    <span style={{ color: user?.email_verified_at ? '#10b981' : '#f59e0b' }}>
-                        {t('common.' + (user?.email_verified_at ? 'confirmed' : 'unconfirmed'))}
+                    <span className={isVerified ? 'socnet-text-success' : 'socnet-text-warning'}>
+                        {t(`common.${isVerified ? 'confirmed' : 'unconfirmed'}`)}
                     </span>
                 </div>
             </div>

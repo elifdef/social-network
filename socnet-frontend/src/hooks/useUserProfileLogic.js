@@ -24,7 +24,8 @@ export const useUserProfileLogic = (currentUser, isPreview = false) => {
         if (isBanned) return t('profile.banned_status');
 
         if (isBlockedByTarget) {
-            return t('profile.restricted_profile_' + (currentUser?.gender === 2 ? "f" : "m"), { name: currentUser.first_name })
+            // Використовуємо шаблонні рядки замість конкатенації
+            return t(`profile.restricted_profile_${currentUser?.gender === 2 ? "f" : "m"}`, { name: currentUser.first_name })
         }
 
         if (currentUser?.bio) return currentUser.bio;

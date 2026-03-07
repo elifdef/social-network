@@ -44,7 +44,7 @@ export default function InfiniteScrollList({
     if (itemsCount === 0) {
         return emptyState || (
             <div className="socnet-empty-state with-card">
-                {t('common.empty')}
+                {t('common.no_more_data')}
             </div>
         );
     }

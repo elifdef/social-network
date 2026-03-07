@@ -30,7 +30,7 @@ export default function CreatePostForm({ onSubmitSuccess }) {
             notifyError(t('error.file_too_large', { size: MAX_FILE_SIZE_KB / 1024}));
 
         if (images.length + validFiles.length > 10) {
-            notifyError(t('error.max_files_10'));
+            notifyError(t('error.max_files'));
             return;
         }
 
@@ -101,7 +101,7 @@ export default function CreatePostForm({ onSubmitSuccess }) {
         >
             <Textarea
                 className="socnet-form-textarea fixed-size"
-                placeholder={isDragging ? t('wall.drop_image') : t('wall.write_post')}
+                placeholder={isDragging ? t('wall.attach_photo') : t('wall.write_post')}
                 value={content}
                 onChange={e => setContent(e.target.value)}
                 onPaste={handlePaste}

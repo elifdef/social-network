@@ -24,7 +24,7 @@ export default function PostFooter({
 
         if (readonly) {
             return (
-                <div className="socnet-comment-btn readonly" style={{ cursor: 'default', opacity: 0.7 }}>
+                <div className="socnet-comment-btn readonly">
                     <IconComponent width={16} height={16} />
                     {commentsCount}
                 </div>
@@ -44,7 +44,7 @@ export default function PostFooter({
 
         if (readonly) {
             return (
-                <div className={`socnet-like-btn readonly ${isLiked ? 'liked' : ''}`} style={{ cursor: 'default', opacity: 0.7 }}>
+                <div className={`socnet-like-btn readonly ${isLiked ? 'liked' : ''}`}>
                     <IconComponent width={16} height={16} />
                     {likesCount}
                 </div>
@@ -66,7 +66,7 @@ export default function PostFooter({
 
         if (readonly)
             return (
-                <div className="socnet-repost-btn readonly" style={{ cursor: 'default', opacity: 0.7 }}>
+                <div className="socnet-repost-btn readonly">
                     <IconComponent width={16} height={16} />
                     {repostsCount}
                 </div>

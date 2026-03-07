@@ -26,23 +26,19 @@ const ProfileSettings = ({ isSetupMode = false }) => {
     } = useProfileSettings(isSetupMode);
 
     const renderForm = () => (
-        <form onSubmit={handleSubmit} className="socnet-settings-form" style={isSetupMode ? { border: 'none', padding: 0 } : {}}>
+        <form
+            onSubmit={handleSubmit}
+            className={`socnet-settings-form ${isSetupMode ? 'socnet-settings-form-setup' : ''}`}
+        >
             <div className="socnet-form-group">
                 <Label>{t('common.avatar')}</Label>
-                <div style={{
-                    border: '1px solid var(--theme-input-border)',
-                    background: 'var(--theme-input-bg)',
-                    padding: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px'
-                }}>
+                <div className="socnet-avatar-upload-box">
                     <FileInput
                         onFileSelect={handleFileChange}
-                        btnText={t('common.browse') || "Огляд..."}
+                        btnText={t('common.browse')}
                     />
-                    <span style={{ fontSize: '11px', color: 'var(--theme-text-muted)' }}>
-                        {avatarFile ? avatarFile.name : t('common.no_file_selected') || "Файл не вибрано."}
+                    <span className="socnet-avatar-file-name">
+                        {avatarFile ? avatarFile.name : t('common.no_file_selected')}
                     </span>
                 </div>
             </div>
@@ -101,7 +97,7 @@ const ProfileSettings = ({ isSetupMode = false }) => {
                 type="submit"
                 variant="save"
                 disabled={!canSubmit}
-                style={isSetupMode ? { width: '100%' } : {}}
+                className={isSetupMode ? 'socnet-btn-full-width' : ''}
             >
                 {t(isSetupMode ? 'first_setup.save_and_finish' : 'common.save')}
             </Button>

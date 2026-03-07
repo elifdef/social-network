@@ -226,9 +226,10 @@ input:-webkit-autofill:active {
 
 .socnet-empty-state.with-card {
     background: var(--theme-bg-box);
-    border: 1px dashed var(--theme-border);
     margin-top: 15px;
     white-space: pre-line;
+    margin: 20px auto;
+    max-width: 500px;
 }
 
 .socnet-empty-state h3 {
@@ -721,6 +722,232 @@ input:-webkit-autofill:active {
     background-color: var(--theme-bg-page);
 }
 
+.admin-appeals-stats-container {
+    margin-bottom: 20px;
+}
+
+.admin-appeal-quote {
+    margin-top: 5px;
+}
+
+.admin-appeal-response-box {
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+.admin-stats-container {
+    margin-bottom: 20px;
+}
+
+.admin-report-comment-target {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-report-quote {
+    margin-top: 10px;
+}
+
+.admin-report-response-box {
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+.admin-post-search {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    margin-bottom: 15px;
+}
+
+.admin-post-search-input {
+    flex: 1;
+}
+
+.admin-post-actions-visible {
+    opacity: 1 !important;
+}
+
+.banned-appeal-pending-box {
+    margin-top: 15px;
+    text-align: center;
+    background-color: var(--theme-bg-hover, #f0f2f5);
+}
+
+.banned-appeal-pending-text {
+    color: var(--theme-link, #6383a8);
+}
+
+.banned-actions-vertical {
+    flex-direction: column;
+    gap: 15px;
+}
+
+.banned-appeal-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.banned-appeal-form-title {
+    margin-bottom: 0;
+}
+
+.banned-appeal-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.banned-default-buttons {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.banned-btn-flex {
+    flex: 1;
+}
+
+.system-toast-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--theme-bg-page);
+    border: 1px solid var(--theme-border);
+}
+
+.toast-avatar-img {
+    object-fit: cover;
+}
+
+.socnet-notification-avatar.system-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.socnet-toast-wrapper {
+    font-size: 12px !important;
+    color: #FFFFFF !important;
+    background: #2b2b2b !important;
+    border: 1px solid #C0CAD5 !important;
+    padding: 10px 15px !important;
+}
+
+.socnet-toast-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.report-modal-title {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.report-modal-actions {
+    margin-top: 20px;
+}
+
+.nav-link-support {
+    color: #3498db;
+}
+
+.nav-link-moderator {
+    color: #2ecc71;
+}
+
+.nav-link-admin {
+    color: #ffd700;
+}
+
+.socnet-sidebar-guest-notice {
+    font-size: 11px;
+    color: #777;
+    text-align: center;
+}
+
+.socnet-like-btn.readonly,
+.socnet-comment-btn.readonly,
+.socnet-repost-btn.readonly {
+    cursor: default;
+    opacity: 0.7;
+}
+
+.socnet-like-btn.readonly:hover,
+.socnet-comment-btn.readonly:hover,
+.socnet-repost-btn.readonly:hover {
+    background-color: transparent;
+}
+
+.profile-country-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.socnet-settings-form-setup {
+    border: none;
+    padding: 0;
+}
+
+.admin-table-empty-row {
+    text-align: center;
+}
+
+.socnet-avatar-upload-box {
+    border: 1px solid var(--theme-input-border);
+    background: var(--theme-input-bg);
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.socnet-avatar-file-name {
+    font-size: 11px;
+    color: var(--theme-text-muted);
+}
+
+.socnet-btn-full-width {
+    width: 100%;
+}
+
+.socnet-avatar-blocked {
+    opacity: 0.6;
+    filter: grayscale(100%);
+}
+
+.socnet-text-success {
+    color: #10b981;
+}
+
+.socnet-text-warning {
+    color: #f59e0b;
+}
+
+.socnet-date-input-dark {
+    color-scheme: dark;
+}
+
+.socnet-file-input-wrapper {
+    display: inline-block;
+}
+
+.socnet-hidden-input {
+    display: none;
+}
+
+.socnet-btn-auto-width {
+    width: auto;
+}
+
+.socnet-text-error {
+    color: #ef4444;
+}
+
 .socnet-name {
     margin: 0;
     font-size: 14px;
@@ -925,7 +1152,6 @@ input:-webkit-autofill:active {
 
 .socnet-wall-input.drag-active {
     background: #EBF1F5;
-    border: 1px dashed var(--theme-link);
 }
 
 .socnet-wall-actions {
@@ -2814,8 +3040,6 @@ input:-webkit-autofill:active {
     padding: 15px;
     margin-top: 10px;
     background-color: var(--theme-bg-page);
-    border: 1px dashed var(--theme-border);
-    border-radius: 8px;
     color: var(--theme-text-muted);
     font-size: 13px;
     text-align: center;
@@ -2831,7 +3055,6 @@ input:-webkit-autofill:active {
 .socnet-repost-limit-msg {
     padding: 12px;
     background-color: var(--theme-bg-page);
-    border: 1px dashed var(--theme-border);
     color: var(--theme-text-muted);
     font-style: italic;
     font-size: 11px;

@@ -12,16 +12,14 @@ const UserSearchForm = ({ search, setSearch, handleSearch }) => {
 
     return (
         <form onSubmit={handleSearch} className="admin-search-bar">
-            <div style={{ flex: 1 }}>
-                <label className="socnet-form-label">{t('admin.search_user')}</label>
-                <input
-                    type="text"
-                    className="socnet-form-input"
-                    placeholder={t('admin.search_placeholder')}
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                />
-            </div>
+            <label className="socnet-form-label">{t('admin.search_user')}</label>
+            <input
+                type="text"
+                className="socnet-form-input"
+                placeholder={t('admin.search_placeholder')}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+            />
             <button type="submit" className="socnet-btn">{t('common.find')}</button>
         </form>
     );
@@ -45,10 +43,10 @@ const UserCard = ({ user, handleMute, handleBan, canBan }) => {
                     {user.first_name} {user.last_name}
                 </a>
                 <div className="admin-user-meta">
-                    @{user.username} • {user.email} • {t('admin.posts_count', { count: user.posts_count || 0 })}
+                    @{user.username} • {user.email} • {t('admin.user_info.posts_count', { count: user.posts_count || 0 })}
                 </div>
                 <div className="admin-user-status">
-                    {user.is_banned ? <span className="admin-status-banned">{t('admin.status_banned_full')}</span>
+                    {user.is_banned ? <span className="admin-status-banned">{t('admin.user_info.status_banned_full')}</span>
                         : user.is_muted ? <span className="admin-status-muted">{t('admin.read_only')}</span>
                             : null}
                 </div>
@@ -67,7 +65,7 @@ const UserCard = ({ user, handleMute, handleBan, canBan }) => {
                             className={`admin-btn admin-btn-danger ${user.is_banned ? 'active' : ''}`}
                             onClick={() => handleBan(user.username, user.is_banned)}
                         >
-                            {user.is_banned ? t('admin.unban') : t('admin.ban')}
+                            {user.is_banned ? t('admin.actions.unban') : t('admin.actions.ban')}
                         </button>
                     )}
                 </div>
@@ -109,9 +107,9 @@ export const UsersManager = ({ canBan = true }) => {
 
     const handleMute = async (username, currentStatus) => {
         const reason = await openPrompt(
-            t('admin.action_reason_prompt'),
+            t('admin.actions.reason_prompt'),
             "",
-            currentStatus ? t('admin.unmute') : t('admin.read_only'),
+            currentStatus ? t('admin.actions.unmute') : t('admin.read_only'),
             t('common.cancel')
         );
 
@@ -121,7 +119,7 @@ export const UsersManager = ({ canBan = true }) => {
             const res = await adminAPI.toggleMute(username, reason);
             if (res.status) {
                 setUsers(users.map(u => u.username === username ? { ...u, is_muted: !currentStatus } : u));
-                notifySuccess(res.message || t('common.success'));
+                notifySuccess(res.message || t('success.changes_saved'));
             }
         } catch (error) {
             notifyError(error.response?.data?.message || t('common.error'));
@@ -130,9 +128,9 @@ export const UsersManager = ({ canBan = true }) => {
 
     const handleBan = async (username, currentStatus) => {
         const reason = await openPrompt(
-            t('admin.action_reason_prompt'),
+            t('admin.actions.reason_prompt'),
             "",
-            currentStatus ? t('admin.unban') : t('admin.ban'),
+            currentStatus ? t('admin.actions.unban') : t('admin.actions.ban'),
             t('common.cancel')
         );
 
@@ -142,7 +140,7 @@ export const UsersManager = ({ canBan = true }) => {
             const res = await adminAPI.toggleBan(username, reason);
             if (res.status) {
                 setUsers(users.map(u => u.username === username ? { ...u, is_banned: !currentStatus } : u));
-                notifySuccess(res.message || t('common.success'));
+                notifySuccess(res.message || t('success.changes_saved'));
             }
         } catch (error) {
             notifyError(error.response?.data?.message || t('common.error'));

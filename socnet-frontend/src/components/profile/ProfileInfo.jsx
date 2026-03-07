@@ -24,7 +24,7 @@ export default function ProfileInfo({ user, displayBirth, displayCountry, displa
                     <div className="socnet-label">{t('common.country')}:</div>
                     <div className="socnet-value">
                         {user?.country && user.country.length === 2 ? (
-                            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span className="profile-country-wrapper">
                                 <span className={`fi fi-${user.country.toLowerCase()}`}></span>
                                 <span>{isoCountries.getName(user.country, langCode) || user.country}</span>
                             </span>

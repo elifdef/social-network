@@ -36,7 +36,7 @@ export default function PostHeader({ post, isOwner, onEdit, onDelete, onReport, 
 
                     {showTargetUser && (
                         <span className="socnet-post-target-text">
-                            {' '}{t('post.wrote_on_wall', { context: post.user.gender === 2 ? 'female' : 'male' })}{' '}
+                            {' '}{t(`post.wrote_on_wall_${post.user.gender === 2 ? 'female' : 'male'}`)}{' '}
                             <Link to={`/${post.target_user.username}`} className="socnet-post-author target">
                                 {post.target_user.first_name} {post.target_user.last_name}
                             </Link>

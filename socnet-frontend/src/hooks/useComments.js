@@ -43,7 +43,7 @@ export const useComments = (postId) => {
             })
             .catch(err => {
                 if (isMounted) {
-                    notifyError(t('common.loading_comments'))
+                    notifyError(t('error.loading_comments'))
                     setError(true);
                     if (page === 1) notifyError(err);
                 }

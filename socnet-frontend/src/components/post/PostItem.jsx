@@ -84,7 +84,7 @@ export default function PostItem({
             }
 
         } catch (err) {
-            notifyError(t('error.repost_failed'));
+            notifyError(t('common.error'));
         } finally {
             setIsReposting(false);
         }

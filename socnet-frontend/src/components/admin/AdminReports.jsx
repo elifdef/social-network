@@ -33,10 +33,12 @@ export default function AdminReports() {
     }, [fetchReports]);
 
     const handleAction = async (reportId, actionType) => {
-        const title = actionType === 'resolve' ? t('admin.prompt_resolve_title') : t('admin.prompt_reject_title');
+        const title = actionType === 'resolve'
+            ? t('admin.reports.prompt_resolve')
+            : t('admin.reports.prompt_reject');
 
         const responseText = await openPrompt(
-            t('admin.prompt_placeholder'),
+            t('admin.common.prompt_placeholder'),
             title,
             true
         );
@@ -58,7 +60,7 @@ export default function AdminReports() {
         if (!report.reportable) {
             return (
                 <span className="socnet-settings-desc">
-                    {t('admin.target_deleted', { id: report.reportable_id })}
+                    {t('admin.reports.target_deleted', { id: report.reportable_id })}
                 </span>
             );
         }
@@ -68,16 +70,16 @@ export default function AdminReports() {
         if (type === 'Post') {
             return (
                 <Link to={`/post/${report.reportable.id}`} className="socnet-link" target="_blank">
-                    {t('admin.target_post', { date: formatDate(report.reportable.created_at) })}
+                    {t('admin.reports.target_post', { date: formatDate(report.reportable.created_at) })}
                 </Link>
             );
         }
 
         if (type === 'Comment') {
             return (
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div className="admin-report-comment-target">
                     <span className="socnet-value">
-                        {t('admin.target_comment', { date: formatDate(report.reportable.created_at) })}
+                        {t('admin.reports.target_comment', { date: formatDate(report.reportable.created_at) })}
                     </span>
                     {report.reportable.content && (
                         <span className="socnet-notification-snippet">
@@ -101,21 +103,21 @@ export default function AdminReports() {
 
     return (
         <div>
-            <div className="admin-dossier-row" style={{ marginBottom: '20px' }}>
+            <div className="admin-dossier-row admin-stats-container">
                 <div className="admin-stats-box">
-                    <div className="admin-stats-label">{t('admin.stats_total')}</div>
+                    <div className="admin-stats-label">{t('admin.stats.total')}</div>
                     <div className="admin-stats-value">{stats.total}</div>
                 </div>
                 <div className="admin-stats-box">
-                    <div className="admin-stats-label">{t('admin.stats_pending')}</div>
+                    <div className="admin-stats-label">{t('admin.stats.pending')}</div>
                     <div className="admin-stats-value admin-status-orange">{stats.pending}</div>
                 </div>
                 <div className="admin-stats-box">
-                    <div className="admin-stats-label">{t('admin.stats_resolved')}</div>
+                    <div className="admin-stats-label">{t('admin.stats.resolved')}</div>
                     <div className="admin-stats-value admin-status-green">{stats.resolved}</div>
                 </div>
                 <div className="admin-stats-box">
-                    <div className="admin-stats-label">{t('admin.stats_rejected')}</div>
+                    <div className="admin-stats-label">{t('admin.stats.rejected')}</div>
                     <div className="admin-stats-value admin-status-red">{stats.rejected}</div>
                 </div>
             </div>
@@ -125,26 +127,26 @@ export default function AdminReports() {
                     className={`socnet-tab ${statusFilter === 'pending' ? 'active' : ''}`}
                     onClick={() => setStatusFilter('pending')}
                 >
-                    {t('admin.stats_pending')}
+                    {t('admin.stats.pending')}
                 </button>
                 <button
                     className={`socnet-tab ${statusFilter === 'resolved' ? 'active' : ''}`}
                     onClick={() => setStatusFilter('resolved')}
                 >
-                    {t('admin.stats_resolved')}
+                    {t('admin.stats.resolved')}
                 </button>
                 <button
                     className={`socnet-tab ${statusFilter === 'rejected' ? 'active' : ''}`}
                     onClick={() => setStatusFilter('rejected')}
                 >
-                    {t('admin.stats_rejected')}
+                    {t('admin.stats.rejected')}
                 </button>
             </div>
 
             {loading ? (
                 <div className="socnet-empty-state">{t('common.loading')}</div>
             ) : reports.length === 0 ? (
-                <div className="socnet-empty-state with-card">{t('admin.empty_reports')}</div>
+                <div className="socnet-empty-state with-card">{t('admin.reports.empty')}</div>
             ) : (
                 <div className="socnet-feed-list">
                     {reports.map((report) => (
@@ -152,7 +154,7 @@ export default function AdminReports() {
                             <div className="admin-user-info">
 
                                 <div className="socnet-info-row">
-                                    <span className="socnet-label">{t('admin.report_from')}</span>
+                                    <span className="socnet-label">{t('admin.reports.from')}</span>
                                     <span className="socnet-value">
                                         <Link to={`/${report.reporter?.username}`} className="socnet-link">
                                             {report.reporter?.first_name} {report.reporter?.last_name}
@@ -161,28 +163,28 @@ export default function AdminReports() {
                                 </div>
 
                                 <div className="socnet-info-row">
-                                    <span className="socnet-label">{t('admin.report_reason')}</span>
+                                    <span className="socnet-label">{t('admin.reports.reason')}</span>
                                     <span className="socnet-value admin-status-red">
                                         {t(`reports.reasons.${report.reason}`)}
                                     </span>
                                 </div>
 
                                 <div className="socnet-info-row">
-                                    <span className="socnet-label">{t('admin.report_target')}</span>
+                                    <span className="socnet-label">{t('admin.reports.target')}</span>
                                     <span className="socnet-value">
                                         {renderReportTarget(report)}
                                     </span>
                                 </div>
 
                                 {report.details && (
-                                    <div className="socnet-settings-quote" style={{ marginTop: '10px' }}>
+                                    <div className="socnet-settings-quote admin-report-quote">
                                         {report.details}
                                     </div>
                                 )}
 
                                 {report.admin_response && (
-                                    <div className="banned-reason-box" style={{ marginTop: '15px', marginBottom: '0' }}>
-                                        <div className="banned-reason-label">{t('admin.admin_response')}</div>
+                                    <div className="banned-reason-box admin-report-response-box">
+                                        <div className="banned-reason-label">{t('admin.common.admin_response')}</div>
                                         <div className="banned-reason-text">{report.admin_response}</div>
                                     </div>
                                 )}
@@ -194,13 +196,13 @@ export default function AdminReports() {
                                         className="admin-btn admin-btn-danger"
                                         onClick={() => handleAction(report.id, 'resolve')}
                                     >
-                                        {t('admin.btn_resolve')}
+                                        {t('admin.reports.btn_resolve')}
                                     </button>
                                     <button
                                         className="admin-btn admin-btn-warning"
                                         onClick={() => handleAction(report.id, 'reject')}
                                     >
-                                        {t('admin.btn_reject')}
+                                        {t('admin.reports.btn_reject')}
                                     </button>
                                 </div>
                             )}

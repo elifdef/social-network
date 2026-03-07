@@ -31,12 +31,12 @@ const AdminPage = () => {
         const tabs = [];
 
         if (isAdmin) {
-            tabs.push({ id: 'dashboard', label: t('admin.dashboard') });
+            tabs.push({ id: 'dashboard', label: t('admin.dashboard.title') });
         }
 
         if (isAdmin || isModerator) {
-            tabs.push({ id: 'reports', label: t('admin.reports_tab') });
-            tabs.push({ id: 'appeals', label: t('admin.appeals_tab') });
+            tabs.push({ id: 'reports', label: t('admin.reports.tab') });
+            tabs.push({ id: 'appeals', label: t('admin.appeals.tab') });
             tabs.push({ id: 'posts', label: t('common.posts') });
             tabs.push({ id: 'users', label: t('admin.users_management') });
         }

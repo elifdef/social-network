@@ -14,7 +14,7 @@ const ModerationPage = ({ currentUser }) => {
     usePageTitle(t('common.moderator_panel'));
 
     const tabs = [
-        { id: 'reports', label: t('admin.reports_tab') },
+        { id: 'reports', label: t('admin.reports.tab') },
         { id: 'posts', label: t('common.posts') },
         { id: 'users', label: t('admin.users_management') }
     ];

@@ -59,7 +59,7 @@ const LeftSidebar = ({ isOpen }) => {
                         {user.role === userRole.Support && (
                             <>
                                 <hr />
-                                <Link to="/support" className={getLinkClass("/support")} style={{ color: '#3498db' }}>
+                                <Link to="/support" className={`${getLinkClass("/support")} nav-link-support`}>
                                     {t('common.support_panel')}
                                 </Link>
                             </>
@@ -68,7 +68,7 @@ const LeftSidebar = ({ isOpen }) => {
                         {user.role === userRole.Moderator && (
                             <>
                                 <hr />
-                                <Link to="/moderation" className={getLinkClass("/moderation")} style={{ color: '#2ecc71' }}>
+                                <Link to="/moderation" className={`${getLinkClass("/moderation")} nav-link-moderator`}>
                                     {t('common.moderator_panel')}
                                 </Link>
                             </>
@@ -77,7 +77,7 @@ const LeftSidebar = ({ isOpen }) => {
                         {user.role === userRole.Admin && (
                             <>
                                 <hr />
-                                <Link to="/admin" className={getLinkClass("/admin")} style={{ color: '#ffd700' }}>
+                                <Link to="/admin" className={`${getLinkClass("/admin")} nav-link-admin`}>
                                     {t('common.admin_panel')}
                                 </Link>
                             </>
@@ -114,7 +114,7 @@ const LeftSidebar = ({ isOpen }) => {
             )}
 
             {!user && (
-                <div className="socnet-sidebar-profile" style={{ fontSize: '11px', color: '#777' }}>
+                <div className="socnet-sidebar-profile socnet-sidebar-guest-notice">
                     {t('sidebar.guest.view_like_guest')}
                 </div>
             )}
