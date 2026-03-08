@@ -31,6 +31,8 @@
 ### Виконати команди: 
 - `composer install`
 - `php artisan key:generate`
+- `php artisan install:broadcasting`
+- `php artisan notifications:table`
 - `php artisan migrate:fresh`
 - `php artisan storage:link`
 
@@ -52,7 +54,7 @@ WebSocket-сервер: `php artisan reverb:start`
 1.	Система коментування постів. [100%]
 2.	Лайки до постів. [100%]
 3.	Сповіщення (нотифікації) про нові запити в друзі та іншу активність. [100%]
-4.	Чат між друзями в реальному часі. 0%
+4.	Чат між друзями в реальному часі. 95%
 
 ## Ліцензія
 
