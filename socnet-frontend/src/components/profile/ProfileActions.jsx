@@ -1,13 +1,18 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import { useInbox } from "../../hooks/useInbox";
 
 export default function ProfileActions({
-    sameUser, loading, status, isBlockedByMe, isBlockedByTarget,
+    sameUser, userId, loading, status, isBlockedByMe, isBlockedByTarget,
     onFriendAction, onBlockAction, onReportAction
 }) {
     const { t } = useTranslation();
+    const navigate = useNavigate();
+    const { initChat } = useInbox();
+    
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isChatLoading, setIsChatLoading] = useState(false);
     const menuRef = useRef(null);
 
     useEffect(() => {
@@ -31,11 +36,8 @@ export default function ProfileActions({
         return null;
 
     const getStatusLabel = () => {
-        if (loading)
-            return "...";
-
-        if (isBlockedByMe)
-            return t('profile.menu.you_have_blocked');
+        if (loading) return "...";
+        if (isBlockedByMe) return t('profile.menu.you_have_blocked');
 
         switch (status) {
             case 'friends': return `${t('common.your_friends')} ✓`;
@@ -54,8 +56,30 @@ export default function ProfileActions({
         }
     };
 
+    const handleSendMessage = async () => {
+        setIsChatLoading(true);
+        try {
+            const slug = await initChat(userId);
+            if (slug) {
+                navigate(`/messages?dm=${slug}`);
+            }
+        } finally {
+            setIsChatLoading(false);
+        }
+    };
+
     return (
         <div className="socnet-actions">
+            {!isBlockedByMe && (
+                <button 
+                    className="socnet-btn" 
+                    onClick={handleSendMessage}
+                    disabled={isChatLoading || loading}
+                >
+                    {isChatLoading ? '...' : t('messages.send_message')}
+                </button>
+            )}
+
             <div className="socnet-dropdown-wrapper" ref={menuRef}>
                 <button
                     className="socnet-btn socnet-btn-dropdown-trigger"

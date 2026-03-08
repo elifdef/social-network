@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1\Admin;
 
 use App\Http\Controllers\Api\v1\Controller;
+use App\Http\Resources\UserBasicResource;
 use App\Models\User;
 use App\Models\Post;
 use App\Models\Comment;
@@ -49,11 +50,11 @@ class DashboardController extends Controller
         }
 
         // хто зараз онлайн (активні за останні 5 хвилин)
-        $onlineUsers = User::select('id', 'username', 'first_name', 'last_name', 'avatar')
+        $onlineUsers = UserBasicResource::collection(User::select('id', 'username', 'first_name', 'last_name', 'avatar')
             ->where('last_seen_at', '>=', Carbon::now()->subMinutes(5))
             ->orderBy('last_seen_at', 'desc')
             ->limit(10)
-            ->get();
+            ->get());
 
 
         $onlineCount = User::where('last_seen_at', '>=', Carbon::now()->subMinutes(5))->count();

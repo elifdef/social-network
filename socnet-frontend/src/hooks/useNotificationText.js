@@ -15,6 +15,7 @@ export const useNotificationText = () => {
         if (key.includes('NewWallPost') || key === 'wall_post') key = 'wall_post';
         if (key.includes('NewRepost') || key === 'repost') key = 'repost';
         if (key.includes('ReportReviewed') || key === 'report_reviewed') key = 'report_reviewed';
+        if (key.includes('NewMessage') || key === 'new_message') key = 'new_message';
 
         const payload = data.data || data;
         const linkUrl = data.post_id ? `/post/${data.post_id}` : null;
@@ -61,6 +62,21 @@ export const useNotificationText = () => {
                     linkText: '',
                     linkUrl: null
                 };
+            case 'new_message': {
+                let snippet = payload.message_text;
+                
+                if (!snippet && payload.file_type) {
+                    snippet = t(`notifications.sent_${payload.file_type}_${gender}`);
+                }
+
+                payload.post_snippet = snippet;
+
+                return {
+                    actionText: t(`notifications.wrote_${gender}`),
+                    linkText: null,
+                    linkUrl: `/messages?dm=${payload.chat_slug}`
+                };
+            }
 
             default:
                 return { actionText: '', linkText: null, linkUrl: null };

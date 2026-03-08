@@ -5,6 +5,7 @@ import AppRoutes from "./routes/AppRoutes";
 import { useTranslation } from "react-i18next";
 import ErrorState from "./components/common/ErrorState";
 import { BannedScreen } from './components/auth/BannedScreen';
+import { audioManager } from './utils/audioManager';
 
 const GlobalLoading = () => {
   const { t } = useTranslation();
@@ -42,6 +43,25 @@ function App() {
 
     if (isDark === null)
       localStorage.setItem('dark_theme', 'true');
+  }, []);
+
+  // для сповіщень
+  useEffect(() => {
+    const unlockAudio = () => {
+      audioManager.unlock();
+      // після першого успішного кліку видаляємо слухач (нам більше не треба)
+      document.removeEventListener('click', unlockAudio);
+      document.removeEventListener('keydown', unlockAudio);
+    };
+
+    // слухаємо кліки та натискання клавіш
+    document.addEventListener('click', unlockAudio);
+    document.addEventListener('keydown', unlockAudio);
+
+    return () => {
+      document.removeEventListener('click', unlockAudio);
+      document.removeEventListener('keydown', unlockAudio);
+    };
   }, []);
 
   if (loading) return <GlobalLoading />;

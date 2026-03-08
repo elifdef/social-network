@@ -50,6 +50,7 @@
     "save": "Save",
     "warn": "Warning",
     "saving": "Saving...",
+    "saved": "Saved",
     "load": "Load more",
     "change": "Change",
     "cancel": "Cancel",
@@ -109,8 +110,11 @@
     "likes": "Likes",
     "repost": "Repost",
     "reposts": "Reposts",
-    "role": "Role",
-    "saved": "Saved"
+    "role": "Роль",
+    "messages": "Messages",
+    "edited": "Edited",
+    "you": "You",
+    "typing": "Typing"
   },
   "auth": {
     "signin": "Sign in",
@@ -131,7 +135,6 @@
   "sidebar": {
     "left": {
       "home": "Home",
-      "messages": "Messages",
       "settings": "Settings"
     },
     "right": {
@@ -451,7 +454,15 @@
     "wall_post_female": "wrote on your wall.",
     "repost_male": "shared your post.",
     "repost_female": "shared your post.",
-    "report_reviewed_click": "Your report has been reviewed. Click to see details."
+    "report_reviewed_click": "Your report has been reviewed. Click to see details.",
+    "wrote_male": "wrote to you",
+    "wrote_female": "wrote to you",
+    "sent_image_male": "Sent an image",
+    "sent_image_female": "Sent an image",
+    "sent_video_male": "Sent a video",
+    "sent_video_female": "Sent a video",
+    "sent_file_male": "Sent a file",
+    "sent_file_female": "Sent a file"
   },
   "activity": {
     "likes": {
@@ -482,6 +493,10 @@
       {
         "title": "Data Storage",
         "text": "The social network operates on the principle: 'If a user deletes material, we must delete it too. User replaced material? We must replace it and permanently remove the old one'."
+      },
+      {
+        "title": "Privacy of Correspondence (updated 07.03.2026)",
+        "text": "Your personal messages are protected by encryption. We respect your privacy and do not read your chats. However, in the event of reports regarding the distribution of illegal materials or the detection of a direct threat to life and safety (e.g., crime planning, violence, exploitation, or terrorism), we are obligated to disclose this data to law enforcement authorities. We cooperate with authorities strictly within the framework of the law: any requests for access to correspondence without proper legal and verified justification will be categorically rejected."
       },
       {
         "title": "Content Publishing",
@@ -522,5 +537,46 @@
       "illegal": "Illegal materials",
       "other": "Other"
     }
+  },
+  "messages": {
+    "errors": {
+      "load_failed": "Failed to load messages",
+      "send_failed": "Failed to send message",
+      "update_failed": "Failed to edit message",
+      "delete_failed": "Failed to delete message",
+      "init_failed": "Failed to initialize chat",
+      "empty_message": "Message cannot be empty",
+      "pin_failed": "Failed to pin message"
+    },
+    "success": {
+      "deleted": "Message deleted",
+      "updated": "Message saved"
+    },
+    "empty_inbox": "It's empty here",
+    "send_message": "Send a message",
+    "select_chat": "Select a chat to start messaging",
+    "send": "Send",
+    "type_message": "Write a message...",
+    "delete_confirm": "Are you sure you want to delete this message?",
+    "delete_chat": "Delete chat",
+    "delete_chat_confirm": "Are you sure you want to delete the entire chat history?",
+    "delete_for_both": "Delete for everyone",
+    "attach": "Attach",
+    "attach_image": "Photo",
+    "attach_video": "Video",
+    "attach_file": "File",
+    "chat_info": "Chat info",
+    "chat_started": "Conversation started",
+    "tab_media": "Media",
+    "tab_files": "Files",
+    "reply": "Reply",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "pinned_message": "Pinned message",
+    "editing": "Edit message",
+    "online": "Online",
+    "media": "Media file",
+    "no_messages_yet": "No messages here yet. Be the first to write!",
+    "was_online": "Was online"
   }
 }

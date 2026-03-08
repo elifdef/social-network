@@ -15,6 +15,7 @@ Route::prefix('v1')->group(function ()
     require __DIR__ . '/api/notifications.php';
     require __DIR__ . '/api/activity.php';
     require __DIR__ . '/api/reports.php';
+    require __DIR__ . '/api/messages.php';
 });
 
 // щоб ларавел не перекидував на сторінку логін якої немає

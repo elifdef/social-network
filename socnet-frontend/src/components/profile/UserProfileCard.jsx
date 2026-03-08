@@ -39,6 +39,7 @@ export default function UserProfileCard({ currentUser, isPreview = false }) {
                     {!isPreview && authUser && (!isPreview || sameUser) && (
                         <ProfileActions
                             sameUser={sameUser}
+                            userId={currentUser.id}
                             loading={loading}
                             status={status}
                             isBlockedByMe={isBlockedByMe}

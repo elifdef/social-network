@@ -22,6 +22,7 @@ import AdminUserInfo from "../components/admin/AdminUserInfo";
 import { userRole } from "../config";
 import NotificationsPage from "../pages/NotificationsPage";
 import ActivityPage from "../pages/ActivityPage";
+import MessagesPage from "../pages/MessagesPage";
 
 export default function AppRoutes() {
     const { user } = useContext(AuthContext);
@@ -52,7 +53,7 @@ export default function AppRoutes() {
                 <Route element={<AuthGuard />}>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/friends" element={<FriendsPage />} />
-                    <Route path="/messages" element={<div>messageTemplate</div>} />
+                    <Route path="/messages" element={<MessagesPage/>} />
                     <Route path="/email-verify/:id/:hash" element={<EmailVerifyPage />} />
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/notifications" element={<NotificationsPage />} />

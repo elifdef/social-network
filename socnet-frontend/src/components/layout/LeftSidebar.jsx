@@ -40,7 +40,7 @@ const LeftSidebar = ({ isOpen }) => {
                             {t('common.profile')}
                         </Link>
                         <Link to="/messages" className={getLinkClass("/messages")}>
-                            {t('sidebar.left.messages')}
+                            {t('common.messages')}
                         </Link>
                         <Link to="/friends" className={getLinkClass("/friends")}>
                             {t('common.friends')}

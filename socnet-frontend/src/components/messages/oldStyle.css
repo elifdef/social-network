@@ -1,0 +1,452 @@
+.socnet-messages-old-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background-color: var(--theme-bg-box);
+    border: 1px solid var(--theme-border);
+    font-family: tahoma, verdana, arial, sans-serif;
+    color: var(--theme-text-main);
+    display: flex;
+    flex-direction: column;
+}
+
+.socnet-messages-old-container:not(.in-chat) {
+    height: auto;
+    display: block;
+}
+
+.socnet-messages-old-container.in-chat {
+    height: calc(100vh - 80px);
+    max-height: 800px;
+    overflow: hidden;
+}
+
+.socnet-messages-old-tabs {
+    display: flex;
+    gap: 15px;
+    padding: 15px 15px 10px 15px;
+    border-bottom: 1px solid var(--theme-border);
+    font-size: 11px;
+}
+
+.socnet-messages-old-tab {
+    color: var(--theme-link);
+    cursor: pointer;
+}
+
+.socnet-messages-old-tab.link:hover {
+    text-decoration: underline;
+}
+
+.socnet-messages-old-tab.active {
+    font-weight: bold;
+    color: var(--theme-text-main);
+    cursor: default;
+}
+
+.socnet-messages-old-chat-header-complex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: var(--theme-bg-page);
+    border-bottom: 1px solid var(--theme-border);
+}
+
+.socnet-im-header-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+
+.socnet-im-header-center:hover .socnet-im-chat-title {
+    text-decoration: underline;
+}
+
+.socnet-im-chat-title {
+    font-weight: bold;
+    font-size: 12px;
+    color: var(--theme-link);
+}
+
+.socnet-messages-old-history-scroll {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0 15px;
+    scrollbar-width: thin;
+}
+
+.socnet-messages-old-message-row {
+    display: flex;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--theme-border);
+}
+
+.socnet-messages-old-message-row:last-child {
+    border-bottom: none;
+}
+
+.socnet-messages-old-msg-left {
+    width: 50px;
+    flex-shrink: 0;
+    margin-right: 15px;
+}
+
+.socnet-messages-old-avatar {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    display: block;
+    border: 1px solid var(--theme-border);
+}
+
+.socnet-messages-old-msg-right {
+    flex: 1;
+    min-width: 0;
+}
+
+.socnet-im-msg-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.socnet-im-msg-main {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.socnet-im-msg-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.socnet-im-msg-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-top: 4px;
+}
+
+.socnet-messages-old-link {
+    color: var(--theme-link);
+    text-decoration: none;
+    font-size: 11px;
+}
+
+.socnet-messages-old-link:hover {
+    text-decoration: underline;
+}
+
+.socnet-messages-old-author {
+    font-weight: bold;
+    margin-bottom: 4px;
+    display: inline-block;
+}
+
+.socnet-messages-old-date {
+    color: var(--theme-text-muted);
+    font-size: 10px;
+}
+
+.socnet-messages-old-msg-text {
+    font-size: 11px;
+    color: var(--theme-text-main);
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.socnet-action-link {
+    cursor: pointer;
+    color: var(--theme-link);
+    font-size: 11px;
+}
+
+.socnet-action-link:hover {
+    text-decoration: underline;
+}
+
+.socnet-action-link.danger {
+    color: var(--theme-error);
+}
+
+.socnet-action-link.danger:hover {
+    opacity: 0.8;
+}
+
+.socnet-messages-old-actions-inline {
+    display: flex;
+    gap: 8px;
+    margin-left: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.socnet-edited-mark {
+    font-size: 10px;
+    color: var(--theme-text-muted);
+    margin-bottom: 4px;
+}
+
+.socnet-messages-old-composer-wrapper {
+    background-color: var(--theme-bg-page);
+    border-top: 1px solid var(--theme-border);
+    padding: 15px;
+}
+
+.socnet-messages-old-composer-inner {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.socnet-messages-old-composer-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.socnet-messages-old-textarea {
+    width: 100%;
+    min-height: 60px;
+    border: 1px solid var(--theme-input-border);
+    padding: 5px;
+    font-size: 11px;
+    resize: vertical;
+    margin-bottom: 8px;
+    background: var(--theme-input-bg);
+    color: var(--theme-text-main);
+    box-sizing: border-box;
+}
+
+.socnet-messages-old-composer-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.socnet-messages-old-attach-label {
+    cursor: pointer;
+    color: var(--theme-link);
+    font-size: 12px;
+}
+
+.socnet-messages-old-attach-label:hover {
+    text-decoration: underline;
+}
+
+.socnet-messages-old-dialog-list {
+    padding: 0 15px 15px 15px;
+}
+
+.socnet-messages-old-dialog-item {
+    display: flex;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--theme-border);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.socnet-messages-old-dialog-item:hover {
+    background-color: var(--theme-bg-page);
+}
+
+.socnet-messages-old-dialog-info {
+    flex: 1;
+    margin-left: 15px;
+    min-width: 0;
+}
+
+.socnet-messages-old-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.socnet-messages-old-dialog-snippet {
+    font-size: 11px;
+    color: var(--theme-text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.socnet-messages-old-info-modal {
+    max-width: 450px !important;
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.socnet-messages-old-info-modal .socnet-messages-old-chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    background-color: var(--theme-btn-bg);
+    color: var(--theme-btn-text);
+    font-weight: bold;
+    font-size: 11px;
+    padding: 10px 15px;
+}
+
+.socnet-old-modal-close {
+    background: none;
+    border: none;
+    color: var(--theme-btn-text);
+    cursor: pointer;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.socnet-old-modal-close:hover {
+    opacity: 1;
+}
+
+.socnet-old-info-profile {
+    display: flex;
+    padding: 20px 15px;
+    align-items: flex-start;
+    gap: 15px;
+    background: var(--theme-bg-page);
+    border-bottom: 1px solid var(--theme-border);
+}
+
+.socnet-old-info-profile img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 1px solid var(--theme-border);
+}
+
+.socnet-old-info-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    padding-top: 5px;
+}
+
+.socnet-messages-old-info-modal .socnet-messages-old-author {
+    font-size: 14px;
+}
+
+.socnet-old-info-content {
+    padding: 15px;
+    max-height: 350px;
+    overflow-y: auto;
+    background: var(--theme-bg-box);
+}
+
+.socnet-old-info-media-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.socnet-old-info-grid-img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border: 1px solid var(--theme-border);
+}
+
+.socnet-old-info-files-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.socnet-messages-msg-wrapper,
+.socnet-messages-old-message-row {
+    transition: background-color 0.5s ease;
+}
+
+.socnet-highlight-msg {
+    background-color: rgba(91, 155, 213, 0.2) !important;
+}
+
+.socnet-typing-text-modern {
+    color: var(--theme-link);
+    font-style: italic;
+    display: inline-flex;
+    align-items: center;
+}
+
+.typing-dots::after {
+    content: '';
+    animation: typingDots 1.5s infinite steps(4, end);
+}
+
+@keyframes typingDots {
+
+    0%,
+    20% {
+        content: '';
+    }
+
+    40% {
+        content: '.';
+    }
+
+    60% {
+        content: '..';
+    }
+
+    80%,
+    100% {
+        content: '...';
+    }
+}
+
+.socnet-typing-old {
+    color: #42648b;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.typing-pencil {
+    animation: pencilDraw 1s infinite linear;
+}
+
+@keyframes pencilDraw {
+    0% {
+        transform: translate(0px, 0px);
+    }
+
+    25% {
+        transform: translate(3px, -2px);
+    }
+
+    50% {
+        transform: translate(6px, 0px);
+    }
+
+    75% {
+        transform: translate(3px, 2px);
+    }
+
+    100% {
+        transform: translate(0px, 0px);
+    }
+}
+
+@media (max-width: 768px) {
+    .socnet-messages-old-composer-inner {
+        flex-direction: column;
+    }
+
+    .socnet-messages-old-composer-inner .socnet-messages-old-avatar {
+        display: none;
+    }
+
+    .socnet-messages-old-composer-center {
+        width: 100%;
+    }
+}
