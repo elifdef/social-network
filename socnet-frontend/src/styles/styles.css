@@ -210,6 +210,116 @@ input:-webkit-autofill:active {
     display: none;
 }
 
+/* відеоплеєр */
+.socnet-post-video {
+    margin-top: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--theme-border);
+    background: #000;
+}
+
+:root {
+    --plyr-color-main: #5b9bd5;
+    --plyr-video-background: var(--theme-bg-box);
+    --plyr-menu-background: var(--theme-bg-box);
+    --plyr-menu-color: var(--theme-text-main);
+}
+
+[data-theme="light"] {
+    --plyr-color-main: #2B587A;
+}
+
+.socnet-video-wrapper {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--theme-border);
+    background: #000;
+    width: 100%;
+}
+
+.socnet-video-wrapper.socnet-video-player {
+    border-radius: 0;
+    background: #000;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    width: 100%;
+}
+
+.socnet-video-player {
+    --plyr-color-main: #cc181e;
+    --plyr-video-controls-background: linear-gradient(to bottom, #333333 0%, #1a1a1a 100%);
+    --plyr-video-control-color: #e0e0e0;
+    --plyr-video-control-color-hover: #ffffff;
+    --plyr-video-control-background-hover: transparent;
+}
+
+.socnet-video-player .plyr__controls {
+    border-top: 1px solid #444;
+    padding: 5px 10px !important;
+}
+
+.socnet-video-player input[type='range']::-webkit-slider-thumb {
+    border-radius: 2px !important;
+    background: #fff !important;
+    border: 1px solid #999 !important;
+    height: 12px !important;
+    width: 8px !important;
+}
+
+.socnet-video-player .plyr__control--overlaid {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #fff;
+    border-radius: 0px;
+    padding: 15px 25px;
+}
+
+.socnet-video-player .plyr__control--overlaid:hover {
+    background: #cc181e;
+    border-color: #cc181e;
+}
+
+.socnet-post-videos-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.socnet-video-player {
+    outline: none;
+}
+
+.socnet-preview-youtube-wrapper {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.socnet-preview-youtube-wrapper {
+    position: relative;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.socnet-youtube-checkbox-overlay {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.socnet-youtube-checkbox-overlay input[type="checkbox"] {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: var(--theme-link);
+}
 
 /* основний контент сайту */
 .socnet-fullscreen-center {
@@ -1216,11 +1326,6 @@ input:-webkit-autofill:active {
     transition: color 0.2s;
 }
 
-.socnet-attach-btn img {
-    height: 16px;
-    width: 16px;
-}
-
 .socnet-attach-btn:hover {
     color: var(--theme-link);
 }
@@ -1504,6 +1609,99 @@ input:-webkit-autofill:active {
 
 .socnet-repost-wrapper .socnet-post-actions {
     display: none;
+}
+
+.socnet-preview-file-stub {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100px;
+    padding: 8px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.socnet-preview-filename {
+    font-size: 12px;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.socnet-attach-buttons-edit,
+.socnet-attach-buttons {
+    display: flex;
+    gap: 12px;
+    color: var(--theme-btn-bg)
+}
+
+/* ДОДАТКОВІ МАТЕРІАЛИ (ФАЙЛИ, МУЗИКА, ВІДЕО) */
+.socnet-post-documents {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--theme-border);
+}
+
+.socnet-document-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: var(--theme-bg-hover, rgba(0, 0, 0, 0.05));
+    border: 1px solid var(--theme-border);
+    text-decoration: none;
+    color: var(--theme-text-main);
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+[data-theme="light"] .socnet-document-item {
+    background-color: #F7F7F7;
+}
+
+.socnet-document-item:hover {
+    background-color: var(--theme-bg-page);
+    border-color: var(--theme-link);
+    text-decoration: none;
+}
+
+.socnet-document-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin-right: 12px;
+    flex-shrink: 0;
+    color: var(--theme-link);
+}
+
+.socnet-document-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex: 1;
+}
+
+.socnet-document-name {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--theme-link);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 3px;
+}
+
+.socnet-document-size {
+    font-size: 10px;
+    color: var(--theme-text-muted);
+    text-transform: uppercase;
 }
 
 .socnet-repost-branch {

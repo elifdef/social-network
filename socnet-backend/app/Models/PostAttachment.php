@@ -10,7 +10,10 @@ class PostAttachment extends Model
         'post_id',
         'type',
         'file_path',
-        'sort_order'
+        'sort_order',
+        'file_name',
+        'original_name',
+        'file_size'
     ];
 
     public function post()

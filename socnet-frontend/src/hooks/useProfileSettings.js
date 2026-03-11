@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { AuthContext } from "../context/AuthContext";
 import api from '../api/axios';
 import { notifySuccess, notifyError, notifyLoading, dismissToast, notifyInfo } from "../components/common/Notify";
-import { validateImageFile } from "../services/upload";
+import { validateImageFile } from "../utils/upload";
 
 export const useProfileSettings = (isSetupMode = false) => {
     const { t } = useTranslation();

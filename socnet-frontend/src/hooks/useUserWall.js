@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { notifySuccess, notifyError } from "../components/common/Notify";
 import { useModal } from "../context/ModalContext";
-import { validateImageFile } from "../services/upload";
+import { validateGenericFile } from "../utils/upload";
 import PostService from '../services/post.service';
 import { MAX_FILE_SIZE_KB } from "../config";
 
@@ -16,11 +16,11 @@ export const useUserWall = (profileUser) => {
 
     const [editingPostId, setEditingPostId] = useState(null);
     const [editContent, setEditContent] = useState('');
-    const [existingMedia, setExistingMedia] = useState([]);         // cтарі картинки з БД
-    const [deletedMediaIds, setDeletedMediaIds] = useState([]);     // ID видалених
+    const [existingMedia, setExistingMedia] = useState([]);
+    const [deletedMediaIds, setDeletedMediaIds] = useState([]);
 
-    const [newEditImages, setNewEditImages] = useState([]);         // нові файли
-    const [newEditPreviews, setNewEditPreviews] = useState([]);     // URL превюшок
+    const [newEditImages, setNewEditImages] = useState([]);
+    const [newEditPreviews, setNewEditPreviews] = useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -68,16 +68,20 @@ export const useUserWall = (profileUser) => {
         }
     }, [isLoadingMore, hasMore, page, profileUser?.username]);
 
-    const createPost = async (content, images) => {
+    const createPost = async (content, images, entities = null) => {
         try {
             const newPost = await PostService.create({
-                images, content, target_user_id: profileUser.id
+                images,
+                content,
+                target_user_id: profileUser.id,
+                entities
             });
 
             setPosts([newPost, ...posts]);
             setCountPosts(countPosts + 1);
             return true;
         } catch (error) {
+            console.log(error);
             notifyError(error.response?.data?.message || t('common.error'));
             return false;
         }
@@ -102,13 +106,13 @@ export const useUserWall = (profileUser) => {
         setEditContent("");
         setExistingMedia([]);
         setDeletedMediaIds([]);
-        newEditPreviews.forEach(url => URL.revokeObjectURL(url));
+        newEditPreviews.forEach(p => URL.revokeObjectURL(p.url));
         setNewEditImages([]);
         setNewEditPreviews([]);
     };
 
     const handleEditFileSelect = (e) => {
-        const rawFiles = Array.from(e.target.files).filter(validateImageFile);
+        const rawFiles = Array.from(e.target.files).filter(validateGenericFile);
         const validFiles = [];
         let hasOversized = false;
 
@@ -130,7 +134,14 @@ export const useUserWall = (profileUser) => {
         }
 
         setNewEditImages(prev => [...prev, ...validFiles]);
-        setNewEditPreviews(prev => [...prev, ...validFiles.map(f => URL.createObjectURL(f))]);
+        setNewEditPreviews(prev => [
+            ...prev,
+            ...validFiles.map(f => ({
+                url: URL.createObjectURL(f),
+                type: f.type,
+                name: f.name
+            }))
+        ]);
         e.target.value = null;
     };
 
@@ -140,7 +151,7 @@ export const useUserWall = (profileUser) => {
         let hasOversized = false;
 
         for (let i = 0; i < items.length; i++) {
-            if (items[i].type.indexOf('image') !== -1) {
+            if (items[i].kind === 'file') {
                 const file = items[i].getAsFile();
                 if (file.size > MAX_FILE_SIZE_KB * 1024)
                     hasOversized = true;
@@ -160,14 +171,22 @@ export const useUserWall = (profileUser) => {
                 return;
             }
             setNewEditImages(prev => [...prev, ...pastedFiles]);
-            setNewEditPreviews(prev => [...prev, ...pastedFiles.map(f => URL.createObjectURL(f))]);
+
+            setNewEditPreviews(prev => [
+                ...prev,
+                ...pastedFiles.map(f => ({
+                    url: URL.createObjectURL(f),
+                    type: f.type,
+                    name: f.name
+                }))
+            ]);
         }
     };
 
     const removeNewEditImage = (index) => {
         setNewEditImages(prev => prev.filter((_, idx) => idx !== index));
         setNewEditPreviews(prev => {
-            URL.revokeObjectURL(prev[index]);
+            URL.revokeObjectURL(prev[index].url);
             return prev.filter((_, idx) => idx !== index);
         });
     };
@@ -177,7 +196,7 @@ export const useUserWall = (profileUser) => {
         setDeletedMediaIds(prev => [...prev, mediaId]);
     };
 
-    const saveEdit = async (postId) => {
+    const saveEdit = async (postId, entities = null) => {
         if (!editContent.trim() && existingMedia.length === 0 && newEditImages.length === 0) {
             notifyError(t('post.empty_post'));
             return;
@@ -186,7 +205,8 @@ export const useUserWall = (profileUser) => {
             const updatedPostData = await PostService.update(postId, {
                 content: editContent,
                 images: newEditImages,
-                deletedMedia: deletedMediaIds
+                deletedMedia: deletedMediaIds,
+                entities
             });
             setPosts(prev => prev.map(p => p.id === postId ? updatedPostData : p));
             notifySuccess(t('success.changes_saved'));

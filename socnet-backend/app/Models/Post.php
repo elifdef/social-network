@@ -7,9 +7,12 @@ use Illuminate\Support\Str;
 
 class Post extends Model
 {
-    protected $fillable = ['user_id', 'target_user_id', 'content', 'image', 'original_post_id', 'is_repost'];
+    protected $fillable = ['user_id', 'target_user_id', 'content', 'image', 'original_post_id', 'is_repost', 'entities'];
     protected $keyType = 'string';
     public $incrementing = false;
+    protected $casts = [
+        'entities' => 'array',
+    ];
 
     protected static function boot()
     {

@@ -27,7 +27,10 @@ class PostResource extends JsonResource
                         'id' => $attachment->id,
                         'type' => $attachment->type,
                         'url' => $attachment->file_url,
-                        'sort_order' => $attachment->sort_order
+                        'sort_order' => $attachment->sort_order,
+                        'file_name' => $attachment->file_name,
+                        'original_name' => $attachment->original_name,
+                        'file_size' => $attachment->file_size
                     ];
                 });
             }),

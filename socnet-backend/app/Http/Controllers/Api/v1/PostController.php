@@ -205,10 +205,13 @@ class PostController extends Controller
 
         if ($request->hasFile('media'))
         {
+            $lastOrder = isset($post) ? ($post->attachments()->max('sort_order') ?? -1) : -1;
+
             foreach ($request->file('media') as $index => $file)
             {
                 $mime = $file->getMimeType();
                 $type = 'document';
+
                 if (str_starts_with($mime, 'image/')) $type = 'image';
                 elseif (str_starts_with($mime, 'video/')) $type = 'video';
                 elseif (str_starts_with($mime, 'audio/')) $type = 'audio';
@@ -222,7 +225,10 @@ class PostController extends Controller
                 $post->attachments()->create([
                     'type' => $type,
                     'file_path' => $path,
-                    'sort_order' => $index
+                    'sort_order' => $lastOrder + 1 + $index,
+                    'file_name' => basename($path),
+                    'original_name' => $file->getClientOriginalName(),
+                    'file_size' => $file->getSize()
                 ]);
             }
         }
@@ -300,12 +306,13 @@ class PostController extends Controller
 
         if ($request->hasFile('media'))
         {
-            $lastOrder = $post->attachments()->max('sort_order') ?? -1;
+            $lastOrder = isset($post) ? ($post->attachments()->max('sort_order') ?? -1) : -1;
 
             foreach ($request->file('media') as $index => $file)
             {
                 $mime = $file->getMimeType();
                 $type = 'document';
+
                 if (str_starts_with($mime, 'image/')) $type = 'image';
                 elseif (str_starts_with($mime, 'video/')) $type = 'video';
                 elseif (str_starts_with($mime, 'audio/')) $type = 'audio';
@@ -319,7 +326,10 @@ class PostController extends Controller
                 $post->attachments()->create([
                     'type' => $type,
                     'file_path' => $path,
-                    'sort_order' => $lastOrder + 1 + $index
+                    'sort_order' => $lastOrder + 1 + $index,
+                    'file_name' => basename($path),
+                    'original_name' => $file->getClientOriginalName(),
+                    'file_size' => $file->getSize(),
                 ]);
             }
         }
