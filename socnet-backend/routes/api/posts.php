@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\v1\FeedController;
+use App\Http\Controllers\Api\v1\PollController;
 use App\Http\Controllers\Api\v1\PostController;
 use App\Http\Controllers\Api\v1\LikeController;
 use App\Http\Controllers\Api\v1\CommentController;
@@ -32,6 +33,11 @@ Route::middleware(['auth:sanctum', 'throttle:180,1', 'not_banned'])->group(funct
         Route::post('/posts', [PostController::class, 'store']);
         Route::put('/posts/{post}', [PostController::class, 'update']);
         Route::delete('/posts/{post}', [PostController::class, 'destroy']);
+
+        // голосування в пості
+        Route::post('/posts/{post}/poll/vote', [PollController::class, 'vote']);
+        Route::get('/posts/{post}/poll/voters', [PollController::class, 'voters']);
+        Route::post('/posts/{post}/poll/close', [PollController::class, 'close']);
 
         // лайки
         Route::post('/posts/{post}/like', [LikeController::class, 'toggle']);

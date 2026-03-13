@@ -115,7 +115,8 @@
     "messages": "Messages",
     "edited": "Edited",
     "you": "You",
-    "typing": "Typing"
+    "typing": "Typing",
+    "close": "Close"
   },
   "auth": {
     "signin": "Sign in",
@@ -205,7 +206,12 @@
     "wrote_on_wall_male": "wrote on the wall of",
     "wrote_on_wall_female": "wrote on the wall of",
     "repost_success": "Post has been successfully shared on your wall!",
-    "add_repost_comment": "Add a comment to your repost..."
+    "add_repost_comment": "Add a comment to your repost...",
+    "votes_count_one": "vote",
+    "votes_count_few": "votes",
+    "votes_count_many": "votes",
+    "votes_count_other": "votes",
+    "anonymous_poll": "Anonymous poll"
   },
   "comment": {
     "no_comments": "There are no comments yet.",
@@ -604,5 +610,35 @@
     "normal": "Normal",
     "quality": "Quality",
     "loop": "Loop"
+  },
+  "poll": {
+    "create_title": "Create poll",
+    "question_placeholder": "Ask a question...",
+    "option": "Option",
+    "add_option": "Add option",
+    "mark_correct": "Mark as correct",
+    "setting_anonymous": "Anonymous voting",
+    "setting_multiple": "Multiple choice",
+    "setting_revote": "Allow vote changing",
+    "setting_quiz": "Quiz mode (has a correct answer)",
+    "max_options_reached": "Maximum 16 options.",
+    "min_options_reached": "Minimum 2 options.",
+    "empty_question": "Question cannot be empty.",
+    "empty_option": "Options cannot be empty.",
+    "no_correct_option": "Select at least one correct option for the quiz.",
+    "error_voters": "Failed to load voters list.",
+    "view_voters": "View who voted",
+    "no_voters_yet": "No one has voted yet",
+    "add_poll": "Add poll",
+    "remove_poll": "Remove poll",
+    "edit_locked": "Poll cannot be edited",
+    "explanation_placeholder": "Explanation (visible after voting)",
+    "explanation_too_long": "Explanation is too long (max 255 characters).",
+    "explanation_title": "Explanation:",
+    "submit_vote": "Vote",
+    "voters_title": "Voters",
+    "closed_badge": "Poll closed",
+    "close_confirm_text": "If you close the poll, no one else will be able to vote. It cannot be reopened.",
+    "click_to_edit": "Click to edit"
   }
 }

@@ -133,7 +133,13 @@ class PostController extends Controller
         $originalPostId = $request->input('original_post_id');
         $user = $request->user();
 
-        if (!$request->input('content') && !$request->hasFile('media') && !$originalPostId)
+        $entities = $request->has('entities') && $request->input('entities')
+            ? json_decode($request->input('entities'), true)
+            : null;
+
+        $hasPoll = isset($entities['poll']);
+
+        if (!$request->input('content') && !$request->hasFile('media') && !$originalPostId && !$hasPoll)
         {
             return response()->json([
                 'status' => false,
@@ -141,7 +147,7 @@ class PostController extends Controller
             ], 422);
         }
 
-        // неможно репостити на чужу стіну
+        // не можна репостити на чужу стіну
         if ($targetUserId && $targetUserId != $user->id && $originalPostId)
         {
             return response()->json([
@@ -163,9 +169,52 @@ class PostController extends Controller
             }
         }
 
-        $entities = $request->has('entities') && $request->input('entities')
-            ? json_decode($request->input('entities'), true)
-            : null;
+        // валідація опитування
+        if ($hasPoll)
+        {
+            $poll = $entities['poll'];
+
+            // питання не може бути пустим
+            if (empty(trim($poll['question'] ?? '')))
+            {
+                return response()->json(['status' => false, 'message' => 'Poll question cannot be empty.'], 422);
+            }
+
+            // ліміт відповідей [2,16]
+            $optionsCount = count($poll['options'] ?? []);
+            if ($optionsCount < 2 || $optionsCount > 16)
+            {
+                return response()->json(['status' => false, 'message' => 'Poll must have between 2 and 16 options.'], 422);
+            }
+
+            $hasCorrectOption = false;
+            foreach ($poll['options'] as $option)
+            {
+                // Жоден варіант не може бути пустим
+                if (empty(trim($option['text'] ?? '')))
+                {
+                    return response()->json(['status' => false, 'message' => 'Poll options cannot be empty.'], 422);
+                }
+                if (isset($option['is_correct']) && $option['is_correct'] === true)
+                {
+                    $hasCorrectOption = true;
+                }
+            }
+
+            // якщо це вікторина -> має бути хоча б одна правильна відповідь
+            if (($poll['type'] ?? 'regular') === 'quiz')
+            {
+                if (!$hasCorrectOption)
+                {
+                    return response()->json(['status' => false, 'message' => 'Quiz must have at least one correct option.'], 422);
+                }
+                // перевірка довжини пояснення
+                if (isset($poll['explanation']) && mb_strlen($poll['explanation']) > 255)
+                {
+                    return response()->json(['status' => false, 'message' => 'Explanation is too long (max 255 characters).'], 422);
+                }
+            }
+        }
 
         $post = $user->posts()->create([
             'target_user_id' => $targetUserId == $user->id ? null : $targetUserId,
@@ -273,7 +322,11 @@ class PostController extends Controller
         $newMediaCount = $request->hasFile('media') ? count($request->file('media')) : 0;
         $futureMediaExists = ($currentMediaCount - $deletedMediaCount + $newMediaCount) > 0;
 
-        if (empty($futureContent) && !$futureMediaExists && !$hasRepost)
+        // перевіряємо, чи є в оригінальному пості опитування
+        $originalEntities = $post->entities ?? [];
+        $hasPoll = isset($originalEntities['poll']);
+
+        if (empty($futureContent) && !$futureMediaExists && !$hasRepost && !$hasPoll)
         {
             return response()->json([
                 'status' => false,
@@ -283,10 +336,18 @@ class PostController extends Controller
 
         $data = [];
         if ($request->has('content')) $data['content'] = $futureContent;
+
         if ($request->has('entities'))
         {
             $entitiesInput = $request->input('entities');
-            $data['entities'] = $entitiesInput ? json_decode($entitiesInput, true) : null;
+            $newEntities = $entitiesInput ? json_decode($entitiesInput, true) : [];
+
+            if ($hasPoll)
+            {
+                $newEntities['poll'] = $originalEntities['poll'];
+            }
+
+            $data['entities'] = empty($newEntities) ? null : $newEntities;
         }
 
         if (!empty($data))

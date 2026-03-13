@@ -45,12 +45,17 @@ export default function EditPostForm({ post, saveEdit, cancelEditing }) {
     };
 
     const handleSave = () => {
-        if (!editContent.trim() && existingMedia.length === 0 && newFiles.length === 0) {
+        const hasPoll = !!post?.entities?.poll;
+
+        if (!editContent.trim() && existingMedia.length === 0 && newFiles.length === 0 && !hasPoll) {
             notifyError(t('post.empty_post'));
             return;
         }
 
-        const entities = { removed_previews: removedPreviews };
+        const entities = {
+            ...(post.entities || {}),
+            removed_previews: removedPreviews
+        };
 
         saveEdit(post.id, {
             content: editContent,
@@ -77,6 +82,13 @@ export default function EditPostForm({ post, saveEdit, cancelEditing }) {
                 maxLength={2048}
             />
 
+            {post?.entities?.poll && (
+                <div className="socnet-attached-poll-preview disabled">
+                    <span>📊 {post.entities.poll.question}</span>
+                    <span className="socnet-poll-locked-text">{t('poll.edit_locked')}</span>
+                </div>
+            )}
+
             <MediaPreviews previews={existingMedia} onRemove={removeExistingMedia} isExisting={true} />
 
             <MediaPreviews previews={newPreviews} onRemove={removeNewFile} />
@@ -87,10 +99,10 @@ export default function EditPostForm({ post, saveEdit, cancelEditing }) {
                 onToggle={toggleYouTubePreview}
             />
 
-            <div className="socnet-edit-actions" style={{ marginTop: '10px' }}>
+            <div className="socnet-edit-actions" style={{ marginTop: '10px', display: 'flex', justifyContent: 'space-between' }}>
                 <AttachBar onFileSelect={handleFileSelect} />
 
-                <div className="socnet-edit-buttons-right">
+                <div className="socnet-edit-buttons-right" style={{ display: 'flex', gap: '8px' }}>
                     <Button className="socnet-btn-small" onClick={handleSave}>
                         {t('common.save')}
                     </Button>

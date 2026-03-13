@@ -14,15 +14,24 @@ class PostResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // щоб не дублювалось голосування
+        $entitiesWithoutPoll = $this->entities;
+        if (isset($entitiesWithoutPoll['poll'])) {
+            unset($entitiesWithoutPoll['poll']);
+        }
+
         return [
             'id' => $this->id,
             'content' => $this->content,
-            'entities' => $this->entities,
+            'entities' => empty($entitiesWithoutPoll) ? null : $entitiesWithoutPoll,
+            'poll' => $this->when(
+                isset($this->entities['poll']),
+                new PollResource($this)
+            ),
+
             'original_post_id' => $this->original_post_id,
-            'attachments' => $this->whenLoaded('attachments', function ()
-            {
-                return $this->attachments->map(function ($attachment)
-                {
+            'attachments' => $this->whenLoaded('attachments', function () {
+                return $this->attachments->map(function ($attachment) {
                     return [
                         'id' => $attachment->id,
                         'type' => $attachment->type,

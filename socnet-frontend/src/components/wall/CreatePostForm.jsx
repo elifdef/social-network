@@ -8,11 +8,16 @@ import AttachBar from './components/AttachBar';
 import FormatBar from './components/FormatBar';
 import MediaPreviews from './components/MediaPreviews';
 import YouTubePreviews from './components/YouTubePreviews';
+import PollCreator from './components/PollCreator';
 
 export default function CreatePostForm({ onSubmitSuccess }) {
     const { t } = useTranslation();
     const [content, setContent] = useState('');
     const [removedPreviews, setRemovedPreviews] = useState([]);
+
+    const [pollData, setPollData] = useState(null);
+    const [showPollCreator, setShowPollCreator] = useState(false);
+
     const { external } = usePostMedia(content, [], { removed_previews: removedPreviews });
 
     const {
@@ -28,17 +33,22 @@ export default function CreatePostForm({ onSubmitSuccess }) {
     };
 
     const handleSubmit = async () => {
-        if (!content.trim() && files.length === 0) {
+        if (!content.trim() && files.length === 0 && !pollData) {
             notifyError(t('post.empty_post'));
             return;
         }
 
         const entities = { removed_previews: removedPreviews };
+        if (pollData) {
+            entities.poll = pollData;
+        }
+
         const success = await onSubmitSuccess(content, files, entities);
 
         if (success) {
             setContent('');
             setRemovedPreviews([]);
+            setPollData(null);
             clearFiles();
         }
     };
@@ -61,6 +71,27 @@ export default function CreatePostForm({ onSubmitSuccess }) {
                 maxLength={2048}
             />
 
+            {pollData && (
+                <div
+                    className="socnet-attached-poll-preview"
+                    onClick={() => setShowPollCreator(true)}
+                    title={t('poll.click_to_edit')}
+                >
+                    <span className="socnet-poll-preview-title">📊 {pollData.question}</span>
+                    <button
+                        type="button"
+                        className="socnet-remove-poll-btn"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setPollData(null);
+                        }}
+                        title={t('poll.remove_poll')}
+                    >
+                        ✖
+                    </button>
+                </div>
+            )}
+
             <MediaPreviews previews={previews} onRemove={removeFile} />
 
             <YouTubePreviews
@@ -70,12 +101,39 @@ export default function CreatePostForm({ onSubmitSuccess }) {
             />
 
             <div className="socnet-wall-actions">
-                <AttachBar onFileSelect={handleFileSelect} />
+                <div className="socnet-wall-actions-left">
+                    <AttachBar onFileSelect={handleFileSelect} />
+
+                    {!pollData && (
+                        <button
+                            className="socnet-add-poll-btn"
+                            onClick={() => setShowPollCreator(true)}
+                            title={t('poll.add_poll')}
+                        >
+                            📊
+                        </button>
+                    )}
+                </div>
 
                 <button className="socnet-btn" onClick={handleSubmit}>
                     {t('wall.send_btn')}
                 </button>
             </div>
+
+            {showPollCreator && (
+                <div className="socnet-poll-modal-overlay">
+                    <div className="socnet-poll-modal-content">
+                        <PollCreator
+                            initialData={pollData}
+                            onSave={(data) => {
+                                setPollData(data);
+                                setShowPollCreator(false);
+                            }}
+                            onCancel={() => setShowPollCreator(false)}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

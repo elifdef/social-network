@@ -45,6 +45,7 @@ export default function PostItem({
                 content={postData.content}
                 post={postData}
                 onUpdate={updateLocalPost}
+                isOwner={isOwner}
             />
 
             {postData.is_repost && (

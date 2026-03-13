@@ -83,4 +83,12 @@ class Post extends Model
     {
         return $this->hasMany(PostAttachment::class);
     }
+
+    /**
+     * голосування/вікторина
+     */
+    public function pollVotes()
+    {
+        return $this->hasMany(PollVote::class);
+    }
 }
