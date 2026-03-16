@@ -13,10 +13,10 @@ class UserService {
         });
     }
 
-    async updateEmail(email) {
+    async updateEmail(email, password) {
         return await fetchClient('/user/email', {
             method: 'PUT',
-            body: { email }
+            body: { email, password }
         });
     }
 

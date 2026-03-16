@@ -13,7 +13,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
-use App\Providers\TelescopeServiceProvider;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,11 +23,13 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         // якщо це локальне середовище розробки - завантажуємо Telescope
-        if ($this->app->environment('local')) {
+        if ($this->app->environment('local'))
+        {
             $this->app->register(TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
         }
     }
+
     /**
      * Bootstrap any application services.
      */
@@ -43,11 +45,11 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(180)->by($request->user()?->id ?: $request->ip());
         });
 
-        VerifyEmail::createUrlUsing(function ($notifiable)
+        VerifyEmail::toMailUsing(function ($notifiable, $url)
         {
             $backendUrl = URL::temporarySignedRoute(
                 'verification.verify',
-                Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)), // година часу
+                Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
                 [
                     'id' => $notifiable->getKey(),
                     'hash' => sha1($notifiable->getEmailForVerification()),
@@ -61,6 +63,18 @@ class AppServiceProvider extends ServiceProvider
                 $notifiable->getKey() . '/' .
                 sha1($notifiable->getEmailForVerification()) .
                 '?' . $queryParams;
+
+            $locale = $notifiable->locale ?? 'en';
+
+            app()->setLocale($locale);
+
+            return (new MailMessage)
+                ->subject(__('email.verify_subject'))
+                ->markdown('emails.verify', [
+                    'url' => $frontendUrl,
+                    'user' => $notifiable,
+                    'expireMinutes' => Config::get('auth.verification.expire', 60),
+                ]);
         });
 
         // права доступу

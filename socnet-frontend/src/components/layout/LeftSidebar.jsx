@@ -77,7 +77,7 @@ const LeftSidebar = ({ isOpen }) => {
                         {user.role === userRole.Admin && (
                             <>
                                 <hr />
-                                <Link to="/admin" className={`${getLinkClass("/admin")} nav-link-admin`}>
+                                <Link to="/control-panel" className={`${getLinkClass("/admin")} nav-link-admin`}>
                                     {t('common.admin_panel')}
                                 </Link>
                             </>

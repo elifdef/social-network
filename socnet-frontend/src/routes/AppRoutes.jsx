@@ -11,7 +11,6 @@ import HomePage from "../pages/HomePage";
 import ProfilePage from "../pages/ProfilePage";
 import FriendsPage from "../pages/FriendsPage";
 import PostPage from "../pages/PostPage";
-import EmailVerifyPage from "../pages/EmailVerifyPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import AdminPage from '../pages/AdminPage';
 import SupportPage from "../pages/SupportPage"
@@ -53,8 +52,8 @@ export default function AppRoutes() {
                 <Route element={<AuthGuard />}>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/friends" element={<FriendsPage />} />
-                    <Route path="/messages" element={<MessagesPage/>} />
-                    <Route path="/email-verify/:id/:hash" element={<EmailVerifyPage />} />
+                    <Route path="/messages" element={<MessagesPage />} />
+                    <Route path="/email-verify/:id/:hash" element={<HomePage />} />
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/notifications" element={<NotificationsPage />} />
                     <Route path="/activity/:tab?" element={<ActivityPage />} />
@@ -69,8 +68,8 @@ export default function AppRoutes() {
 
                     {user?.role >= userRole.Admin && (
                         <>
-                            <Route path="/admin" element={<AdminPage />} />
-                            <Route path="/admin/users/:username" element={<AdminUserInfo />} />
+                            <Route path="/control-panel" element={<AdminPage />} />
+                            <Route path="/control-panel/users/:username" element={<AdminUserInfo />} />
                         </>
                     )}
                 </Route>

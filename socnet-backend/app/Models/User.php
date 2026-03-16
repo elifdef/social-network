@@ -66,6 +66,18 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    protected static function booted()
+    {
+        static::creating(function ($user)
+        {
+            // Якщо в конфігу підтвердження НЕ потрібне
+            if (!config('features.need_confirm_email'))
+            {
+                $user->email_verified_at = now();
+            }
+        });
+    }
+
     protected function avatarUrl(): Attribute
     {
         return Attribute::make(

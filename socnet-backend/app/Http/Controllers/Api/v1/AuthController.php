@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -55,7 +56,15 @@ class AuthController extends Controller
             ], 403);
 
         $validated = $request->validate([
-            'username' => 'required|string|min:4|max:32|unique:users|regex:/^[A-Za-z0-9_]+$/',
+            'username' => [
+                'required',
+                'string',
+                'min:4',
+                'max:32',
+                'unique:users',
+                'regex:/^[A-Za-z0-9_]+$/',
+                Rule::notIn(config('reserved.usernames', []))
+            ],
             'email' => 'required|email|unique:users',
             'password' => [
                 'required',
@@ -66,18 +75,24 @@ class AuthController extends Controller
                     ->numbers()
                     ->symbols()
             ]
+        ], [
+            'username.not_in' => 'This username is reserved or not allowed.'
         ]);
 
         $user = User::create([
             'username' => $validated['username'],
             'email' => $validated['email'],
             'password' => $validated['password'],
-            'email_verified_at' => config('features.require_email_verification') ? null : now()
         ]);
+
+        if (config('features.need_confirm_email'))
+        {
+            $user->sendEmailVerificationNotification();
+        }
 
         return response()->json([
             'status' => true,
-            'message' => 'User registered successfully',
+            'message' => 'User registered successfully. Please check your email.',
             'user_id' => $user->id
         ], 201);
     }
